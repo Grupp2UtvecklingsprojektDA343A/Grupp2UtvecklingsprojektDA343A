@@ -1,4 +1,4 @@
-package client;
+package client.gui;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -12,11 +12,12 @@ import java.awt.GridBagLayout;
 
 public abstract class DefaultPanel extends JPanel {
     public final Color BAD_COLOR = new Color(255,199,206);
-
     private final JMenuBar menuBar = new JMenuBar();
     private final JPanel mainPanel = new JPanel(new GridBagLayout());
+    private final GUI gui;
 
-    public DefaultPanel(boolean showMenuBar) {
+    public DefaultPanel(GUI gui, boolean showMenuBar) {
+        this.gui = gui;
         setLayout(new BorderLayout());
 
         if(showMenuBar) {
@@ -48,6 +49,10 @@ public abstract class DefaultPanel extends JPanel {
 
     void dispose() {
 
+    }
+
+    GUI getGui() {
+        return gui;
     }
 
     //    void addJMenuItem(JMenuItem menuItem, JMenu menu) {

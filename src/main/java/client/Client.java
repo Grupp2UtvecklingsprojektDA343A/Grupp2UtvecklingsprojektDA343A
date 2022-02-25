@@ -1,16 +1,16 @@
 package client;
 
-import javax.swing.JFrame;
-import java.awt.Dimension;
+import client.gui.GUI;
 
 public class Client {
-    public void showGUI() {
-        // Skapa Inloggningsfönstret.
-        LoginPanel loginPanel = new LoginPanel(false);
+    private GUI gui;
 
-        JFrame window = new JFrame();
-        Dimension dimension = new Dimension(500, 500);
-        window.setSize(dimension);
-        window.setVisible(true);
+    public void showGUI() {
+        // SwingUtilities.invokeLater(() -> gui = new GUI(this));
+        gui = new GUI(this);
+    }
+
+    public void logIn() {
+        gui.showContacts();
     }
 }
