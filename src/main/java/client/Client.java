@@ -1,16 +1,18 @@
 package client;
 
-import client.gui.GUI;
-
+import client.gui.MainWindow;
+/*
+Agerar som Controller
+ */
 public class Client {
-    private GUI gui;
+    private MainWindow mainWindow;
 
     public void showGUI() {
         // SwingUtilities.invokeLater(() -> gui = new GUI(this));
-        gui = new GUI(this);
+        mainWindow = new MainWindow(this);
     }
 
     public void logIn() {
-        gui.showContacts();
+        mainWindow.showContacts();
     }
 }

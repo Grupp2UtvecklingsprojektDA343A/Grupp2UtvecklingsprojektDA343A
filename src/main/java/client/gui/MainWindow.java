@@ -8,11 +8,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
-public class GUI extends JFrame {
-        private DefaultPanel panel;
+public class MainWindow extends JFrame {
+        private DefaultPanel currentPanel;
         private final Client client;
 
-        public GUI(Client client) {
+        public MainWindow(Client client) {
             this.client = client;
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -24,10 +24,10 @@ public class GUI extends JFrame {
             Dimension dimension = new Dimension(500, 500);
             setSize(dimension);
             setLayout(new GridLayout(1,1));
-            // Skapa Inloggningsfönstret.
-            panel = new LogInPanel(this);
+            // Skapa inloggningsfönstret (LoginPanel).
+            currentPanel = new LogInPanel(this);
             // Koppla till fönstret
-            add(panel);
+            add(currentPanel);
             // Visa fönstret
             setVisible(true);
         }
@@ -41,16 +41,18 @@ public class GUI extends JFrame {
             changePanel(dimension, new ContactsPanel(this, true));
         }
 
-        private void changePanel(Dimension dimension, DefaultPanel panel) {
+        private void changePanel(Dimension dimension, DefaultPanel newPanel) {
             setSize(dimension);
-            changePanel(panel);
+            changePanel(newPanel);
         }
 
-        private void changePanel(DefaultPanel panel) {
-            remove(this.panel);
-            this.panel = panel;
-            add(this.panel);
+        private void changePanel(DefaultPanel newPanel) {
+            remove(this.currentPanel);
+            this.currentPanel = newPanel;
+            add(this.currentPanel);
             repaint();
+            // Rita allting som är nytt
             revalidate();
+            // Kontrollera vad vi ska ha kvar
         }
     }

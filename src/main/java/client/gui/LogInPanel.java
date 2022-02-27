@@ -17,8 +17,8 @@ import java.awt.event.KeyListener;
 public class LogInPanel extends DefaultPanel implements KeyListener {
     private final JButton bLogin = new JButton("login");
 
-    public LogInPanel(GUI gui) {
-        super(gui, false);
+    public LogInPanel(MainWindow mainWindow) {
+        super(mainWindow, false);
         setLayout(new GridBagLayout());
         Dimension jTextFieldPreferredSize = new Dimension(100, 19);
 
@@ -45,7 +45,7 @@ public class LogInPanel extends DefaultPanel implements KeyListener {
             }
 
             if (!missingFields) {
-                getGui().logIn();
+                getMainWindow().logIn();
             }
         });
 

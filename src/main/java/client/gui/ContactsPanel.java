@@ -13,7 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class ContactsPanel extends DefaultPanel implements KeyListener {
-    public ContactsPanel(GUI gui, boolean showMenuBar) {
+    public ContactsPanel(MainWindow gui, boolean showMenuBar) {
         super(gui, showMenuBar);
 
         Dimension jTextFieldPreferredSize = new Dimension(100, 19);

@@ -14,9 +14,9 @@ public abstract class DefaultPanel extends JPanel {
     public final Color BAD_COLOR = new Color(255,199,206);
     private final JMenuBar menuBar = new JMenuBar();
     private final JPanel mainPanel = new JPanel(new GridBagLayout());
-    private final GUI gui;
+    private final MainWindow gui;
 
-    public DefaultPanel(GUI gui, boolean showMenuBar) {
+    public DefaultPanel(MainWindow gui, boolean showMenuBar) {
         this.gui = gui;
         setLayout(new BorderLayout());
 
@@ -51,7 +51,7 @@ public abstract class DefaultPanel extends JPanel {
 
     }
 
-    GUI getGui() {
+    MainWindow getMainWindow() {
         return gui;
     }
 
