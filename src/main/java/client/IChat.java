@@ -1,5 +1,5 @@
 package client;
 
 public interface IChat {
-    // Lägg till allt som ni vill att GUI ska kunna göra
+    // Lägg till allt som ni vill att ChatPanel ska kunna göra
 }

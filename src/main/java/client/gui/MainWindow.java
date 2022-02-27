@@ -48,8 +48,11 @@ public class MainWindow extends JFrame {
 
         private void changePanel(DefaultPanel newPanel) {
             remove(this.currentPanel);
+            // Kasta den gamla panelen
             this.currentPanel = newPanel;
+            // Spara referensen som kommer in
             add(this.currentPanel);
+            // Lägg till currentPanel till gränssnittet
             repaint();
             // Rita allting som är nytt
             revalidate();

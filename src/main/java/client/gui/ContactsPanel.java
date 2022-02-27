@@ -25,7 +25,6 @@ public class ContactsPanel extends DefaultPanel implements KeyListener {
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.insets = new Insets(1, 5, 1, 5);
 
-
         constraints.gridy = 0; // rad
         constraints.gridx = 0; // column
         // constraints.gridwidth = 1;
