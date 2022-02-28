@@ -4,6 +4,7 @@ import client.ImageHandler;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -44,7 +45,14 @@ public class ContactsPanel extends DefaultPanel implements KeyListener {
             img = img.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
             profilePicture = new ImageIcon(img);
         }
-        add(new UserButton("another user", profilePicture), constraints);
+        UserButton bTemplateUser = new UserButton("another user", profilePicture);
+        bTemplateUser.addActionListener(l -> {
+            JFrame contactFrame = new JFrame();
+            contactFrame.add(new ChatPanel(gui, true));
+            contactFrame.setVisible(true);
+            contactFrame.pack();
+        });
+        add(bTemplateUser, constraints);
 
     }
 
