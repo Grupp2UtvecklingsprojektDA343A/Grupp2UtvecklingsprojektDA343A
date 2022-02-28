@@ -49,6 +49,12 @@ public class ChatWindow extends JFrame implements IChat {
             });
             addToFileMenu(uploadFile);
 
+            JMenuItem showContacts = new JMenuItem("Contacts");
+            showContacts.addActionListener(l -> {
+                getMainWindow().open();
+            });
+            addToFileMenu(showContacts);
+
             textInput.setBackground(Color.WHITE);
             textInput.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             textInput.setPreferredSize(dimension);

@@ -10,6 +10,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.WindowEvent;
 
 public class MainWindow extends JFrame {
         private DefaultPanel currentPanel;
@@ -33,6 +34,7 @@ public class MainWindow extends JFrame {
             add(currentPanel);
             // Visa fönstret
             setVisible(true);
+            setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
 
         public void logIn() {
@@ -64,5 +66,13 @@ public class MainWindow extends JFrame {
 
     public void uploadFile() {
         System.out.println("TODO");
+    }
+
+    public void closeApplication(){
+            System.exit(0);
+    }
+
+    public void open() {
+            setVisible(true);
     }
 }
