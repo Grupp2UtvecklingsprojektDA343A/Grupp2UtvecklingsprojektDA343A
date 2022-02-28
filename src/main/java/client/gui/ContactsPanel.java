@@ -38,12 +38,7 @@ public class ContactsPanel extends DefaultPanel implements KeyListener {
         constraints.gridy = 1; // rad
         constraints.gridx = 0; // column
         constraints.gridwidth = 2;
-        ImageIcon profilePicture = ImageHandler.createImageIcon("http://webshare.mah.se/am3281/arlako.png");
-        if(profilePicture != null) {
-            Image img  = profilePicture.getImage();
-            img = img.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-            profilePicture = new ImageIcon(img);
-        }
+        ImageIcon profilePicture = ImageHandler.createImageIcon("http://webshare.mah.se/am3281/arlako.png", 30, 30);
         UserButton bTemplateUser = new UserButton("another user", profilePicture);
         bTemplateUser.addActionListener(l -> {
             new ChatWindow(mainWindow, "another user");

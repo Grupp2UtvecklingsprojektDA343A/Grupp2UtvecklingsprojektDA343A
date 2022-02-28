@@ -1,6 +1,7 @@
 package client;
 
 import javax.swing.ImageIcon;
+import java.awt.Image;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -22,8 +23,24 @@ public class ImageHandler {
         if (imgURL != null) {
             return new ImageIcon(imgURL);
         } else {
-            System.err.println("Couldn't find file: " + path);
-            return null;
+            try {
+                return new ImageIcon(path);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.err.println("Couldn't find file: " + path);
+                return null;
+            }
         }
+    }
+
+    public static ImageIcon createImageIcon(String path, int width, int height) {
+        ImageIcon imageIcon;
+        if((imageIcon = createImageIcon(path)) != null) {
+            Image img  = imageIcon.getImage();
+            img = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+            imageIcon = new ImageIcon(img);
+        }
+
+        return imageIcon;
     }
 }

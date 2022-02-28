@@ -15,13 +15,13 @@ public abstract class DefaultPanel extends JPanel {
     private final JMenuBar menuBar = new JMenuBar();
     private final JPanel mainPanel = new JPanel(new GridBagLayout());
     private final MainWindow mainWindow;
+    private final JMenu menuFile = new JMenu("File");
 
     public DefaultPanel(MainWindow mainWindow, boolean showMenuBar) {
         this.mainWindow = mainWindow;
         setLayout(new BorderLayout());
 
         if(showMenuBar) {
-            JMenu menuFile = new JMenu("File");
             menuBar.add(menuFile);
 
             JMenuItem menuItemExit = new JMenuItem("Exit");
@@ -42,6 +42,10 @@ public abstract class DefaultPanel extends JPanel {
     }
 
     // abstract void showMessage(String message);
+
+    void addToFileMenu(JMenuItem item) {
+        menuFile.add(item);
+    }
 
     void addJMenu(JMenu menu) {
         menuBar.add(menu);

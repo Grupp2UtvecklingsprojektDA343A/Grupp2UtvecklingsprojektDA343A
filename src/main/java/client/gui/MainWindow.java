@@ -61,4 +61,8 @@ public class MainWindow extends JFrame {
             revalidate();
             // Kontrollera vad vi ska ha kvar
         }
+
+    public void uploadFile() {
+        System.out.println("TODO");
     }
+}
