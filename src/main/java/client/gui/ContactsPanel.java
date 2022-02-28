@@ -1,7 +1,6 @@
 package client.gui;
 
 import client.ImageHandler;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,8 +13,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class ContactsPanel extends DefaultPanel implements KeyListener {
-    public ContactsPanel(MainWindow gui, boolean showMenuBar) {
-        super(gui, showMenuBar);
+    public ContactsPanel(MainWindow mainWindow, boolean showMenuBar) {
+        super(mainWindow, showMenuBar);
 
         Dimension jTextFieldPreferredSize = new Dimension(100, 19);
 
@@ -47,10 +46,7 @@ public class ContactsPanel extends DefaultPanel implements KeyListener {
         }
         UserButton bTemplateUser = new UserButton("another user", profilePicture);
         bTemplateUser.addActionListener(l -> {
-            JFrame contactFrame = new JFrame();
-            contactFrame.add(new ChatPanel(gui, true));
-            contactFrame.setVisible(true);
-            contactFrame.pack();
+            new ChatWindow(mainWindow, "another user");
         });
         add(bTemplateUser, constraints);
 

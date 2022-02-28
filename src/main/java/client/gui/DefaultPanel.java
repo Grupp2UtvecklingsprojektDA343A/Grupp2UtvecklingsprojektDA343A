@@ -14,10 +14,10 @@ public abstract class DefaultPanel extends JPanel {
     public final Color BAD_COLOR = new Color(255,199,206);
     private final JMenuBar menuBar = new JMenuBar();
     private final JPanel mainPanel = new JPanel(new GridBagLayout());
-    private final MainWindow gui;
+    private final MainWindow mainWindow;
 
-    public DefaultPanel(MainWindow gui, boolean showMenuBar) {
-        this.gui = gui;
+    public DefaultPanel(MainWindow mainWindow, boolean showMenuBar) {
+        this.mainWindow = mainWindow;
         setLayout(new BorderLayout());
 
         if(showMenuBar) {
@@ -52,7 +52,7 @@ public abstract class DefaultPanel extends JPanel {
     }
 
     MainWindow getMainWindow() {
-        return gui;
+        return mainWindow;
     }
 
     //    void addJMenuItem(JMenuItem menuItem, JMenu menu) {
