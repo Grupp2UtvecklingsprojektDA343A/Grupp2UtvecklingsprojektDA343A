@@ -32,8 +32,8 @@ public class Client {
     private String ip;
     private int port;
 
-    //private User user;
-    //private User[] users;
+    private User user;
+    private User[] users;
 
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
