@@ -32,8 +32,16 @@ public class Client {
     private String ip;
     private int port;
 
+    //private User user;
+    //private User[] users;
+
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
+
+    public Client() throws IOException {
+        this.ip = ""; //todo insert values when server is up and running
+        this.port = 0;
+    }
 
     public void showGUI() {
         // SwingUtilities.invokeLater(() -> gui = new GUI(this));
