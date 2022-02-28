@@ -10,11 +10,14 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.WindowEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.util.HashMap;
 
 public class MainWindow extends JFrame {
         private DefaultPanel currentPanel;
         private final Client client;
+        private HashMap<Integer, ChatWindow> openChatWindows = new HashMap<>();
 
         public MainWindow(Client client) {
             this.client = client;
@@ -32,9 +35,22 @@ public class MainWindow extends JFrame {
             currentPanel = new LogInPanel(this);
             // Koppla till fönstret
             add(currentPanel);
+            // Göm istället för att stänga
+            setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            // setExtendedState(JFrame.ICONIFIED);
+
+            addComponentListener(new ComponentAdapter() {
+                @Override
+                public void componentHidden(ComponentEvent e) {
+                    // super.componentHidden(e);
+                    if(openChatWindows.size() == 0) {
+                        closeApplication();
+                    }
+                }
+            });
+
             // Visa fönstret
             setVisible(true);
-            setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
 
         public void logIn() {
@@ -69,10 +85,27 @@ public class MainWindow extends JFrame {
     }
 
     public void closeApplication(){
-            System.exit(0);
+        System.exit(0);
     }
 
     public void open() {
-            setVisible(true);
+        setVisible(true);
+    }
+
+    protected void addChatWindow(int userId, ChatWindow chatWindow) {
+        openChatWindows.put(userId, chatWindow);
+    }
+
+    protected void removeChatWindow(int userId) {
+        openChatWindows.remove(userId);
+    }
+
+    protected boolean isChatWindowOpen(int userId) {
+        return openChatWindows.containsKey(userId);
+    }
+
+    protected void focusChatWindow(int userId) {
+        ChatWindow chatWindow = openChatWindows.get(userId);
+        chatWindow.requestFocus();
     }
 }

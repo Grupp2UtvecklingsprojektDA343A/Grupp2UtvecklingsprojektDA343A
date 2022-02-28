@@ -39,9 +39,15 @@ public class ContactsPanel extends DefaultPanel implements KeyListener {
         constraints.gridx = 0; // column
         constraints.gridwidth = 2;
         ImageIcon profilePicture = ImageHandler.createImageIcon("http://webshare.mah.se/am3281/arlako.png", 30, 30);
+        int userId = 1;
         UserButton bTemplateUser = new UserButton("another user", profilePicture);
         bTemplateUser.addActionListener(l -> {
-            new ChatWindow(mainWindow, "another user");
+            if(getMainWindow().isChatWindowOpen(userId)) {
+                getMainWindow().focusChatWindow(userId);
+            } else {
+                ChatWindow chatWindow = new ChatWindow(mainWindow, "another user");
+                getMainWindow().addChatWindow(userId, chatWindow);
+            }
         });
         add(bTemplateUser, constraints);
 

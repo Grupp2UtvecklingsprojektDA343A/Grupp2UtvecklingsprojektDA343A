@@ -5,6 +5,8 @@ import client.ImageHandler;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class ChatWindow extends JFrame implements IChat {
 
@@ -18,6 +20,14 @@ public class ChatWindow extends JFrame implements IChat {
         setVisible(true);
         setTitle("Arlako chatt window: " + currentChatter);
         pack();
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                mainWindow.removeChatWindow(1);
+                dispose();
+            }
+        });
     }
 
     private class TextInputPanel extends DefaultPanel {
