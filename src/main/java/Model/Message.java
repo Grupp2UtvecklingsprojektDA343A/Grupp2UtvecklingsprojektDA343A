@@ -1,3 +1,5 @@
+package Model;
+
 import client.User;
 
 import javax.swing.*;
