@@ -1,5 +1,6 @@
 package client;
 
+import Model.Message;
 import client.gui.MainWindow;
 /*
 Agerar som Controller
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
 
 /*todo
 Funktionalitet för klient
@@ -33,7 +35,7 @@ public class Client {
     private int port;
 
     private User user;
-    private User[] users;
+    private HashMap<Integer, User> frinendList;
 
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
@@ -62,7 +64,16 @@ public class Client {
         socket.close();
     }
 
-    public void send(){
+    public void send(Message message){
+        // Skriv en motod som skickar Till servern
+        try {
+            connect();
+            oos.writeObject(message);
+            oos.flush();
+            disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
