@@ -1,23 +1,18 @@
 package client.gui;
 
 import client.ImageHandler;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class ContactsPanel extends DefaultPanel implements KeyListener {
-    public ContactsPanel(MainWindow gui, boolean showMenuBar) {
-        super(gui, showMenuBar);
-
-        Dimension jTextFieldPreferredSize = new Dimension(100, 19);
+    public ContactsPanel(MainWindow mainWindow, boolean showMenuBar) {
+        super(mainWindow, showMenuBar);
 
         JLabel lImage = new JLabel("'image'");
         JLabel lUsername = new JLabel("'username'");
@@ -39,18 +34,16 @@ public class ContactsPanel extends DefaultPanel implements KeyListener {
         constraints.gridy = 1; // rad
         constraints.gridx = 0; // column
         constraints.gridwidth = 2;
-        ImageIcon profilePicture = ImageHandler.createImageIcon("http://webshare.mah.se/am3281/arlako.png");
-        if(profilePicture != null) {
-            Image img  = profilePicture.getImage();
-            img = img.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-            profilePicture = new ImageIcon(img);
-        }
+        ImageIcon profilePicture = ImageHandler.createImageIcon("http://webshare.mah.se/am3281/arlako.png", 30, 30);
+        int userId = 1;
         UserButton bTemplateUser = new UserButton("another user", profilePicture);
         bTemplateUser.addActionListener(l -> {
-            JFrame contactFrame = new JFrame();
-            contactFrame.add(new ChatPanel(gui, true));
-            contactFrame.setVisible(true);
-            contactFrame.pack();
+            if(getMainWindow().isChatWindowOpen(userId)) {
+                getMainWindow().focusChatWindow(userId);
+            } else {
+                ChatWindow chatWindow = new ChatWindow(mainWindow, "another user");
+                getMainWindow().addChatWindow(userId, chatWindow);
+            }
         });
         add(bTemplateUser, constraints);
 
