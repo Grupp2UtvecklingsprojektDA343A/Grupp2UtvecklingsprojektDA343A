@@ -7,7 +7,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args)  {
         if(args.length > 0 && args[0].equals("s")) {
-            // starta server
+            // starta server (new Server();)
         } else {
             Client client = null;
             try {
