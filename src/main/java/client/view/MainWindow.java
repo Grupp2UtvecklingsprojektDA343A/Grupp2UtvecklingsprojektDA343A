@@ -5,9 +5,11 @@ Pratar med Client och med hela gränssnittet (package.GUI).
  */
 
 import client.controller.Client;
-import sharedModel.Message;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ComponentAdapter;
@@ -17,7 +19,7 @@ import java.util.HashMap;
 public class MainWindow extends JFrame {
         private DefaultPanel currentPanel;
         private final Client client;
-        private HashMap<Integer, ChatWindow> openChatWindows = new HashMap<>();
+        private HashMap<String, ChatWindow> openChatWindows = new HashMap<>();
 
         public MainWindow(Client client) {
             this.client = client;
@@ -92,29 +94,29 @@ public class MainWindow extends JFrame {
         setVisible(true);
     }
 
-    protected void addChatWindow(int userId, ChatWindow chatWindow) {
-        openChatWindows.put(userId, chatWindow);
+    protected void addChatWindow(String username, ChatWindow chatWindow) {
+        openChatWindows.put(username, chatWindow);
     }
 
-    protected void removeChatWindow(int userId) {
-        openChatWindows.remove(userId);
+    protected void removeChatWindow(String username) {
+        openChatWindows.remove(username);
     }
 
-    protected boolean isChatWindowOpen(int userId) {
-        return openChatWindows.containsKey(userId);
+    protected boolean isChatWindowOpen(String username) {
+        return openChatWindows.containsKey(username);
     }
 
-    protected void focusChatWindow(int userId) {
-        ChatWindow chatWindow = openChatWindows.get(userId);
+    protected void focusChatWindow(String username) {
+        ChatWindow chatWindow = openChatWindows.get(username);
         chatWindow.requestFocus();
     }
 
-    public void newImageMessage(Icon icon, String sender) {
+    public void newImageMessage(ImageIcon icon, String sender) {
     }
 
     public void newStringMessage(String guiMessage, String sender) {
     }
 
-    public void newMessage(String guiMessage, Icon icon, Message message) {
+    public void newMessage(String guiMessage, ImageIcon icon, String sender) {
     }
 }

@@ -59,7 +59,9 @@ public class Client {
     }
 
     public void logIn() {
-        mainWindow.showContacts();
+        String username = null;
+        ImageIcon profilePicture = null;
+        mainWindow.showContacts(username, profilePicture);
     }
 
     public void connect() throws IOException {
