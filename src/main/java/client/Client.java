@@ -35,14 +35,16 @@ public class Client {
     private int port;
 
     private User user;
-    private HashMap<Integer, User> frinendList;
+    private HashMap<String, User> frinendList;
 
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
 
-    public Client() throws IOException {
-        this.ip = ""; //todo insert values when server is up and running
-        this.port = 0;
+    public Client(String ip, int port, User user) throws IOException {
+        this.ip = ip; //todo insert values when server is up and running
+        this.port = port;
+        this.user= user;
+        //connect();
     }
 
     public void showGUI() {
@@ -67,7 +69,6 @@ public class Client {
     public void send(Message message){
         // Skriv en motod som skickar Till servern
         try {
-            connect();
             oos.writeObject(message);
             oos.flush();
             disconnect();
@@ -79,11 +80,12 @@ public class Client {
 
     public void recieve(){
         try {
-            connect();
             Message message = (Message) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+    public void getAllUser(){
 
     }
 }

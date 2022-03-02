@@ -1,6 +1,7 @@
 package main;
 
 import client.Client;
+import client.User;
 
 import java.io.IOException;
 
@@ -11,7 +12,7 @@ public class Main {
         } else {
             Client client = null;
             try {
-                client = new Client();
+                client = new Client("127.0.0.1",1337,new User(null,0,null));
                 client.showGUI();
             } catch (IOException e) {
                 e.printStackTrace();
