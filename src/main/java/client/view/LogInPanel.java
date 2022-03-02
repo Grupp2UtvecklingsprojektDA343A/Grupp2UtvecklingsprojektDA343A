@@ -45,7 +45,7 @@ public class LogInPanel extends DefaultPanel implements KeyListener {
             }
 
             if (!missingFields) {
-                getMainWindow().logIn();
+                getMainWindow().logIn(tfUsername.getText(), tfServer.getText());
             }
         });
 

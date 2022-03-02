@@ -58,9 +58,10 @@ public class Client {
         mainWindow = new MainWindow(this);
     }
 
-    public void logIn() {
-        String username = null;
+    public void logIn(String username, String host) {
         ImageIcon profilePicture = null;
+        User currentUser = new User(username, profilePicture);
+        // TODO: Koppla upp till servern
         mainWindow.showContacts(username, profilePicture);
     }
 
@@ -91,14 +92,14 @@ public class Client {
             message = (Message) ois.readObject();
             String sender = String.valueOf(message.getSender());
             String guiMessage = message.getMessage();
-            Icon icon = message.getImage();
+            ImageIcon icon = message.getImage();
             if (guiMessage==null){
                 mainWindow.newImageMessage(icon,sender);
             }
             else if (icon==null){
                 mainWindow.newStringMessage(guiMessage,sender);
             }else{
-                mainWindow.newMessage(guiMessage,icon,message);
+                mainWindow.newMessage(guiMessage,icon,sender);
             }
 
         } catch (IOException | ClassNotFoundException e) {

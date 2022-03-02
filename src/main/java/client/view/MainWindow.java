@@ -55,8 +55,8 @@ public class MainWindow extends JFrame {
             setVisible(true);
         }
 
-        public void logIn() {
-            client.logIn();
+        public void logIn(String username, String host) {
+            client.logIn(username, host);
         }
 
         public void showContacts(String username, ImageIcon profilePicture) {
