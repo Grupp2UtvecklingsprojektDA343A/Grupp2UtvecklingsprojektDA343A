@@ -1,10 +1,10 @@
-package client.gui;
+package client.view;
 
 /*
 Pratar med Client och med hela gränssnittet (package.GUI).
  */
 
-import client.Client;
+import client.controller.Client;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;

@@ -1,7 +1,7 @@
 package main;
 
-import client.Client;
-import client.User;
+import client.controller.Client;
+import client.model.User;
 
 import java.io.IOException;
 

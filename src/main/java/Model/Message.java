@@ -1,6 +1,6 @@
 package Model;
 
-import client.User;
+import client.model.User;
 
 import javax.swing.*;
 import java.io.Serializable;

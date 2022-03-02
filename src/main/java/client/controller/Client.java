@@ -1,7 +1,8 @@
-package client;
+package client.controller;
 
 import Model.Message;
-import client.gui.MainWindow;
+import client.model.User;
+import client.view.MainWindow;
 /*
 Agerar som Controller
  */
