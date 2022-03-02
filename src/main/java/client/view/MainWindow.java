@@ -5,9 +5,9 @@ Pratar med Client och med hela gränssnittet (package.GUI).
  */
 
 import client.controller.Client;
-import javax.swing.JFrame;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import sharedModel.Message;
+
+import javax.swing.*;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ComponentAdapter;
@@ -107,5 +107,14 @@ public class MainWindow extends JFrame {
     protected void focusChatWindow(int userId) {
         ChatWindow chatWindow = openChatWindows.get(userId);
         chatWindow.requestFocus();
+    }
+
+    public void newImageMessage(Icon icon, String sender) {
+    }
+
+    public void newStringMessage(String guiMessage, String sender) {
+    }
+
+    public void newMessage(String guiMessage, Icon icon, Message message) {
     }
 }

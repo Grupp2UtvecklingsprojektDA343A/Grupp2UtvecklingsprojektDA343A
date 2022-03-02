@@ -33,7 +33,7 @@ public class ChatWindow extends JFrame implements IChat {
     }
 
     @Override
-    public void ShowMessage() {
+    public void showMessage() {
 
     }
 

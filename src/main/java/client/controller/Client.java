@@ -87,8 +87,18 @@ public class Client {
     public void recieve(){
         try {
             message = (Message) ois.readObject();
+            String sender = String.valueOf(message.getSender());
             String guiMessage = message.getMessage();
             Icon icon = message.getImage();
+            if (guiMessage==null){
+                mainWindow.newImageMessage(icon,sender);
+            }
+            else if (icon==null){
+                mainWindow.newStringMessage(guiMessage,sender);
+            }else{
+                mainWindow.newMessage(guiMessage,icon,message);
+            }
+
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -105,4 +115,5 @@ public class Client {
             e.printStackTrace();
         }
     }
+
 }
