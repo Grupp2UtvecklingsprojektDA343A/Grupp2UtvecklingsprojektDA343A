@@ -2,7 +2,6 @@ package server;
 
 import Model.Buffer;
 import Model.Message;
-import client.model.User;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -15,8 +14,8 @@ import java.util.ArrayList;
 public class Server {
     ArrayList<String> traffic = new ArrayList<>();
     Buffer<Message> messageBuffer = new Buffer<>();
-    ArrayList<User> users = new ArrayList<>();
     ServerSocket serverSocket;
+
     public Server(String ip, int port) {
         try {
             serverSocket = new ServerSocket(port);
@@ -24,15 +23,16 @@ public class Server {
             e.printStackTrace();
         }
     }
+
     public <T> void addToTraffic(T t) {
     }
-    public void addUser(User user){
-        users.add(user);
-    }
+
     public void messagesToSend(Message message) {
         messageBuffer.put(message);
     }
-    private class ServerRunner extends Thread {
+
+
+    private class FirstThread extends Thread {
         public void run() {
             Socket socket = null;
             System.out.println("Server startar");
@@ -47,13 +47,16 @@ public class Server {
             }
         }
     }
+
     private class ClientHandler extends Thread {
         private Socket socket;
         private ObjectInputStream ois;
         private ObjectOutputStream oos;
+
         public ClientHandler(Socket socket) {
             this.socket = socket;
         }
+
         @Override
         public void run() {
             try {
@@ -62,16 +65,19 @@ public class Server {
                 while (true) {
                     Message message = (Message) ois.readObject();
                     messageBuffer.put(message);
-                    if(socket.getInputStream().read() != -1)  { // && socket.getInputStream().read() == null)  ( //Byta ut til Boolean?
+                    if(socket.getInputStream().read() != -1)  { // && socket.getInputStream().read() == null)  (
                        oos.writeObject(messageBuffer.get());
                        oos.flush();
                     } else {
                         //lagra meddelande
                     }
+
                 }
             } catch (IOException | ClassNotFoundException |InterruptedException e ) {
                 e.printStackTrace();
             }
+
+
         }
     }
 }

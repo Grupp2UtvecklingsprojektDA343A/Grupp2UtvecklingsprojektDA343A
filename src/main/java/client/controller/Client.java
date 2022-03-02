@@ -1,12 +1,13 @@
 package client.controller;
 
-import Model.Message;
+import sharedModel.Message;
 import client.model.User;
 import client.view.MainWindow;
 /*
 Agerar som Controller
  */
 
+import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -34,8 +35,6 @@ public class Client {
     private MainWindow mainWindow;
 
     private Socket socket;
-    private String ip;
-    private int port;
 
     private User user;
     private HashMap<String, User> frinendList;
@@ -45,23 +44,18 @@ public class Client {
 
     private Message message = null;
 
-    public Client(String ip, int port, User user) throws IOException {
-        this.ip = ip; //todo insert values when server is up and running
-        this.port = port;
-        this.user= user;
-        //connect();
-    }
-
     public void showGUI() {
         // SwingUtilities.invokeLater(() -> gui = new GUI(this));
         mainWindow = new MainWindow(this);
     }
 
-    public void logIn() {
-        mainWindow.showContacts();
+    public void logIn(String username, String host, int port) throws IOException {
+        this.user = new User(username, null);
+        connect(host, port);
+        mainWindow.showContacts(username, null);
     }
 
-    public void connect() throws IOException {
+    public void connect(String ip, int port) throws IOException {
         this.socket = new Socket(ip,port);
         this.oos = new ObjectOutputStream(socket.getOutputStream());
         this.ois = new ObjectInputStream(socket.getInputStream());
@@ -86,10 +80,26 @@ public class Client {
     public void recieve(){
         try {
             message = (Message) ois.readObject();
+            String sender = String.valueOf(message.getSender());
+            String guiMessage = message.getMessage();
+            ImageIcon icon = message.getImage();
+            if (guiMessage==null){
+                mainWindow.newImageMessage(icon,sender);
+            }
+            else if (icon==null){
+                mainWindow.newStringMessage(guiMessage,sender);
+            }else{
+                mainWindow.newMessage(guiMessage,icon,sender);
+            }
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+    public void newUser(String username, Icon icon) throws IOException {
+        oos.writeObject(new User(username,icon));
+        oos.flush();
+        oos.close();
     }
     public void getAllUser(){
         try(DataInputStream dis = new DataInputStream(socket.getInputStream())) {
@@ -98,4 +108,5 @@ public class Client {
             e.printStackTrace();
         }
     }
+
 }

@@ -21,19 +21,14 @@ public class ChatWindow extends JFrame implements IChat {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentHidden(ComponentEvent e) {
-                mainWindow.removeChatWindow(1);
+                mainWindow.removeChatWindow(currentChatter);
                 dispose();
             }
         });
     }
 
     @Override
-    public void AddUser() {
-
-    }
-
-    @Override
-    public void ShowMessage() {
+    public void showMessage() {
 
     }
 

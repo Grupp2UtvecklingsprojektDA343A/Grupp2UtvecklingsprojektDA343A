@@ -5,19 +5,23 @@ Pratar med Client och med hela gränssnittet (package.GUI).
  */
 
 import client.controller.Client;
+
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
 import java.util.HashMap;
 
 public class MainWindow extends JFrame {
         private DefaultPanel currentPanel;
         private final Client client;
-        private HashMap<Integer, ChatWindow> openChatWindows = new HashMap<>();
+        private HashMap<String, ChatWindow> openChatWindows = new HashMap<>();
 
         public MainWindow(Client client) {
             this.client = client;
@@ -53,13 +57,21 @@ public class MainWindow extends JFrame {
             setVisible(true);
         }
 
-        public void logIn() {
-            client.logIn();
+        public void logIn(String username, String host, int port) {
+            try {
+                client.logIn(username, host, port);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Failed to connect to server.",
+                    "Connection error",
+                    JOptionPane.ERROR_MESSAGE);
+            }
         }
 
-        public void showContacts() {
+        public void showContacts(String username, ImageIcon profilePicture) {
             Dimension dimension = new Dimension(200, 500);
-            changePanel(dimension, new ContactsPanel(this, true));
+            changePanel(dimension, new ContactsPanel(this, true, username, profilePicture));
         }
 
         private void changePanel(Dimension dimension, DefaultPanel newPanel) {
@@ -92,20 +104,29 @@ public class MainWindow extends JFrame {
         setVisible(true);
     }
 
-    protected void addChatWindow(int userId, ChatWindow chatWindow) {
-        openChatWindows.put(userId, chatWindow);
+    protected void addChatWindow(String username, ChatWindow chatWindow) {
+        openChatWindows.put(username, chatWindow);
     }
 
-    protected void removeChatWindow(int userId) {
-        openChatWindows.remove(userId);
+    protected void removeChatWindow(String username) {
+        openChatWindows.remove(username);
     }
 
-    protected boolean isChatWindowOpen(int userId) {
-        return openChatWindows.containsKey(userId);
+    protected boolean isChatWindowOpen(String username) {
+        return openChatWindows.containsKey(username);
     }
 
-    protected void focusChatWindow(int userId) {
-        ChatWindow chatWindow = openChatWindows.get(userId);
+    protected void focusChatWindow(String username) {
+        ChatWindow chatWindow = openChatWindows.get(username);
         chatWindow.requestFocus();
+    }
+
+    public void newImageMessage(ImageIcon icon, String sender) {
+    }
+
+    public void newStringMessage(String guiMessage, String sender) {
+    }
+
+    public void newMessage(String guiMessage, ImageIcon icon, String sender) {
     }
 }

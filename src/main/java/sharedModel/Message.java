@@ -1,4 +1,4 @@
-package Model;
+package sharedModel;
 
 import client.model.User;
 
