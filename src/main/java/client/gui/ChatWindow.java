@@ -35,6 +35,11 @@ public class ChatWindow extends JFrame implements IChat {
 
     }
 
+    @Override
+    public void ShowMessage() {
+
+    }
+
     private class TextInputPanel extends DefaultPanel {
         private JList<Object> conversation;
         private JScrollPane conversationArea;

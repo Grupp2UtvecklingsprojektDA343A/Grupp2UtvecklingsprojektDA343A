@@ -6,10 +6,12 @@ import client.gui.MainWindow;
 Agerar som Controller
  */
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /*todo
@@ -39,6 +41,8 @@ public class Client {
 
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
+
+    private Message message = null;
 
     public Client(String ip, int port, User user) throws IOException {
         this.ip = ip; //todo insert values when server is up and running
@@ -80,12 +84,17 @@ public class Client {
 
     public void recieve(){
         try {
-            Message message = (Message) ois.readObject();
+            message = (Message) ois.readObject();
+
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
     public void getAllUser(){
-
+        try(DataInputStream dis = new DataInputStream(socket.getInputStream())) {
+            ArrayList<String> allUsers = new ArrayList<>();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
