@@ -25,3 +25,6 @@ hs_err_pid*
 # Visual Paradigm files
 *.vpp.bak*
 *.vpp.lck
+
+# XML files
+runConfiguration.xml
