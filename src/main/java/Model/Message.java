@@ -4,6 +4,7 @@ import client.User;
 
 import javax.swing.*;
 import java.io.Serializable;
+import java.util.Date;
 
 public class Message implements Serializable {
     private User sender;
@@ -11,7 +12,7 @@ public class Message implements Serializable {
     private String message;
     private ImageIcon image;
 
-    public Message(User sender, User receiver, String message, ImageIcon image){
+    public Message(User sender, User receiver, String message, ImageIcon image, Date sent, Date  received){
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;

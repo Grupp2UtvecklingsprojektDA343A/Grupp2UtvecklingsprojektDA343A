@@ -35,7 +35,7 @@ public class Client {
     private int port;
 
     private User user;
-    private HashMap<Integer, User> frinendList;
+    private HashMap<Integer, User> friendList;
 
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
