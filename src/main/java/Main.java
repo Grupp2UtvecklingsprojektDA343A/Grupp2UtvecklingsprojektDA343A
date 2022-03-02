@@ -1,5 +1,3 @@
-package main;
-
 import client.controller.Client;
 import client.model.User;
 

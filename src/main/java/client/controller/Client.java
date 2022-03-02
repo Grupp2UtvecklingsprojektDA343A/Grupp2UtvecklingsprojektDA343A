@@ -1,6 +1,6 @@
 package client.controller;
 
-import Model.Message;
+import sharedModel.Message;
 import client.model.User;
 import client.view.MainWindow;
 /*
