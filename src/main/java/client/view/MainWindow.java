@@ -59,9 +59,9 @@ public class MainWindow extends JFrame {
             client.logIn();
         }
 
-        public void showContacts() {
+        public void showContacts(String username, ImageIcon profilePicture) {
             Dimension dimension = new Dimension(200, 500);
-            changePanel(dimension, new ContactsPanel(this, true));
+            changePanel(dimension, new ContactsPanel(this, true, username, profilePicture));
         }
 
         private void changePanel(Dimension dimension, DefaultPanel newPanel) {
