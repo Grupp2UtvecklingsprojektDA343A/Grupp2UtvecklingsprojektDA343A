@@ -8,14 +8,15 @@ import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class ContactsPanel extends DefaultPanel implements KeyListener {
-    public ContactsPanel(MainWindow mainWindow, boolean showMenuBar) {
+public class ContactsPanel extends DefaultPanel implements KeyListener, IContacts {
+    private GridBagConstraints constraints = new GridBagConstraints();
+
+    public ContactsPanel(MainWindow mainWindow, boolean showMenuBar, String username, ImageIcon profilePicture) {
         super(mainWindow, showMenuBar);
 
-        JLabel lImage = new JLabel("'image'");
-        JLabel lUsername = new JLabel("'username'");
+        JLabel lImage = new JLabel(profilePicture);
+        JLabel lUsername = new JLabel(username);
 
-        GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.insets = new Insets(1, 5, 1, 5);
 
@@ -28,23 +29,6 @@ public class ContactsPanel extends DefaultPanel implements KeyListener {
         constraints.gridx = 1; // column
         // constraints.gridwidth = 1;
         add(lUsername, constraints);
-
-        constraints.gridy = 1; // rad
-        constraints.gridx = 0; // column
-        constraints.gridwidth = 2;
-        ImageIcon profilePicture = ImageHandler.createImageIcon("http://webshare.mah.se/am3281/arlako.png", 30, 30);
-        int userId = 1;
-        UserButton bTemplateUser = new UserButton("another user", profilePicture);
-        bTemplateUser.addActionListener(l -> {
-            if(getMainWindow().isChatWindowOpen(userId)) {
-                getMainWindow().focusChatWindow(userId);
-            } else {
-                ChatWindow chatWindow = new ChatWindow(mainWindow, "another user");
-                getMainWindow().addChatWindow(userId, chatWindow);
-            }
-        });
-        add(bTemplateUser, constraints);
-
     }
 
     @Override
@@ -69,7 +53,25 @@ public class ContactsPanel extends DefaultPanel implements KeyListener {
         //TODO
     }
 
-    private class UserButton extends JButton {
+    @Override
+    public void AddUser(String username, ImageIcon profilePicture) {
+        ++constraints.gridy; // rad
+        constraints.gridx = 0; // column
+        constraints.gridwidth = 2;
+
+        UserButton userButton = new UserButton("another user", profilePicture);
+        userButton.addActionListener(l -> {
+            if(getMainWindow().isChatWindowOpen(username)) {
+                getMainWindow().focusChatWindow(username);
+            } else {
+                ChatWindow chatWindow = new ChatWindow(getMainWindow(), username);
+                getMainWindow().addChatWindow(username, chatWindow);
+            }
+        });
+        add(userButton, constraints);
+    }
+
+    private static class UserButton extends JButton {
         public UserButton(String name, ImageIcon profilePicture) {
             setText(name);
             setIcon(profilePicture);

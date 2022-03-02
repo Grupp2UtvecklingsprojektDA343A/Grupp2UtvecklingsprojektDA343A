@@ -28,11 +28,6 @@ public class ChatWindow extends JFrame implements IChat {
     }
 
     @Override
-    public void AddUser() {
-
-    }
-
-    @Override
     public void ShowMessage() {
 
     }
