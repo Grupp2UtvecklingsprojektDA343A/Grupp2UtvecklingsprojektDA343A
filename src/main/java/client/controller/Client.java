@@ -35,8 +35,6 @@ public class Client {
     private MainWindow mainWindow;
 
     private Socket socket;
-    private String ip;
-    private int port;
 
     private User user;
     private HashMap<String, User> frinendList;
@@ -46,26 +44,18 @@ public class Client {
 
     private Message message = null;
 
-    public Client(String ip, int port) throws IOException {
-        this.ip = ip; //todo insert values when server is up and running
-        this.port = port;
-        this.user= user;
-        //connect();
-    }
-
     public void showGUI() {
         // SwingUtilities.invokeLater(() -> gui = new GUI(this));
         mainWindow = new MainWindow(this);
     }
 
-    public void logIn(String username, String host) {
-        ImageIcon profilePicture = null;
-        User currentUser = new User(username, profilePicture);
-        // TODO: Koppla upp till servern
-        mainWindow.showContacts(username, profilePicture);
+    public void logIn(String username, String host, int port) throws IOException {
+        this.user = new User(username, null);
+        connect(host, port);
+        mainWindow.showContacts(username, null);
     }
 
-    public void connect() throws IOException {
+    public void connect(String ip, int port) throws IOException {
         this.socket = new Socket(ip,port);
         this.oos = new ObjectOutputStream(socket.getOutputStream());
         this.ois = new ObjectInputStream(socket.getInputStream());

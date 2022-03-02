@@ -9,12 +9,8 @@ public class Main {
             // starta server (new Server();)
         } else {
             Client client = null;
-            try {
-                client = new Client("127.0.0.1",1337);
-                client.showGUI();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            client = new Client();
+            client.showGUI();
         }
     }
 }

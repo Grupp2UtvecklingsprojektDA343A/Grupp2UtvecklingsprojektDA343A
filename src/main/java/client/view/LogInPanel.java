@@ -23,12 +23,14 @@ public class LogInPanel extends DefaultPanel implements KeyListener {
         Dimension jTextFieldPreferredSize = new Dimension(100, 19);
 
         JLabel lUsername = new JLabel("Username: ");
-        JLabel lServer = new JLabel("Server: ");
-        JTextField tfUsername = new JTextField("1");
-        JTextField tfServer = new JTextField("1");
+        JLabel lHost = new JLabel("Host: ");
+        JLabel lPort = new JLabel("Port: ");
+        JTextField tfUsername = new JTextField("Mr. Kaffe");
+        JTextField tfHost = new JTextField("localhost");
+        JTextField tfPort = new JTextField("1337");
 
         tfUsername.setPreferredSize(jTextFieldPreferredSize);
-        tfServer.setPreferredSize(jTextFieldPreferredSize);
+        tfHost.setPreferredSize(jTextFieldPreferredSize);
 
         // exit.addActionListener(l -> super.getMainFrame().closeApplication());
         bLogin.addActionListener(l -> {
@@ -39,13 +41,26 @@ public class LogInPanel extends DefaultPanel implements KeyListener {
                 missingFields = true;
             }
 
-            if (tfServer.getText().isBlank()) {
-                tfServer.setBackground(super.BAD_COLOR);
+            if (tfHost.getText().isBlank()) {
+                tfHost.setBackground(super.BAD_COLOR);
                 missingFields = true;
             }
 
+            int port = 0;
+            if (tfPort.getText().isBlank()) {
+                missingFields = true;
+                tfPort.setBackground(super.BAD_COLOR);
+            } else {
+                try {
+                    port = Integer.parseInt(tfPort.getText());
+                } catch (NumberFormatException e) {
+                    missingFields = true;
+                    tfPort.setBackground(super.BAD_COLOR);
+                }
+            }
+
             if (!missingFields) {
-                getMainWindow().logIn(tfUsername.getText(), tfServer.getText());
+                getMainWindow().logIn(tfUsername.getText(), tfHost.getText(), port);
             }
         });
 
@@ -67,8 +82,8 @@ public class LogInPanel extends DefaultPanel implements KeyListener {
 
         tfUsername.getDocument().putProperty("source", tfUsername);
         tfUsername.getDocument().addDocumentListener(resetColor);
-        tfServer.getDocument().addDocumentListener(resetColor);
-        tfServer.getDocument().putProperty("source", tfServer);
+        tfHost.getDocument().addDocumentListener(resetColor);
+        tfHost.getDocument().putProperty("source", tfHost);
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
@@ -88,20 +103,30 @@ public class LogInPanel extends DefaultPanel implements KeyListener {
         constraints.gridy = 1; // rad
         constraints.gridx = 0; // column
         // constraints.gridwidth = 1;
-        add(lServer, constraints);
+        add(lHost, constraints);
 
         constraints.gridy = 1; // rad
         constraints.gridx = 1; // column
         // constraints.gridwidth = 2;
-        add(tfServer, constraints);
+        add(tfHost, constraints);
 
         constraints.gridy = 2; // rad
+        constraints.gridx = 0; // column
+        // constraints.gridwidth = 1;
+        add(lPort, constraints);
+
+        constraints.gridy = 2; // rad
+        constraints.gridx = 1; // column
+        // constraints.gridwidth = 2;
+        add(tfPort, constraints);
+
+        constraints.gridy = 3; // rad
         constraints.gridx = 0; // column
         constraints.gridwidth = 2;
         add(bLogin, constraints);
 
         tfUsername.addKeyListener(this);
-        tfServer.addKeyListener(this);
+        tfHost.addKeyListener(this);
     }
 
     @Override
