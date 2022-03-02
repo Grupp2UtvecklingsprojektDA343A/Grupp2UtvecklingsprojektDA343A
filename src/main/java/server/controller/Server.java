@@ -1,7 +1,7 @@
-package server;
+package server.controller;
 
-import Model.Buffer;
-import Model.Message;
+import server.model.Buffer;
+import sharedModel.Message;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

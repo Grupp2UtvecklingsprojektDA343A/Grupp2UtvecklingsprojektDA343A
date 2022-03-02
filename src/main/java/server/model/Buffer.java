@@ -1,4 +1,4 @@
-package Model;
+package server.model;
 import java.util.LinkedList;
 
     public class Buffer<T> {

@@ -1,7 +1,4 @@
-package client.gui;
-
-import client.IChat;
-import client.ImageHandler;
+package client.view;
 
 import javax.swing.*;
 import java.awt.*;
