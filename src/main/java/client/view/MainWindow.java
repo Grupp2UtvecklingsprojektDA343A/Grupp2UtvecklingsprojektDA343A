@@ -8,12 +8,14 @@ import client.controller.Client;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
 import java.util.HashMap;
 
 public class MainWindow extends JFrame {
@@ -55,8 +57,16 @@ public class MainWindow extends JFrame {
             setVisible(true);
         }
 
-        public void logIn() {
-            client.logIn();
+        public void logIn(String username, String host, int port) {
+            try {
+                client.logIn(username, host, port);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Failed to connect to server.",
+                    "Connection error",
+                    JOptionPane.ERROR_MESSAGE);
+            }
         }
 
         public void showContacts(String username, ImageIcon profilePicture) {
