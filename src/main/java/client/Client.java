@@ -6,6 +6,7 @@ import client.gui.MainWindow;
 Agerar som Controller
  */
 
+import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -44,7 +45,7 @@ public class Client {
 
     private Message message = null;
 
-    public Client(String ip, int port, User user) throws IOException {
+    public Client(String ip, int port) throws IOException {
         this.ip = ip; //todo insert values when server is up and running
         this.port = port;
         this.user= user;
@@ -85,10 +86,16 @@ public class Client {
     public void recieve(){
         try {
             message = (Message) ois.readObject();
-
+            String guiMessage = message.getMessage();
+            Icon icon = message.getImage();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+    public void newUser(String username, Icon icon) throws IOException {
+        oos.writeObject(new User(username,icon));
+        oos.flush();
+        oos.close();
     }
     public void getAllUser(){
         try(DataInputStream dis = new DataInputStream(socket.getInputStream())) {

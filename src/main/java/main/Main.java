@@ -12,7 +12,7 @@ public class Main {
         } else {
             Client client = null;
             try {
-                client = new Client("127.0.0.1",1337,new User(null,0,null));
+                client = new Client("127.0.0.1",1337);
                 client.showGUI();
             } catch (IOException e) {
                 e.printStackTrace();
