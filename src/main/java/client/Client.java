@@ -78,6 +78,12 @@ public class Client {
     }
 
     public void recieve(){
+        try {
+            connect();
+            Message message = (Message) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 }
