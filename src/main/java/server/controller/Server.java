@@ -25,6 +25,8 @@ public class Server implements PropertyChangeListener {
     HashMap<String, Message> messageOnHold = new HashMap<>();
     LocalDateTime date;
     HashMap<String, User> loggedInUsers = new HashMap<>();
+    PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
 
     public Server(int port) {
         try {
@@ -45,6 +47,10 @@ public class Server implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+
+    }
+
+    public void addListener() {
 
     }
 
