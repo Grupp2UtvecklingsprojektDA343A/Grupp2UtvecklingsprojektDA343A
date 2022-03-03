@@ -1,7 +1,5 @@
-package server.controller;
+package server.entity;
 
-import client.controller.Client;
-import server.model.Buffer;
 import sharedModel.Message;
 import sharedModel.User;
 

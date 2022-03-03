@@ -1,4 +1,4 @@
-package client.view;
+package client.boundary;
 
 import javax.swing.*;
 import java.awt.*;

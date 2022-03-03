@@ -1,4 +1,4 @@
-package client.view;
+package client.boundary;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
