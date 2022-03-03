@@ -1,4 +1,4 @@
-package client.model;
+package sharedModel;
 
 import javax.swing.*;
 

@@ -1,7 +1,7 @@
 package client.controller;
 
 import sharedModel.Message;
-import client.model.User;
+import sharedModel.User;
 import client.view.MainWindow;
 /*
 Agerar som Controller

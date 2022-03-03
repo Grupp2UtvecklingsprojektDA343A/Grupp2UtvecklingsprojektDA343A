@@ -1,6 +1,5 @@
 package sharedModel;
 
-import client.model.User;
 import javax.swing.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
