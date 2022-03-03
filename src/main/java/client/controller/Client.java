@@ -53,6 +53,7 @@ public class Client {
         this.socket = new Socket(ip,port);
         this.oos = new ObjectOutputStream(socket.getOutputStream());
         this.ois = new ObjectInputStream(socket.getInputStream());
+
     }
     public void disconnect() throws IOException {
         socket.close();

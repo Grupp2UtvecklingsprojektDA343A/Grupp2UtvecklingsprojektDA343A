@@ -19,6 +19,7 @@ public class Server {
     ServerSocket serverSocket;
     HashMap<String, Message> messageOnHold = new HashMap<>();
     LocalDateTime date;
+
     public Server(String ip, int port) {
         try {
             serverSocket = new ServerSocket(port);
@@ -49,6 +50,7 @@ public class Server {
             }
         }
     }
+
     private class ClientHandler extends Thread {
         private Socket socket;
         private ObjectInputStream ois;
@@ -57,6 +59,7 @@ public class Server {
         public ClientHandler(Socket socket) {
             this.socket = socket;
         }
+
         @Override
         public void run() {
             try {
@@ -66,14 +69,14 @@ public class Server {
                     Message message = (Message) ois.readObject();
                     message.setReceived(date.now());
                     messageBuffer.put(message);
-                    if(message.getReceiver().getLoggedIn() == true)  {
-                       oos.writeObject(messageBuffer.get());
-                       oos.flush();
+                    if (message.getReceiver().getLoggedIn() == true) {
+                        oos.writeObject(messageBuffer.get());
+                        oos.flush();
                     } else if (message.getReceiver().getLoggedIn() == false) {
                         messageOnHold.put(message.getReceiver().getUsername(), message);
                     }
                 }
-            } catch (IOException | ClassNotFoundException |InterruptedException e ) {
+            } catch (IOException | ClassNotFoundException | InterruptedException e) {
                 e.printStackTrace();
             }
 
