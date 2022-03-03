@@ -27,6 +27,9 @@ public class Server {
         }
     }
     public void addToTraffic(String whatHappened, String who, LocalDateTime when) {
+        String trafficInfo;
+        trafficInfo = String.format(whatHappened, who, when.toString());
+        traffic.add(trafficInfo);
     }
     public void messagesToSend(Message message) {
         messageBuffer.put(message);
