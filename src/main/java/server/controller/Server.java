@@ -8,14 +8,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class Server {
     ArrayList<String> traffic = new ArrayList<>();
     Buffer<Message> messageBuffer = new Buffer<>();
     ServerSocket serverSocket;
-
+    HashMap<String, Message> messageOnHold = new HashMap<>();
+    LocalDateTime date;
     public Server(String ip, int port) {
         try {
             serverSocket = new ServerSocket(port);
@@ -23,15 +26,11 @@ public class Server {
             e.printStackTrace();
         }
     }
-
-    public <T> void addToTraffic(T t) {
+    public void addToTraffic(String whatHappened, String who, LocalDateTime when) {
     }
-
     public void messagesToSend(Message message) {
         messageBuffer.put(message);
     }
-
-
     private class FirstThread extends Thread {
         public void run() {
             Socket socket = null;
@@ -47,7 +46,6 @@ public class Server {
             }
         }
     }
-
     private class ClientHandler extends Thread {
         private Socket socket;
         private ObjectInputStream ois;
@@ -56,7 +54,6 @@ public class Server {
         public ClientHandler(Socket socket) {
             this.socket = socket;
         }
-
         @Override
         public void run() {
             try {
@@ -64,14 +61,14 @@ public class Server {
                 oos = new ObjectOutputStream(socket.getOutputStream());
                 while (true) {
                     Message message = (Message) ois.readObject();
+                    message.setReceived(date.now());
                     messageBuffer.put(message);
-                    if(socket.getInputStream().read() != -1)  { // && socket.getInputStream().read() == null)  (
+                    if(message.getReceiver().getLoggedIn() == true)  {
                        oos.writeObject(messageBuffer.get());
                        oos.flush();
-                    } else {
-                        //lagra meddelande
+                    } else if (message.getReceiver().getLoggedIn() == false) {
+                        messageOnHold.put(message.getReceiver().getUsername(), message);
                     }
-
                 }
             } catch (IOException | ClassNotFoundException |InterruptedException e ) {
                 e.printStackTrace();

@@ -99,6 +99,14 @@ public class Message implements Serializable {
     public LocalDateTime getSent() {
         return sent;
     }
+
+    /**
+     * Setter for received date, using LocalDateTime method now().
+     */
+    //Fungerar ej dessa, skapa variabel i server som istället skickar in detta via parameter.
+    public void setSent(LocalDateTime sent) {
+        this.sent = sent;
+    }
     /**
      * Getter for what date a message was received by the server.
      * @return the date a message was received by the server.
@@ -107,6 +115,11 @@ public class Message implements Serializable {
         return received;
     }
 
-
-
+    /**
+     * Setter for received date, using LocalDateTime method now().
+     */
+    //Fungerar ej dessa, skapa variabel i server som istället skickar in detta via parameter.
+    public void setReceived(LocalDateTime received) {
+        this.received = received;
+    }
 }
