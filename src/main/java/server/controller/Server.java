@@ -26,12 +26,13 @@ public class Server implements PropertyChangeListener {
     LocalDateTime date;
     HashMap<String, User> loggedInUsers = new HashMap<>();
 
-    public Server(String ip, int port) {
+    public Server(int port) {
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        new Connection().start();
     }
     public void addToTraffic(String whatHappened, String who, LocalDateTime when) {
         String trafficInfo;
@@ -47,7 +48,7 @@ public class Server implements PropertyChangeListener {
 
     }
 
-    private class FirstThread extends Thread {
+    private class Connection extends Thread {
         public void run() {
             Socket socket = null;
             User user = null;

@@ -1,4 +1,5 @@
 import client.controller.Client;
+import server.controller.Server;
 
 public class Main {
     public static void main(String[] args)  {
@@ -8,13 +9,13 @@ public class Main {
             startServer();
             startClient();
         }
-        else {
+        /* else {
             startClient();
-        }
+        }*/
     }
 
     private static void startServer() {
-        // starta server (new Server();)
+        Server server = new Server(20008);
     }
 
     private static void startClient() {
