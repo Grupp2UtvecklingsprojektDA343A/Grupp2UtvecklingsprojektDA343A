@@ -1,8 +1,6 @@
 package client.view;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
+import javax.swing.*;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.KeyEvent;
@@ -29,6 +27,12 @@ public class ContactsPanel extends DefaultPanel implements KeyListener, IContact
         constraints.gridx = 1; // column
         // constraints.gridwidth = 1;
         add(lUsername, constraints);
+
+        JMenuItem logOut = new JMenuItem("Log out");
+        logOut.addActionListener(l -> {
+            getMainWindow().open();
+        });
+        addToFileMenu(logOut);
     }
 
     @Override
