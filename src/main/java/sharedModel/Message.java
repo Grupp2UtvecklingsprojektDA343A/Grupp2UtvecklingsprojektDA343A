@@ -1,18 +1,22 @@
 package sharedModel;
 
 import client.model.User;
-
 import javax.swing.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
+/**
+ * This class is used to build messages.
+ * @author Christian Edvall & Linnéa Flystam.
+ * @version 1.0
+ */
 public class Message implements Serializable {
     private User sender;
     private User receiver;
     private String message;
     private ImageIcon image;
-    private Date sent;
-    private Date received;
+    private LocalDateTime sent;
+    private LocalDateTime received;
     /**
      * 1st constructor for building a complete message with text and image.
      * @param sender the sender user.
@@ -22,7 +26,7 @@ public class Message implements Serializable {
      * @param sent Date the message was sent by a client.
      * @param received Date message was received by the server.
      */
-    public Message(User sender, User receiver, String message, ImageIcon image, Date sent, Date  received){
+    public Message(User sender, User receiver, String message, ImageIcon image, LocalDateTime sent, LocalDateTime  received){
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
@@ -38,7 +42,7 @@ public class Message implements Serializable {
      * @param sent Date the message was sent by a client.
      * @param received Date message was received by the server.
      */
-    public Message(User sender, User receiver, String message, Date sent, Date  received){
+    public Message(User sender, User receiver, String message, LocalDateTime sent, LocalDateTime  received){
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
@@ -54,7 +58,7 @@ public class Message implements Serializable {
      * @param sent Date the message was sent by a client.
      * @param received Date message was received by the server.
      */
-    public Message(User sender, User receiver, ImageIcon image, Date sent, Date  received){
+    public Message(User sender, User receiver, ImageIcon image, LocalDateTime sent, LocalDateTime  received){
         this.sender = sender;
         this.receiver = receiver;
         this.image = image;
@@ -93,14 +97,14 @@ public class Message implements Serializable {
      * Getter for what date a message was sent.
      * @return the date a message was sent is returned.
      */
-    public Date getSent() {
+    public LocalDateTime getSent() {
         return sent;
     }
     /**
      * Getter for what date a message was received by the server.
      * @return the date a message was received by the server.
      */
-    public Date getReceived() {
+    public LocalDateTime getReceived() {
         return received;
     }
 
