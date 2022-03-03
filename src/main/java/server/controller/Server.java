@@ -1,8 +1,13 @@
 package server.controller;
 
+import client.controller.Client;
 import server.model.Buffer;
 import sharedModel.Message;
+import sharedModel.User;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,12 +18,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class Server {
+public class Server implements PropertyChangeListener {
     ArrayList<String> traffic = new ArrayList<>();
     Buffer<Message> messageBuffer = new Buffer<>();
     ServerSocket serverSocket;
     HashMap<String, Message> messageOnHold = new HashMap<>();
     LocalDateTime date;
+    HashMap<String, User> loggedInUsers = new HashMap<>();
+
     public Server(String ip, int port) {
         try {
             serverSocket = new ServerSocket(port);
@@ -34,14 +41,21 @@ public class Server {
     public void messagesToSend(Message message) {
         messageBuffer.put(message);
     }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+
+    }
+
     private class FirstThread extends Thread {
         public void run() {
             Socket socket = null;
+            User user = null;
             System.out.println("Server startar");
             while (true) {
                 try {
                     socket = serverSocket.accept();
-                    new ClientHandler(socket);
+                    new ClientHandler(socket, user);
                     //lägg till en lista av inloggade klienter.
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -54,9 +68,12 @@ public class Server {
         private ObjectInputStream ois;
         private ObjectOutputStream oos;
 
-        public ClientHandler(Socket socket) {
+        public ClientHandler(Socket socket, User username) {
             this.socket = socket;
+            loggedInUsers.put(username.getUsername(), username);
+
         }
+
         @Override
         public void run() {
             try {
