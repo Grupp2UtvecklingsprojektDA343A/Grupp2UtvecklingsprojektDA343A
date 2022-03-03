@@ -1,10 +1,10 @@
-package client.view;
+package client.boundary;
 
 /*
 Pratar med Client och med hela gränssnittet (package.GUI).
  */
 
-import client.controller.Client;
+import client.entity.Client;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;

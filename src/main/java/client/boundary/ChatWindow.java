@@ -1,4 +1,4 @@
-package client.view;
+package client.boundary;
 
 import javax.swing.*;
 import java.awt.*;
@@ -65,7 +65,7 @@ public class ChatWindow extends JFrame implements IChat {
             showContacts.addActionListener(l -> {
                 getMainWindow().open();
             });
-            addToFileMenu(showContacts);
+            addToFileMenu(showContacts);;
 
             textInput.setBackground(Color.WHITE);
             textInput.setBorder(BorderFactory.createLineBorder(Color.BLACK));

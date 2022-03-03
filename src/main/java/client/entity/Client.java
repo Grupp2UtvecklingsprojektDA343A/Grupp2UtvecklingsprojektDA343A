@@ -1,8 +1,8 @@
-package client.controller;
+package client.entity;
 
 import sharedModel.Message;
 import sharedModel.User;
-import client.view.MainWindow;
+import client.boundary.MainWindow;
 /*
 Agerar som Controller
  */
