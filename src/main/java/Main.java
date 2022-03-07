@@ -1,5 +1,5 @@
-import client.controller.Client;
-import server.controller.Server;
+import client.entity.Client;
+import server.entity.Server;
 
 public class Main {
     public static void main(String[] args)  {
