@@ -1,4 +1,4 @@
-import client.entity.Client;
+import client.control.Client;
 import server.entity.Server;
 
 public class Main {
@@ -8,10 +8,9 @@ public class Main {
         } else if(args.length > 0 && args[0].equals("sc")) {
             startServer();
             startClient();
-        }
-        /* else {
+        } else {
             startClient();
-        }*/
+        }
     }
 
     private static void startServer() {
@@ -19,8 +18,6 @@ public class Main {
     }
 
     private static void startClient() {
-        Client client = null;
-        client = new Client();
-        client.showGUI();
+        new Client().showGUI();
     }
 }
