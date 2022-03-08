@@ -4,10 +4,13 @@ import client.control.Client;
 import client.control.WindowHandler;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -42,6 +45,14 @@ public class ContactsWindow extends DefaultWindow implements KeyListener, IConta
             getClient().logOut(this);
         });
         addToFileMenu(logOut);
+
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                windowHandler.contactsWindowClosed();
+            }
+        });
     }
 
     @Override
@@ -51,7 +62,9 @@ public class ContactsWindow extends DefaultWindow implements KeyListener, IConta
         constraints.gridwidth = 2;
 
         UserButton userButton = new UserButton("another user", profilePicture);
-        userButton.addActionListener(l -> {windowHandler.openChatWindow(username);});
+        userButton.addActionListener(l -> {
+            getClient().startChatWithUser(username);
+        });
         add(userButton, constraints);
     }
 

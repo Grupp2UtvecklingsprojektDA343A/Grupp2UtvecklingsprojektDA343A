@@ -44,12 +44,12 @@ public class Client {
     public void logIn(String username, ImageIcon profilePicture, String host, int port) {
         this.user = new User(username, null);
         windowHandler.closeLogInWindow();
-        // try {
-            // connect(host, port);
+        try {
+            connect(host, port);
             windowHandler.openContactsWindow(username, profilePicture);
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        // }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void logOut(DefaultWindow parent) {
@@ -140,5 +140,10 @@ public class Client {
         }
 
         windowHandler.closeAllWindows();
+    }
+
+    public void startChatWithUser(String username) {
+        new Thread().start();
+        windowHandler.openChatWindow(username);
     }
 }
