@@ -16,7 +16,7 @@ public class InputClient extends Thread {
     @Override
     public void run() {
         while (!Thread.interrupted()){
-            System.out.println("yesy ");
+            System.out.println("Thread 2 input thread running");
             try {
                 message = (Message) ois.readObject();
                 int type = message.getType();

@@ -140,7 +140,7 @@ public class Client {
         @Override
         public void run() {
             while(!Thread.interrupted()){
-                System.out.println("cool");
+                System.out.println("Thread 1 running");
                 inputClient = new InputClient(ois);
                 outputClient = new OutputClient(oos);
                 inputClient.start();
