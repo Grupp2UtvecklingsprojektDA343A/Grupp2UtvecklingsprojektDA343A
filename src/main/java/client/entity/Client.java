@@ -58,6 +58,7 @@ public class Client {
     }
     public void send(Message message){
         // Skriv en motod som skickar Till servern
+        // Läg den i en tråd
         try {
             oos.writeObject(message);
             oos.flush();
