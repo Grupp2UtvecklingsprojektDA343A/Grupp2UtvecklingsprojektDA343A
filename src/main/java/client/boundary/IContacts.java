@@ -3,5 +3,5 @@ package client.boundary;
 import javax.swing.ImageIcon;
 
 public interface IContacts {
-    void AddUser(String username, ImageIcon image);
+    void addUser(String username, ImageIcon image);
 }

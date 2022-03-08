@@ -1,5 +1,9 @@
 package client.boundary;
 
+
+import client.control.Client;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -10,38 +14,44 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
-public abstract class DefaultPanel extends JPanel {
+public abstract class DefaultWindow extends JFrame {
     public final Color BAD_COLOR = new Color(255,199,206);
     private final JMenuBar menuBar = new JMenuBar();
     private final JPanel mainPanel = new JPanel(new GridBagLayout());
-    private final MainWindow mainWindow;
     private final JMenu menuFile = new JMenu("File");
+    private final Client client;
+    private JPanel panel = new JPanel();
 
-    public DefaultPanel(MainWindow mainWindow, boolean showMenuBar) {
-        this.mainWindow = mainWindow;
-        setLayout(new BorderLayout());
+    public DefaultWindow(Client client, boolean showMenuBar) {
+        this.client = client;
 
-        if(showMenuBar) {
-            menuBar.add(menuFile);
-
-            JMenuItem menuItemExit = new JMenuItem("Exit");
-            menuFile.add(menuItemExit);
-
-            menuItemExit.addActionListener(l -> closeApplication());
-
-            add(menuBar, BorderLayout.NORTH);
+        ImageIcon arlako = ImageHandler.createImageIcon("/arlako.png");
+        if(arlako != null) {
+            setIconImage(arlako.getImage());
         }
 
-        add(mainPanel, BorderLayout.CENTER);
+        if(showMenuBar) {
+            JPanel filePanel = new JPanel(new BorderLayout());
+            menuBar.add(menuFile);
+            JMenuItem menuItemExit = new JMenuItem("Exit");
+            menuFile.add(menuItemExit);
+            menuItemExit.addActionListener(l -> closeApplication());
+            filePanel.add(menuBar, BorderLayout.NORTH);
+        }
+
+        add(panel, BorderLayout.CENTER);
+        panel.setLayout(new GridBagLayout());
     }
 
-    public abstract void closeApplication();
+    abstract void closeApplication();
+
+    Client getClient() {
+        return client;
+    }
 
     void add(Component component, GridBagConstraints constraints) {
-        mainPanel.add(component, constraints);
+        panel.add(component, constraints);
     }
-
-    // abstract void showMessage(String message);
 
     void addToFileMenu(JMenuItem item) {
         menuFile.add(item);
@@ -50,14 +60,4 @@ public abstract class DefaultPanel extends JPanel {
     void addJMenu(JMenu menu) {
         menuBar.add(menu);
     }
-
-    void dispose() {
-
-    }
-
-    MainWindow getMainWindow() {
-        return mainWindow;
-    }
-
-    //    void addJMenuItem(JMenuItem menuItem, JMenu menu) {
 }
