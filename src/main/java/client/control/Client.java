@@ -139,10 +139,12 @@ public class Client {
         private OutputClient outputClient;
         @Override
         public void run() {
-            System.out.println("cool");
-            inputClient = new InputClient(ois);
-            outputClient = new OutputClient(oos);
-            inputClient.start();
+            while(!Thread.interrupted()){
+                System.out.println("cool");
+                inputClient = new InputClient(ois);
+                outputClient = new OutputClient(oos);
+                inputClient.start();
+            }
         }
     }
 }

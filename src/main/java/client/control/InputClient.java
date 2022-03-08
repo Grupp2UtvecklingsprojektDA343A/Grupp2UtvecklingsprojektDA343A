@@ -15,38 +15,40 @@ public class InputClient extends Thread {
 
     @Override
     public void run() {
-        System.out.println("yesy ");
-        try {
-            message = (Message) ois.readObject();
-            int type = message.getType();
+        while (!Thread.interrupted()){
+            System.out.println("yesy ");
+            try {
+                message = (Message) ois.readObject();
+                int type = message.getType();
 
-            switch(type) {
-                case Message.CONTACTS -> {
-                    User[] loggedInUsers = message.getContacts();
-                }
+                switch(type) {
+                    case Message.CONTACTS -> {
+                        User[] loggedInUsers = message.getContacts();
+                    }
 
-                case Message.TEXT -> {
-                    System.out.println("bara text");
-                    // mainWindow.newImageMessage(icon,sender);
-                    // String sender = String.valueOf(message.getSender());
-                    // String guiMessage = message.getMessage();
-                    // ImageIcon icon = message.getImage();
-                }
+                    case Message.TEXT -> {
+                        System.out.println("bara text");
+                        // mainWindow.newImageMessage(icon,sender);
+                        // String sender = String.valueOf(message.getSender());
+                        // String guiMessage = message.getMessage();
+                        // ImageIcon icon = message.getImage();
+                    }
 
-                case Message.IMAGE -> {
-                    System.out.println("bara bild");
-                }
+                    case Message.IMAGE -> {
+                        System.out.println("bara bild");
+                    }
 
-                case Message.TEXT_AND_IMAGE -> {
-                    System.out.println("text och bild");
-                }
+                    case Message.TEXT_AND_IMAGE -> {
+                        System.out.println("text och bild");
+                    }
 
-                default -> {
-                    System.err.println("FEL?");
+                    default -> {
+                        System.err.println("FEL?");
+                    }
                 }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
         }
     }
 
