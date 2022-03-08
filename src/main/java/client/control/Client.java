@@ -71,18 +71,6 @@ public class Client {
         socket.close();
     }
 
-    public void send(Message message){
-        // Skriv en motod som skickar Till servern
-        // Läg den i en tråd
-        try {
-            oos.writeObject(message);
-            oos.flush();
-            disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void receive(){
         try {
             message = (Message) ois.readObject();
@@ -143,7 +131,18 @@ public class Client {
     }
 
     public void startChatWithUser(String username) {
-        new Thread().start();
+        new threadHandler().start();
         windowHandler.openChatWindow(username);
+    }
+    private class threadHandler extends Thread{
+        private InputClient inputClient;
+        private OutputClient outputClient;
+        @Override
+        public void run() {
+            System.out.println("cool");
+            inputClient = new InputClient(ois);
+            outputClient = new OutputClient(oos);
+            inputClient.start();
+        }
     }
 }
