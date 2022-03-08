@@ -118,17 +118,22 @@ public class Server implements PropertyChangeListener {
         @Override
         public void run() {
             try {
+                ServerReceiver serverReceiver = new ServerReceiver(socket);
+                serverReceiver.start();
+                ServerSender serverSender = new ServerSender(socket);
+                serverSender.start();
+
                 while (true) {
-                    Message message = receive();
+                    Message message = serverReceiver.getMessage();
                     message.setReceived(LocalDateTime.now());
                     messageBuffer.put(message);
-                    if(message.getReceiver().getLoggedIn())  {
-                       send(messageBuffer.get());
+                    if(message.getReceiver().getLoggedIn() && ! messageBuffer.isEmpty())  {
+                       serverSender.send(messageBuffer.get());
                     } else {
                         messageOnHold.put(message.getReceiver().getUsername(), message);
                     }
                 }
-            } catch (IOException | ClassNotFoundException | InterruptedException e ) {
+            } catch (InterruptedException e ) {
                 e.printStackTrace();
             }
         }

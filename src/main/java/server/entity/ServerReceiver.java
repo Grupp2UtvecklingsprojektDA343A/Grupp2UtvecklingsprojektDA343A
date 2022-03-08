@@ -16,7 +16,6 @@ public class ServerReceiver extends Thread {
     public ServerReceiver(Socket socket) {
 
         this.socket = socket;
-        start();
     }
 
     public Message getMessage() {
@@ -24,7 +23,7 @@ public class ServerReceiver extends Thread {
     }
 
     public void setMessage(Message message) {
-
+        this.message = message;
     }
 
     public synchronized void run() {
@@ -33,8 +32,6 @@ public class ServerReceiver extends Thread {
             while(true) {
                 Message message = (Message) ois.readObject();
                 setMessage(message);
-                message.setReceived(LocalDateTime.now());
-
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

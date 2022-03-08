@@ -17,5 +17,9 @@ import java.util.LinkedList;
         public int size() {
             return buffer.size();
         }
+
+        public boolean isEmpty() {
+            return buffer.isEmpty();
+        }
     }
 
