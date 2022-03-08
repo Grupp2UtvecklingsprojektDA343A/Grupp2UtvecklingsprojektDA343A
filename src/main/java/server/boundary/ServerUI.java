@@ -1,4 +1,4 @@
-package server.boundary
+package server.boundary;
 
 class ServerUI {
  /*   public ServerUI(){
