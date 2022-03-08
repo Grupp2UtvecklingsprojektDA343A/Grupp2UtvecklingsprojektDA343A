@@ -28,7 +28,6 @@ Användare som skapas ska lagras lokalt på en fil på hårddisken
 Text och bild ska matas in på ett smidigt sätt (bild väljs med JFileChooser).
 Servern måste kunna hålla reda på anslutna klienter.
 Servern måste kunna lagra klienter i en objektsamling.
-
  */
 
 public class Client {
