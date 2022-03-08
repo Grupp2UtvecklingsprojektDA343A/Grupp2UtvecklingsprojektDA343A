@@ -6,6 +6,8 @@ import entity.User;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -20,7 +22,7 @@ import java.util.Map;
 public class Server implements PropertyChangeListener {
     ArrayList<String> traffic = new ArrayList<>();
     Buffer<Message> messageBuffer = new Buffer<>();
-    HashMap<String, Message> messageOnHold = new HashMap<>();
+    HashMap<User, Buffer<Message>> messageOnHold = new HashMap<>();
     final HashMap<User, ClientHandler> loggedInUsers = new HashMap<>();
     PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     LocalDateTime date;
@@ -51,6 +53,18 @@ public class Server implements PropertyChangeListener {
 
     public void addListener() {
 
+    }
+
+    public void createFriends(String filename) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+            ArrayList<User> friends = new ArrayList<>();
+            for(User friend : friends) {
+                friend = (User) ois.readObject();
+                friends.add(friend);
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateListForAllContacts() {
@@ -102,19 +116,6 @@ public class Server implements PropertyChangeListener {
             start();
         }
 
-        public void send(Message message) throws IOException {
-            synchronized (oos) {
-                oos.writeObject(message);
-                oos.flush();
-            }
-        }
-
-        public Message receive() throws IOException, ClassNotFoundException {
-            synchronized (oos) {
-                return (Message) ois.readObject();
-            }
-        }
-
         @Override
         public void run() {
             try {
@@ -127,10 +128,9 @@ public class Server implements PropertyChangeListener {
                     Message message = serverReceiver.getMessage();
                     message.setReceived(LocalDateTime.now());
                     messageBuffer.put(message);
-                    if(message.getReceiver().getLoggedIn() && ! messageBuffer.isEmpty())  {
+                    messageOnHold.put(messageBuffer.get().getReceiver(), messageBuffer);
+                    if(message.getReceiver().getLoggedIn() && ! messageOnHold.isEmpty())  {
                        serverSender.send(messageBuffer.get());
-                    } else {
-                        messageOnHold.put(message.getReceiver().getUsername(), message);
                     }
                 }
             } catch (InterruptedException e ) {

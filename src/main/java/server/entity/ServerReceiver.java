@@ -29,13 +29,13 @@ public class ServerReceiver extends Thread {
     public synchronized void run() {
         try {
             ois = new ObjectInputStream(socket.getInputStream());
-            while(true) {
+            while (true) {
                 Message message = (Message) ois.readObject();
                 setMessage(message);
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-}
+    }
 
 }

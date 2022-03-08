@@ -15,21 +15,21 @@ public class ServerSender extends Thread {
         this.socket = socket;
     }
 
-
-
     public synchronized void run() {
         try {
             oos = new ObjectOutputStream(socket.getOutputStream());
             while(true) {
                 oos.writeObject(message);
                 oos.flush();
+                wait();
             }
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public void send(Message message) {
+    public synchronized void send(Message message) {
       this.message = message;
+      notifyAll();
     }
 }
