@@ -1,4 +1,4 @@
-package sharedModel;
+package entity;
 
 import javax.swing.*;
 

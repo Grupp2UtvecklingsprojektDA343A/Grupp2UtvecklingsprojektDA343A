@@ -1,16 +1,25 @@
 package client.boundary;
 
-import javax.swing.*;
+import client.control.Client;
+import client.control.WindowHandler;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class ContactsPanel extends DefaultPanel implements KeyListener, IContacts {
-    private GridBagConstraints constraints = new GridBagConstraints();
+public class ContactsWindow extends DefaultWindow implements KeyListener, IContacts {
+    private final GridBagConstraints constraints = new GridBagConstraints();
+    private WindowHandler windowHandler;
 
-    public ContactsPanel(MainWindow mainWindow, boolean showMenuBar, String username, ImageIcon profilePicture) {
-        super(mainWindow, showMenuBar);
+    public ContactsWindow(Client client, WindowHandler windowHandler, boolean showMenuBar, String username, ImageIcon profilePicture) {
+        super(client, showMenuBar);
+        this.windowHandler = windowHandler;
+
+        setSize(200, 500);
 
         JLabel lImage = new JLabel(profilePicture);
         JLabel lUsername = new JLabel(username);
@@ -30,9 +39,20 @@ public class ContactsPanel extends DefaultPanel implements KeyListener, IContact
 
         JMenuItem logOut = new JMenuItem("Log out");
         logOut.addActionListener(l -> {
-            getMainWindow().open();
+            getClient().logOut(this);
         });
         addToFileMenu(logOut);
+    }
+
+    @Override
+    public void addUser(String username, ImageIcon profilePicture) {
+        ++constraints.gridy; // rad
+        constraints.gridx = 0; // column
+        constraints.gridwidth = 2;
+
+        UserButton userButton = new UserButton("another user", profilePicture);
+        userButton.addActionListener(l -> {windowHandler.openChatWindow(username);});
+        add(userButton, constraints);
     }
 
     @Override
@@ -53,26 +73,8 @@ public class ContactsPanel extends DefaultPanel implements KeyListener, IContact
     }
 
     @Override
-    public void closeApplication() {
-        //TODO
-    }
+    void closeApplication() {
 
-    @Override
-    public void AddUser(String username, ImageIcon profilePicture) {
-        ++constraints.gridy; // rad
-        constraints.gridx = 0; // column
-        constraints.gridwidth = 2;
-
-        UserButton userButton = new UserButton("another user", profilePicture);
-        userButton.addActionListener(l -> {
-            if(getMainWindow().isChatWindowOpen(username)) {
-                getMainWindow().focusChatWindow(username);
-            } else {
-                ChatWindow chatWindow = new ChatWindow(getMainWindow(), username);
-                getMainWindow().addChatWindow(username, chatWindow);
-            }
-        });
-        add(userButton, constraints);
     }
 
     private static class UserButton extends JButton {

@@ -1,7 +1,7 @@
 package server.entity;
 
-import sharedModel.Message;
-import sharedModel.User;
+import entity.Message;
+import entity.User;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -14,16 +14,17 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class Server implements PropertyChangeListener {
     ArrayList<String> traffic = new ArrayList<>();
     Buffer<Message> messageBuffer = new Buffer<>();
-    ServerSocket serverSocket;
     HashMap<String, Message> messageOnHold = new HashMap<>();
-    LocalDateTime date;
-    HashMap<String, User> loggedInUsers = new HashMap<>();
+    final HashMap<User, ClientHandler> loggedInUsers = new HashMap<>();
     PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    LocalDateTime date;
+    ServerSocket serverSocket;
 
 
     public Server(int port) {
@@ -52,6 +53,23 @@ public class Server implements PropertyChangeListener {
 
     }
 
+    private void updateListForAllContacts() {
+        synchronized (loggedInUsers) {
+            for(Map.Entry<User, ClientHandler> entry : loggedInUsers.entrySet()) {
+                Message message = new Message.Builder()
+                    .type(Message.CONTACTS)
+                    .contacts(loggedInUsers.keySet().toArray(new User[0]))
+                    .build();
+                try {
+                    entry.getValue().send(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
     private class Connection extends Thread {
         public void run() {
             Socket socket = null;
@@ -61,7 +79,6 @@ public class Server implements PropertyChangeListener {
                 try {
                     socket = serverSocket.accept();
                     new ClientHandler(socket, user);
-                    //lägg till en lista av inloggade klienter.
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -70,36 +87,50 @@ public class Server implements PropertyChangeListener {
     }
     private class ClientHandler extends Thread {
         private Socket socket;
-        private ObjectInputStream ois;
-        private ObjectOutputStream oos;
+        private final ObjectInputStream ois;
+        private final ObjectOutputStream oos;
 
-        public ClientHandler(Socket socket, User username) {
+        public ClientHandler(Socket socket, User username) throws IOException {
             this.socket = socket;
-            loggedInUsers.put(username.getUsername(), username);
+            ois = new ObjectInputStream(socket.getInputStream());
+            oos = new ObjectOutputStream(socket.getOutputStream());
 
+            loggedInUsers.put(username, this);
+            new Thread(() -> {
+                updateListForAllContacts();
+            }).start(); // ny tråd som säger till alla inloggade om ny person
+            start();
+        }
+
+        public void send(Message message) throws IOException {
+            synchronized (oos) {
+                oos.writeObject(message);
+                oos.flush();
+            }
+        }
+
+        public Message receive() throws IOException, ClassNotFoundException {
+            synchronized (oos) {
+                return (Message) ois.readObject();
+            }
         }
 
         @Override
         public void run() {
             try {
-                ois = new ObjectInputStream(socket.getInputStream());
-                oos = new ObjectOutputStream(socket.getOutputStream());
                 while (true) {
-                    Message message = (Message) ois.readObject();
-                    message.setReceived(date.now());
+                    Message message = receive();
+                    message.setReceived(LocalDateTime.now());
                     messageBuffer.put(message);
-                    if(message.getReceiver().getLoggedIn() == true)  {
-                       oos.writeObject(messageBuffer.get());
-                       oos.flush();
-                    } else if (message.getReceiver().getLoggedIn() == false) {
+                    if(message.getReceiver().getLoggedIn())  {
+                       send(messageBuffer.get());
+                    } else {
                         messageOnHold.put(message.getReceiver().getUsername(), message);
                     }
                 }
-            } catch (IOException | ClassNotFoundException |InterruptedException e ) {
+            } catch (IOException | ClassNotFoundException | InterruptedException e ) {
                 e.printStackTrace();
             }
-
-
         }
     }
 }

@@ -1,33 +1,58 @@
 package client.boundary;
 
+
+import client.control.Client;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class LogInPanel extends DefaultPanel implements KeyListener {
+public class LoginWindow extends DefaultWindow implements KeyListener {
     private final JButton bLogin = new JButton("login");
 
-    public LogInPanel(MainWindow mainWindow) {
-        super(mainWindow, false);
-        setLayout(new GridBagLayout());
+    public LoginWindow(Client client, boolean showMenuBar) {
+        super(client, showMenuBar);
+
+        setSize(500, 500);
         Dimension jTextFieldPreferredSize = new Dimension(100, 19);
 
+        JLabel bProfilePicture = new JLabel("profile picture");
         JLabel lUsername = new JLabel("Username: ");
         JLabel lHost = new JLabel("Host: ");
         JLabel lPort = new JLabel("Port: ");
         JTextField tfUsername = new JTextField("Mr. Kaffe");
         JTextField tfHost = new JTextField("localhost");
-        JTextField tfPort = new JTextField("1337");
+        JTextField tfPort = new JTextField("20008");
+
+        bProfilePicture.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                    "JPG, PNG, BMP & GIF", "jpg", "png", "bmp", "gif");
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseExited(MouseEvent e) {}
+        });
 
         tfUsername.setPreferredSize(jTextFieldPreferredSize);
         tfHost.setPreferredSize(jTextFieldPreferredSize);
@@ -60,7 +85,7 @@ public class LogInPanel extends DefaultPanel implements KeyListener {
             }
 
             if (!missingFields) {
-                getMainWindow().logIn(tfUsername.getText(), tfHost.getText(), port);
+                getClient().logIn(tfUsername.getText(), null, tfHost.getText(), port);
             }
         });
 
@@ -86,7 +111,7 @@ public class LogInPanel extends DefaultPanel implements KeyListener {
         tfHost.getDocument().putProperty("source", tfHost);
 
         GridBagConstraints constraints = new GridBagConstraints();
-        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.fill = GridBagConstraints.BOTH;
         constraints.insets = new Insets(1, 5, 1, 5);
 
 
@@ -100,9 +125,16 @@ public class LogInPanel extends DefaultPanel implements KeyListener {
         // constraints.gridwidth = 2;
         add(tfUsername, constraints);
 
+        constraints.gridy = 0; // rad
+        constraints.gridx = 2; // column
+        // constraints.gridheight = 3;
+        // constraints.fill = GridBagConstraints.BOTH;
+        add(bProfilePicture, constraints);
+
         constraints.gridy = 1; // rad
         constraints.gridx = 0; // column
-        // constraints.gridwidth = 1;
+        constraints.gridwidth = 1;
+        // constraints.fill = GridBagConstraints.HORIZONTAL;
         add(lHost, constraints);
 
         constraints.gridy = 1; // rad
@@ -150,6 +182,6 @@ public class LogInPanel extends DefaultPanel implements KeyListener {
 
     @Override
     public void closeApplication() {
-        //TODO
+        getClient().closeApplication();
     }
 }
