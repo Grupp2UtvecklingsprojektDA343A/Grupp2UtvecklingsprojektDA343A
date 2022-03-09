@@ -2,6 +2,7 @@ package server.entity;
 
 import entity.Message;
 import entity.User;
+import server.control.Controller;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -112,6 +113,11 @@ public class Server implements PropertyChangeListener {
             }
         }
     }
+
+    public void addListener(PropertyChangeListener listener){
+        pcs.addPropertyChangeListener(listener);
+    }
+
     private class ClientHandler extends Thread {
         private Socket socket;
         private final ObjectInputStream ois;
@@ -122,6 +128,7 @@ public class Server implements PropertyChangeListener {
             ois = new ObjectInputStream(socket.getInputStream());
             oos = new ObjectOutputStream(socket.getOutputStream());
 
+            pcs.firePropertyChange("username", null, username);
             loggedInUsers.put(username, this);
             new Thread(() -> {
                 updateListForAllContacts();
