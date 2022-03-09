@@ -1,4 +1,4 @@
-package entity;
+package globalEntity;
 
 import javax.swing.*;
 

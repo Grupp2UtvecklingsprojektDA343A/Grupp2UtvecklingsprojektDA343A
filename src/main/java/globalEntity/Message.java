@@ -1,4 +1,4 @@
-package entity;
+package globalEntity;
 
 import javax.swing.*;
 import java.io.Serializable;
@@ -14,6 +14,7 @@ public class Message implements Serializable {
     public static final int TEXT = 2;
     public static final int IMAGE = 3;
     public static final int TEXT_AND_IMAGE = 4;
+    public static final int LOGIN = 5;
 
     private User sender;
     private User receiver;

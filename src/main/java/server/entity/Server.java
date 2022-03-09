@@ -1,13 +1,12 @@
 package server.entity;
 
-import entity.Message;
-import entity.User;
+import globalEntity.Message;
+import globalEntity.User;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -80,32 +79,36 @@ public class Server implements PropertyChangeListener {
             e.printStackTrace();
         }
     }
-    private void updateListForAllContacts() {
-        synchronized (loggedInUsers) {
-            for(Map.Entry<User, ClientHandler> entry : loggedInUsers.entrySet()) {
-                Message message = new Message.Builder()
-                    .type(Message.CONTACTS)
-                    .contacts(loggedInUsers.keySet().toArray(new User[0]))
-                    .build();
-                try {
-                    entry.getValue().send(message);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    public boolean userExists(User user) {
+        return loggedInUsers.containsKey(user);
     }
+
+    // private void updateListForAllContacts() {
+    //     synchronized (loggedInUsers) {
+    //         for(Map.Entry<User, ClientHandler> entry : loggedInUsers.entrySet()) {
+    //             Message message = new Message.Builder()
+    //                 .type(Message.CONTACTS)
+    //                 .contacts(loggedInUsers.keySet().toArray(new User[0]))
+    //                 .build();
+    //             try {
+    //                 entry.getValue().send(message);
+    //             } catch (IOException e) {
+    //                 e.printStackTrace();
+    //             }
+    //         }
+    //     }
+    // }
 
 
     private class Connection extends Thread {
         public void run() {
             Socket socket = null;
-            User user = null;
+            // User user = null;
             System.out.println("Server startar");
             while (true) {
                 try {
                     socket = serverSocket.accept();
-                    new ClientHandler(socket, user);
+                    new ClientHandler(socket);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -117,38 +120,38 @@ public class Server implements PropertyChangeListener {
         private final ObjectInputStream ois;
         private final ObjectOutputStream oos;
 
-        public ClientHandler(Socket socket, User username) throws IOException {
+        public ClientHandler(Socket socket) throws IOException {
             this.socket = socket;
             ois = new ObjectInputStream(socket.getInputStream());
             oos = new ObjectOutputStream(socket.getOutputStream());
 
-            loggedInUsers.put(username, this);
-            new Thread(() -> {
-                updateListForAllContacts();
-            }).start(); // ny tråd som säger till alla inloggade om ny person
+            // loggedInUsers.put(username, this);
+            // new Thread(() -> {
+            //     updateListForAllContacts();
+            // }).start(); // ny tråd som säger till alla inloggade om ny person
             start();
         }
 
         @Override
         public void run() {
-            try {
+            // try {
                 ServerReceiver serverReceiver = new ServerReceiver(socket);
                 serverReceiver.start();
                 ServerSender serverSender = new ServerSender(socket);
                 serverSender.start();
 
-                while (true) {
-                    Message message = serverReceiver.getMessage();
-                    message.setReceived(LocalDateTime.now());
-                    messageBuffer.put(message);
-                    messageOnHold.put(messageBuffer.get().getReceiver(), messageBuffer);
-                    if(message.getReceiver().getLoggedIn() && ! messageOnHold.isEmpty())  {
-                       serverSender.send(messageBuffer.get());
-                    }
-                }
-            } catch (InterruptedException e ) {
-                e.printStackTrace();
-            }
+                // while (true) {
+                //     Message message = serverReceiver.getMessage();
+                //     message.setReceived(LocalDateTime.now());
+                //     messageBuffer.put(message);
+                //     messageOnHold.put(messageBuffer.get().getReceiver(), messageBuffer);
+                //     if(message.getReceiver().getLoggedIn() && ! messageOnHold.isEmpty())  {
+                //        serverSender.send(messageBuffer.get());
+                //     }
+                // }
+            // } catch (InterruptedException e ) {
+            //     e.printStackTrace();
+            // }
         }
     }
 }

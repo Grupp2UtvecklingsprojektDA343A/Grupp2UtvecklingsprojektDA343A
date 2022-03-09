@@ -1,8 +1,8 @@
 package client.control;
 
 import client.boundary.DefaultWindow;
-import entity.Message;
-import entity.User;
+import globalEntity.Message;
+import globalEntity.User;
 import javax.swing.ImageIcon;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -45,7 +45,11 @@ public class Client {
         this.user = new User(username, null);
         windowHandler.closeLogInWindow();
         try {
-            connect(host, port);
+            connect(host, port); // 1 och 2
+            // Skicka user? username? // 3 och 4
+            // Ta emot
+            // 4.1 kunde inte logga in
+            // 4.2 kan logga in
             windowHandler.openContactsWindow(username, profilePicture);
         } catch (IOException e) {
             e.printStackTrace();
