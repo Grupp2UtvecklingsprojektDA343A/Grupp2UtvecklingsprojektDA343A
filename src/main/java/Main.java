@@ -1,4 +1,5 @@
 import client.control.Client;
+import server.control.Controller;
 import server.entity.Server;
 
 public class Main {
@@ -14,7 +15,7 @@ public class Main {
     }
 
     private static void startServer() {
-        Server server = new Server(20008);
+        Controller controller = new Controller();
     }
 
     private static void startClient() {

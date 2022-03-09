@@ -1,21 +1,22 @@
 package server.entity;
 
-import entity.Message;
+import globalEntity.Message;
+import server.control.Controller;
+// import globalEntity.User;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
-import java.time.LocalDateTime;
 
 public class ServerReceiver extends Thread {
-
+    private final Controller controller;
+    private final Socket socket;
     private ObjectInputStream ois;
-    private Socket socket;
     private Message message;
 
-    public ServerReceiver(Socket socket) {
-
+    public ServerReceiver(Controller controller, Socket socket) {
         this.socket = socket;
+        this.controller = controller;
     }
 
     public Message getMessage() {
@@ -30,8 +31,9 @@ public class ServerReceiver extends Thread {
         try {
             ois = new ObjectInputStream(socket.getInputStream());
             while (true) {
-                Message message = (Message) ois.readObject();
-                setMessage(message);
+                Message message = (Message) ois.readObject(); // klienten skickar något (alltid ett message)
+                controller.parseMessage(message);
+                // setMessage(message);
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

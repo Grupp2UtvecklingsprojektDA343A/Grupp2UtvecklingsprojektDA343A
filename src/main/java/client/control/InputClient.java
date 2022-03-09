@@ -1,7 +1,7 @@
 package client.control;
 
-import entity.Message;
-import entity.User;
+import globalEntity.Message;
+import globalEntity.User;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
