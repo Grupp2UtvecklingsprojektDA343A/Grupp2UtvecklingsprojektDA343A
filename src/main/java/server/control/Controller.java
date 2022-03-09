@@ -29,13 +29,9 @@ public class Controller implements PropertyChangeListener {
         System.out.println("fjupp");
     }
 
-    public boolean userExists(globalEntity.User user) {
-        return server.userExists(user);
-    }
-
     public synchronized void parseMessage(Message message) {
-        globalEntity.User sender = message.getSender();
-        globalEntity.User receiver = message.getReceiver();
+        User sender = message.getSender();
+        User receiver = message.getReceiver();
 
         switch(message.getType()) {
             case Message.CONTACTS -> {}
@@ -45,7 +41,7 @@ public class Controller implements PropertyChangeListener {
         }
     }
 
-    public synchronized boolean login(User user) {
-        return userExists(user);
+    public synchronized boolean userExists(User user) {
+        return server.userExists(user);
     }
 }
