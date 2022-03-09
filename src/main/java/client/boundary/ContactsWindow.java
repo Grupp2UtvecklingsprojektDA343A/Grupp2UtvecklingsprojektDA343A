@@ -61,7 +61,7 @@ public class ContactsWindow extends DefaultWindow implements KeyListener, IConta
         constraints.gridx = 0; // column
         constraints.gridwidth = 2;
 
-        UserButton userButton = new UserButton("another user", profilePicture);
+        UserButton userButton = new UserButton(username, profilePicture);
         userButton.addActionListener(l -> {
             getClient().startChatWithUser(username);
         });

@@ -6,6 +6,7 @@ import globalEntity.User;
 import server.entity.ClientHandler;
 
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -40,8 +41,7 @@ public class Client {
 
 
     public void showGUI() {
-        // SwingUtilities.invokeLater(() -> gui = new GUI(this));
-        windowHandler.openLogInWindow();
+        SwingUtilities.invokeLater(windowHandler::openLogInWindow);
     }
 
     public void logIn(String username, ImageIcon profilePicture, String host, int port) {
@@ -51,8 +51,9 @@ public class Client {
             connect(host, port); // 1 och 2
             // Skicka user? username? // 3 och 4
             oos.writeObject(this.user);
+            oos.flush();
             // Ta emot
-           Message answer =(Message) ois.readObject();
+            Message answer = (Message) ois.readObject();
             // 4.1 kunde inte logga in
             if (answer.getType() == Message.LOGIN_SUCCESS){
                 windowHandler.openContactsWindow(username, profilePicture);

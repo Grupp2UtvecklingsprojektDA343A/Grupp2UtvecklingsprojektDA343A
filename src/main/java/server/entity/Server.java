@@ -17,6 +17,7 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class Server implements PropertyChangeListener {
@@ -92,6 +93,9 @@ public class Server implements PropertyChangeListener {
 
     public void addLoggedInUser(User user, ClientHandler clientHandler) {
         loggedInUsers.put(user, clientHandler);
+        for(Map.Entry<User, ClientHandler> entry : loggedInUsers.entrySet()) {
+            System.out.println("alla som finns: " + entry.getKey().getUsername());
+        }
     }
 
     // private void updateListForAllContacts() {
@@ -143,7 +147,7 @@ public class Server implements PropertyChangeListener {
                 while(clientHandler == null) {
                     User user = (User) ois.readObject();
                     Message reply;
-                    System.out.println(user.toString());
+                    System.out.println(user.getUsername() + " vill logga in: " + user);
 
                     if(!controller.userExists(user)) { // kan logga in
                         System.out.println("kan logga in");

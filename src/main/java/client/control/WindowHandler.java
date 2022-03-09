@@ -42,7 +42,6 @@ public class WindowHandler {
         }
 
         showWindow(contactsWindow);
-        contactsWindow.addUser("kaffe", ImageHandler.createImageIcon("/arlako.png", 40, 40));
     }
 
     public void showContactWindow() {
