@@ -1,5 +1,6 @@
 package client.control;
 
+import client.boundary.Caller;
 import client.boundary.DefaultWindow;
 import client.boundary.GUItest;
 import globalEntity.Message;
@@ -46,28 +47,31 @@ public class Client {
         SwingUtilities.invokeLater(windowHandler::openLogInWindow);
     }
 
-    public void logIn(String username, ImageIcon profilePicture, String host, int port) {
-        this.user = new User(username, profilePicture);
+    public void logIn(String username, ImageIcon profilePicture, String host, int port, Caller caller) {
+        new Thread(() -> {
+            user = new User(username, profilePicture);
 
-        try {
-            connect(host, port);
-            oos.writeObject(this.user);
-            oos.flush();
-            // Ta emot
-            Message answer = (Message) ois.readObject();
-            // 4.1 kunde inte logga in
-            if (answer.getType() == Message.LOGIN_SUCCESS){
-                windowHandler.openContactsWindow(username, profilePicture);
-                windowHandler.closeLogInWindow();
-            }else{
-                WindowHandler.showErrorMessage(null,"Failed loggin","loggin failed");
-                windowHandler.openLogInWindow();
+            try {
+                connect(host, port);
+                oos.writeObject(user);
+                oos.flush();
+                // Ta emot
+                Message answer = (Message) ois.readObject();
+                // 4.1 kunde inte logga in
+                if (answer.getType() == Message.LOGIN_SUCCESS){
+                    windowHandler.openContactsWindow(username, profilePicture);
+                    windowHandler.closeLogInWindow();
+                }else{
+                    caller.done();
+                    WindowHandler.showErrorMessage(windowHandler.getLogInWindow(),"Failed loggin","loggin failed");
+                    windowHandler.openLogInWindow();
+                }
+                // 4.2 kan logga in
+
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
             }
-            // 4.2 kan logga in
-
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        }).start();
     }
 
     public void logOut(DefaultWindow parent) {

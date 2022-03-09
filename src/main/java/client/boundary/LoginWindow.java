@@ -6,6 +6,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -19,8 +20,9 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class LoginWindow extends DefaultWindow implements KeyListener {
+public class LoginWindow extends DefaultWindow implements KeyListener, Caller {
     private final JButton bLogin = new JButton("login");
+    private final JLabel spinningGear = new JLabel(ImageHandler.createImageIcon("/gear.gif"));
 
     public LoginWindow(Client client, boolean showMenuBar) {
         super(client, showMenuBar);
@@ -85,7 +87,8 @@ public class LoginWindow extends DefaultWindow implements KeyListener {
             }
 
             if (!missingFields) {
-                getClient().logIn(tfUsername.getText(), null, tfHost.getText(), port);
+                getClient().logIn(tfUsername.getText(), null, tfHost.getText(), port, this);
+                spinningGear.setVisible(true);
             }
         });
 
@@ -157,14 +160,19 @@ public class LoginWindow extends DefaultWindow implements KeyListener {
         constraints.gridwidth = 2;
         add(bLogin, constraints);
 
+        constraints.gridy = 4; // rad
+        constraints.gridx = 0; // column
+        constraints.gridwidth = 3;
+        spinningGear.setVisible(false);
+        add(spinningGear, constraints);
+
+
         tfUsername.addKeyListener(this);
         tfHost.addKeyListener(this);
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
+    public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -176,12 +184,15 @@ public class LoginWindow extends DefaultWindow implements KeyListener {
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
+    public void keyReleased(KeyEvent e) {}
 
     @Override
     public void closeApplication() {
         getClient().closeApplication();
+    }
+
+    @Override
+    public void done() {
+        spinningGear.setVisible(false);
     }
 }
