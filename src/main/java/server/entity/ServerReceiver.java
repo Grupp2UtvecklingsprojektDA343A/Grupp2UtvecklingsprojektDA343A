@@ -1,6 +1,7 @@
 package server.entity;
 
 import globalEntity.Message;
+import server.control.Controller;
 // import globalEntity.User;
 
 import java.io.IOException;
@@ -8,13 +9,14 @@ import java.io.ObjectInputStream;
 import java.net.Socket;
 
 public class ServerReceiver extends Thread {
-
+    private final Controller controller;
+    private final Socket socket;
     private ObjectInputStream ois;
-    private Socket socket;
     private Message message;
 
-    public ServerReceiver(Socket socket) {
+    public ServerReceiver(Controller controller, Socket socket) {
         this.socket = socket;
+        this.controller = controller;
     }
 
     public Message getMessage() {
@@ -29,21 +31,9 @@ public class ServerReceiver extends Thread {
         try {
             ois = new ObjectInputStream(socket.getInputStream());
             while (true) {
-                Message message = (Message) ois.readObject();
-                switch(message.getType()) {
-                    case Message.CONTACTS -> {}
-                    case Message.TEXT -> {}
-                    case Message.IMAGE -> {}
-                    case Message.TEXT_AND_IMAGE -> {}
-                    case Message.LOGIN ->  {
-                        globalEntity.User sender = message.getSender();
-                        if(userExists(sender)) {
-
-                        }
-                        // skicka tillbala om vi lan logga in eller inte?
-                    }
-                }
-                setMessage(message);
+                Message message = (Message) ois.readObject(); // klienten skickar något (alltid ett message)
+                controller.parseMessage(message);
+                // setMessage(message);
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

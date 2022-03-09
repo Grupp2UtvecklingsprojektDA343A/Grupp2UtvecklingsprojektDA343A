@@ -2,6 +2,7 @@ package server.entity;
 
 import globalEntity.Message;
 import globalEntity.User;
+import server.control.Controller;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -16,20 +17,21 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 
 public class Server implements PropertyChangeListener {
-    ArrayList<String> traffic = new ArrayList<>();
-    Buffer<Message> messageBuffer = new Buffer<>();
-    HashMap<User, Buffer<Message>> messageOnHold = new HashMap<>();
-    final HashMap<User, ClientHandler> loggedInUsers = new HashMap<>();
-    PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-    LocalDateTime date;
-    ServerSocket serverSocket;
+    private final Controller controller;
+    private ArrayList<String> traffic = new ArrayList<>();
+    private Buffer<Message> messageBuffer = new Buffer<>();
+    private HashMap<User, Buffer<Message>> messageOnHold = new HashMap<>();
+    private final HashMap<User, ClientHandler> loggedInUsers = new HashMap<>();
+    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    private LocalDateTime date;
+    private ServerSocket serverSocket;
 
 
-    public Server(int port) {
+    public Server(Controller controller, int port) {
+        this.controller = controller;
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
@@ -67,6 +69,7 @@ public class Server implements PropertyChangeListener {
         }
     }
 
+
     public void createFriends(String filename) {
         ArrayList<User> friends = new ArrayList<>(); //ta in storlek på arraylist !
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
@@ -79,8 +82,15 @@ public class Server implements PropertyChangeListener {
             e.printStackTrace();
         }
     }
-    public boolean userExists(User user) {
+
+    public boolean userExists(globalEntity.User user) {
         return loggedInUsers.containsKey(user);
+    }
+
+    public void sendMessage(Message reply) {
+        User receiver = reply.getReceiver();
+        ClientHandler clientHandler = loggedInUsers.get(receiver);
+        clientHandler.send(reply);
     }
 
     // private void updateListForAllContacts() {
@@ -103,55 +113,20 @@ public class Server implements PropertyChangeListener {
     private class Connection extends Thread {
         public void run() {
             Socket socket = null;
-            // User user = null;
+            User user = null;
             System.out.println("Server startar");
             while (true) {
                 try {
                     socket = serverSocket.accept();
-                    new ClientHandler(socket);
+                    new ClientHandler(controller, socket);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
     }
-    private class ClientHandler extends Thread {
-        private Socket socket;
-        private final ObjectInputStream ois;
-        private final ObjectOutputStream oos;
 
-        public ClientHandler(Socket socket) throws IOException {
-            this.socket = socket;
-            ois = new ObjectInputStream(socket.getInputStream());
-            oos = new ObjectOutputStream(socket.getOutputStream());
-
-            // loggedInUsers.put(username, this);
-            // new Thread(() -> {
-            //     updateListForAllContacts();
-            // }).start(); // ny tråd som säger till alla inloggade om ny person
-            start();
-        }
-
-        @Override
-        public void run() {
-            // try {
-                ServerReceiver serverReceiver = new ServerReceiver(socket);
-                serverReceiver.start();
-                ServerSender serverSender = new ServerSender(socket);
-                serverSender.start();
-
-                // while (true) {
-                //     Message message = serverReceiver.getMessage();
-                //     message.setReceived(LocalDateTime.now());
-                //     messageBuffer.put(message);
-                //     messageOnHold.put(messageBuffer.get().getReceiver(), messageBuffer);
-                //     if(message.getReceiver().getLoggedIn() && ! messageOnHold.isEmpty())  {
-                //        serverSender.send(messageBuffer.get());
-                //     }
-                // }
-            // } catch (InterruptedException e ) {
-            //     e.printStackTrace();
-            // }
-        }
+    public void addListener(PropertyChangeListener listener){
+        pcs.addPropertyChangeListener(listener);
     }
 }
