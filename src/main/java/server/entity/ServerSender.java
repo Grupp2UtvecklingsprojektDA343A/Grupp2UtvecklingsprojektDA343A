@@ -1,6 +1,6 @@
 package server.entity;
 
-import entity.Message;
+import globalEntity.Message;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
