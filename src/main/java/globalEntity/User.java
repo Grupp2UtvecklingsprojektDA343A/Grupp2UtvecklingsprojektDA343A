@@ -1,8 +1,9 @@
 package globalEntity;
 
 import javax.swing.*;
+import java.io.Serializable;
 
-public class User {
+public class User implements Serializable {
     //todo class with username, id, profile pic
     private String username;
 
