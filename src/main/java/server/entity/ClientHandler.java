@@ -16,7 +16,6 @@ public class ClientHandler extends Thread {
         this.socket = socket;
         this.controller = controller;
         // pcs.firePropertyChange("username", null, username);
-        start();
     }
 
     @Override

@@ -1,11 +1,13 @@
 package server.control;
 
 import globalEntity.Message;
+import globalEntity.User;
 import server.boundary.ServerUIX;
 import server.entity.ClientHandler;
 import server.entity.Server;
 import server.entity.ServerReceiver;
 
+import java.awt.print.Book;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -36,23 +38,17 @@ public class Controller implements PropertyChangeListener{
 
     public synchronized void parseMessage(Message message) {
         globalEntity.User sender = message.getSender();
-        globalEntity.User reciever = message.getReceiver();
+        globalEntity.User receiver = message.getReceiver();
 
         switch(message.getType()) {
             case Message.CONTACTS -> {}
             case Message.TEXT -> {}
             case Message.IMAGE -> {}
             case Message.TEXT_AND_IMAGE -> {}
-            case Message.LOGIN ->  {
-                if(userExists(sender)) {
-                    Message reply =  new Message.Builder().type(Message.LOGIN_SUCCESS).receiver(sender).sender(sender).build();
-                    server.sendMessage(reply);
-                } else {
-                    Message reply =  new Message.Builder().type(Message.LOGIN_FAILED).receiver(sender).sender(sender).build();
-                    server.sendMessage(reply);
-                }
-                // skicka tillbala om vi lan logga in eller inte?
-            }
         }
+    }
+
+    public synchronized boolean login(User user) {
+        return userExists(user);
     }
 }

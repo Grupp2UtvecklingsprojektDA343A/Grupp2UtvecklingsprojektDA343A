@@ -39,21 +39,19 @@ public class Server implements PropertyChangeListener {
         }
         new Connection().start();
     }
+
     public void addToTraffic(String whatHappened, String who, LocalDateTime when) {
         String trafficInfo;
         trafficInfo = String.format(whatHappened, who, when.toString());
         traffic.add(trafficInfo);
     }
+
     public void messagesToSend(Message message) {
         messageBuffer.put(message);
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-
-    }
-
-    public void addListener() {
 
     }
 
@@ -68,7 +66,6 @@ public class Server implements PropertyChangeListener {
             e.printStackTrace();
         }
     }
-
 
     public void createFriends(String filename) {
         ArrayList<User> friends = new ArrayList<>(); //ta in storlek på arraylist !
@@ -93,6 +90,10 @@ public class Server implements PropertyChangeListener {
         clientHandler.send(reply);
     }
 
+    public void addLoggedInUser(User user, ClientHandler clientHandler) {
+        loggedInUsers.put(user, clientHandler);
+    }
+
     // private void updateListForAllContacts() {
     //     synchronized (loggedInUsers) {
     //         for(Map.Entry<User, ClientHandler> entry : loggedInUsers.entrySet()) {
@@ -109,7 +110,6 @@ public class Server implements PropertyChangeListener {
     //     }
     // }
 
-
     private class Connection extends Thread {
         public void run() {
             Socket socket = null;
@@ -118,11 +118,49 @@ public class Server implements PropertyChangeListener {
             while (true) {
                 try {
                     socket = serverSocket.accept();
-                    new ClientHandler(controller, socket);
+                    new LoginHandler(socket).start();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private class LoginHandler extends Thread {
+        private final Socket socket;
+
+        public LoginHandler(Socket socket) {
+            this.socket = socket;
+        }
+
+        @Override
+        public void run() {
+            ClientHandler clientHandler = null;
+            try {
+                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+
+                while(clientHandler == null) {
+                    Message message = (Message) ois.readObject();
+                    User user = message.getSender();
+                    Message reply;
+
+                    if(controller.login(user)) { // kan logga in
+                        reply =  new Message.Builder().type(Message.LOGIN_SUCCESS).build();
+                        clientHandler = new ClientHandler(controller, socket);
+                        addLoggedInUser(user, clientHandler);
+                        clientHandler.start();
+                    } else { // kan inte logga in
+                        reply =  new Message.Builder().type(Message.LOGIN_FAILED).build();
+                    }
+                    oos.writeObject(reply);
+                    oos.flush();
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            interrupt(); // Stoppa tråden
         }
     }
 
