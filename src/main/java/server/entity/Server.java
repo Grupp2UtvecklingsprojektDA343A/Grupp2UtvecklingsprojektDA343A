@@ -80,7 +80,7 @@ public class Server implements PropertyChangeListener {
         }
     }
 
-    public boolean userExists(globalEntity.User user) {
+    public boolean userExists(User user) {
         return loggedInUsers.containsKey(user);
     }
 
@@ -141,16 +141,18 @@ public class Server implements PropertyChangeListener {
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 
                 while(clientHandler == null) {
-                    Message message = (Message) ois.readObject();
-                    User user = message.getSender();
+                    User user = (User) ois.readObject();
                     Message reply;
+                    System.out.println(user.toString());
 
-                    if(controller.login(user)) { // kan logga in
+                    if(!controller.userExists(user)) { // kan logga in
+                        System.out.println("kan logga in");
                         reply =  new Message.Builder().type(Message.LOGIN_SUCCESS).build();
                         clientHandler = new ClientHandler(controller, socket);
                         addLoggedInUser(user, clientHandler);
                         clientHandler.start();
                     } else { // kan inte logga in
+                        System.out.println("kan inte logga in");
                         reply =  new Message.Builder().type(Message.LOGIN_FAILED).build();
                     }
                     oos.writeObject(reply);
