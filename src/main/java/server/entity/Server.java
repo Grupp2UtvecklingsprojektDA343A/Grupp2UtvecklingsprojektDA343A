@@ -1,5 +1,6 @@
 package server.entity;
 
+import client.control.Client;
 import globalEntity.Message;
 import globalEntity.User;
 import server.control.Controller;
@@ -29,6 +30,7 @@ public class Server implements PropertyChangeListener {
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private LocalDateTime date;
     private ServerSocket serverSocket;
+    private Client client;
 
 
     public Server(Controller controller, int port) {
@@ -79,6 +81,14 @@ public class Server implements PropertyChangeListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setToOnline(User user){
+        client.setToOnline(user);
+    }
+
+    public void setToOffline(User user){
+        client.setToOffline(user);
     }
 
     public boolean userExists(User user) {
@@ -154,6 +164,7 @@ public class Server implements PropertyChangeListener {
                         reply =  new Message.Builder().type(Message.LOGIN_SUCCESS).build();
                         clientHandler = new ClientHandler(controller, socket);
                         addLoggedInUser(user, clientHandler);
+                        setToOnline(user);
                         clientHandler.start();
                     } else { // kan inte logga in
                         System.out.println("kan inte logga in");

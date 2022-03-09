@@ -1,6 +1,7 @@
 package client.control;
 
 import client.boundary.DefaultWindow;
+import client.boundary.GUItest;
 import globalEntity.Message;
 import globalEntity.User;
 import server.entity.ClientHandler;
@@ -37,6 +38,7 @@ public class Client {
     private ObjectInputStream ois;
     private Message message = null;
     private ClientHandler clientHandler;
+    private ArrayList<User> currentlyOnline = new ArrayList<>();
     private final WindowHandler windowHandler = new WindowHandler(this);
 
 
@@ -82,10 +84,27 @@ public class Client {
         this.socket = new Socket(ip,port);
         this.oos = new ObjectOutputStream(socket.getOutputStream());
         this.ois = new ObjectInputStream(socket.getInputStream());
+        oos.flush();
     }
 
     public void disconnect() throws IOException {
         socket.close();
+    }
+
+    public void setToOnline(User user){
+        currentlyOnline.add(user);
+        GUItest guItest = new GUItest(convert());
+    }
+
+    public void setToOffline(User user){
+        currentlyOnline.remove(user);
+    }
+
+    public String[] convert(){
+        String[] temp = new String[currentlyOnline.size()];
+        for (int i = 0; i < temp.length; i++) {
+            temp[i] = currentlyOnline.get(i).toString();
+        } return temp;
     }
 
     public void receive(){
