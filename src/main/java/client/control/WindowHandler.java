@@ -3,6 +3,7 @@ package client.control;
 import client.boundary.ChatWindow;
 import client.boundary.ContactsWindow;
 import client.boundary.DefaultWindow;
+import client.boundary.ImageHandler;
 import client.boundary.LoginWindow;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -41,10 +42,19 @@ public class WindowHandler {
         }
 
         showWindow(contactsWindow);
+        contactsWindow.addUser("kaffe", ImageHandler.createImageIcon("/arlako.png", 40, 40));
     }
 
     public void showContactWindow() {
         showWindow(contactsWindow);
+    }
+
+    public void contactsWindowClosed() {
+        if(chatWindows.size() == 0) {
+            client.closeApplication();
+        } else {
+            showWindow(contactsWindow);
+        }
     }
 
     // CHAT WINDOWS //

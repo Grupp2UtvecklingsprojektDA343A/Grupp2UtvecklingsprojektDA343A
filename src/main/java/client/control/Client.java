@@ -44,12 +44,12 @@ public class Client {
     public void logIn(String username, ImageIcon profilePicture, String host, int port) {
         this.user = new User(username, null);
         windowHandler.closeLogInWindow();
-        // try {
-            // connect(host, port);
+        try {
+            connect(host, port);
             windowHandler.openContactsWindow(username, profilePicture);
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        // }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void logOut(DefaultWindow parent) {
@@ -70,18 +70,6 @@ public class Client {
 
     public void disconnect() throws IOException {
         socket.close();
-    }
-
-    public void send(Message message){
-        // Skriv en motod som skickar Till servern
-        // Läg den i en tråd
-        try {
-            oos.writeObject(message);
-            oos.flush();
-            disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void receive(){
@@ -141,5 +129,23 @@ public class Client {
         }
 
         windowHandler.closeAllWindows();
+    }
+
+    public void startChatWithUser(String username) {
+        new threadHandler().start();
+        windowHandler.openChatWindow(username);
+    }
+    private class threadHandler extends Thread{
+        private InputClient inputClient;
+        private OutputClient outputClient;
+        @Override
+        public void run() {
+            while(!Thread.interrupted()){
+                System.out.println("Thread 1 running");
+                inputClient = new InputClient(ois);
+                outputClient = new OutputClient(oos);
+                inputClient.start();
+            }
+        }
     }
 }
