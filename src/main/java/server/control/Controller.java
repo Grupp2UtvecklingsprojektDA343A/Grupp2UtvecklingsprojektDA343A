@@ -2,12 +2,9 @@ package server.control;
 
 import globalEntity.Message;
 import globalEntity.User;
-import server.boundary.ServerUIX;
-import server.entity.ClientHandler;
+import server.boundary.ServerUI;
 import server.entity.Server;
-import server.entity.ServerReceiver;
 
-import java.awt.print.Book;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -19,7 +16,7 @@ public class Controller implements PropertyChangeListener {
     public Controller(){
         server = new Server(this, 20008);
         server.addListener(this);
-        ServerUIX serverUIX = new ServerUIX(this);
+        ServerUI serverUI = new ServerUI(this);
     }
 
     public void addListener(PropertyChangeListener listener){
