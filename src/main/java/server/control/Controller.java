@@ -12,14 +12,14 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public class Controller implements PropertyChangeListener{
+public class Controller implements PropertyChangeListener {
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private Server server;
 
     public Controller(){
         server = new Server(this, 20008);
         server.addListener(this);
-        ServerUIX serverUIX = new ServerUIX();
+        ServerUIX serverUIX = new ServerUIX(this);
     }
 
     public void addListener(PropertyChangeListener listener){

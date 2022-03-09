@@ -20,7 +20,7 @@ public class ServerUIX implements PropertyChangeListener {
     private Controller controller;
     private ArrayList<String> traffic;
 
-    public ServerUIX(){
+    public ServerUIX(Controller controller){
         controller.addListener(this);
     }
 
