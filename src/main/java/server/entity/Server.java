@@ -17,6 +17,7 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class Server implements PropertyChangeListener {
@@ -80,7 +81,7 @@ public class Server implements PropertyChangeListener {
         }
     }
 
-    public boolean userExists(globalEntity.User user) {
+    public boolean userExists(User user) {
         return loggedInUsers.containsKey(user);
     }
 
@@ -92,6 +93,9 @@ public class Server implements PropertyChangeListener {
 
     public void addLoggedInUser(User user, ClientHandler clientHandler) {
         loggedInUsers.put(user, clientHandler);
+        for(Map.Entry<User, ClientHandler> entry : loggedInUsers.entrySet()) {
+            System.out.println("alla som finns: " + entry.getKey().getUsername());
+        }
     }
 
     // private void updateListForAllContacts() {
@@ -141,16 +145,18 @@ public class Server implements PropertyChangeListener {
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 
                 while(clientHandler == null) {
-                    Message message = (Message) ois.readObject();
-                    User user = message.getSender();
+                    User user = (User) ois.readObject();
                     Message reply;
+                    System.out.println(user.getUsername() + " vill logga in: " + user);
 
-                    if(controller.login(user)) { // kan logga in
+                    if(!controller.userExists(user)) { // kan logga in
+                        System.out.println("kan logga in");
                         reply =  new Message.Builder().type(Message.LOGIN_SUCCESS).build();
                         clientHandler = new ClientHandler(controller, socket);
                         addLoggedInUser(user, clientHandler);
                         clientHandler.start();
                     } else { // kan inte logga in
+                        System.out.println("kan inte logga in");
                         reply =  new Message.Builder().type(Message.LOGIN_FAILED).build();
                     }
                     oos.writeObject(reply);

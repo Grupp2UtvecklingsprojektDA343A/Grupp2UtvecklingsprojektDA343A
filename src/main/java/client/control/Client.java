@@ -3,7 +3,10 @@ package client.control;
 import client.boundary.DefaultWindow;
 import globalEntity.Message;
 import globalEntity.User;
+import server.entity.ClientHandler;
+
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -33,25 +36,35 @@ public class Client {
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private Message message = null;
+    private ClientHandler clientHandler;
     private final WindowHandler windowHandler = new WindowHandler(this);
 
 
     public void showGUI() {
-        // SwingUtilities.invokeLater(() -> gui = new GUI(this));
-        windowHandler.openLogInWindow();
+        SwingUtilities.invokeLater(windowHandler::openLogInWindow);
     }
 
     public void logIn(String username, ImageIcon profilePicture, String host, int port) {
-        this.user = new User(username, null);
-        windowHandler.closeLogInWindow();
+        this.user = new User(username, profilePicture);
+
         try {
             connect(host, port); // 1 och 2
             // Skicka user? username? // 3 och 4
+            oos.writeObject(this.user);
+            oos.flush();
             // Ta emot
+            Message answer = (Message) ois.readObject();
             // 4.1 kunde inte logga in
+            if (answer.getType() == Message.LOGIN_SUCCESS){
+                windowHandler.openContactsWindow(username, profilePicture);
+                windowHandler.closeLogInWindow();
+            }else{
+                WindowHandler.showErrorMessage(null,"Failed loggin","loggin failed");
+                windowHandler.openLogInWindow();
+            }
             // 4.2 kan logga in
-            windowHandler.openContactsWindow(username, profilePicture);
-        } catch (IOException e) {
+
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
