@@ -33,7 +33,7 @@ public class LoginWindow extends DefaultWindow implements KeyListener {
         JLabel lHost = new JLabel("Host: ");
         JLabel lPort = new JLabel("Port: ");
         JTextField tfUsername = new JTextField("Mr. Kaffe");
-        JTextField tfHost = new JTextField("10.2.24.110");
+        JTextField tfHost = new JTextField("localhost");
         JTextField tfPort = new JTextField("20008");
 
         bProfilePicture.addMouseListener(new MouseListener() {

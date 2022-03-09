@@ -50,8 +50,7 @@ public class Client {
         this.user = new User(username, profilePicture);
 
         try {
-            connect(host, port); // 1 och 2
-            // Skicka user? username? // 3 och 4
+            connect(host, port);
             oos.writeObject(this.user);
             oos.flush();
             // Ta emot
