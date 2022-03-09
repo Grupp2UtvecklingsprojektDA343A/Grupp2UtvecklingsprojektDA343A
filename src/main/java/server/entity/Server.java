@@ -9,6 +9,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -56,7 +57,7 @@ public class Server implements PropertyChangeListener {
 
     }
 
-    public void createFriends(String filename) {
+    public void readFriends(String filename) { //läser vänlista
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
             ArrayList<User> friends = new ArrayList<>();
             for(User friend : friends) {
@@ -68,6 +69,18 @@ public class Server implements PropertyChangeListener {
         }
     }
 
+    public void createFriends(String filename) {
+        ArrayList<User> friends = new ArrayList<>(); //ta in storlek på arraylist !
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+            for(User friend : friends) {
+                oos.writeObject(friend);
+            }
+            oos.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void updateListForAllContacts() {
         synchronized (loggedInUsers) {
             for(Map.Entry<User, ClientHandler> entry : loggedInUsers.entrySet()) {
