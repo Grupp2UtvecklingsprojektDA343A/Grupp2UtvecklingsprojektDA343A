@@ -9,7 +9,6 @@ import server.entity.ClientHandler;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -150,13 +149,8 @@ public class Client {
         oos.flush();
         oos.close();
     }
-
-    public void getAllUser(){
-        try(DataInputStream dis = new DataInputStream(socket.getInputStream())) {
-            ArrayList<String> allUsers = new ArrayList<>();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void showAllUsers(User[] loggedInUsers){
+        //Show all users in GUI CLASS
     }
 
     public void closeApplication() {
@@ -170,17 +164,21 @@ public class Client {
     }
 
     public void startChatWithUser(String username) {
-        new threadHandler().start();
+        new threadHandler(this).start();
         windowHandler.openChatWindow(username);
     }
     private class threadHandler extends Thread{
         private InputClient inputClient;
         private OutputClient outputClient;
+        private Client client;
+        public threadHandler(Client client){
+            this.client = client;
+        }
         @Override
         public void run() {
             while(!Thread.interrupted()){
                 System.out.println("Thread 1 running");
-                inputClient = new InputClient(ois);
+                inputClient = new InputClient(client,ois);
                 outputClient = new OutputClient(oos);
                 inputClient.start();
             }

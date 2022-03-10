@@ -9,8 +9,10 @@ import java.io.ObjectInputStream;
 public class InputClient extends Thread {
     private ObjectInputStream ois;
     private Message message;
-    public InputClient(ObjectInputStream ois) {
+    private Client client;
+    public InputClient(Client client,ObjectInputStream ois) {
         this.ois = ois;
+        this.client = client;
     }
 
     @Override
@@ -24,6 +26,7 @@ public class InputClient extends Thread {
                 switch(type) {
                     case Message.CONTACTS -> {
                         User[] loggedInUsers = message.getContacts();
+                        this.client.showAllUsers(loggedInUsers);
                     }
 
                     case Message.TEXT -> {
