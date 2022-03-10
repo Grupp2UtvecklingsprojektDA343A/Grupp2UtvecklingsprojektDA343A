@@ -59,7 +59,7 @@ public class Client {
     public String[] convert(){
         String[] temp = new String[currentlyOnline.size()];
         for (int i = 0; i < temp.length; i++) {
-            temp[i] = currentlyOnline.get(i).toString();
+            temp[i] = currentlyOnline.get(i).getUsername();
         } return temp;
     }
     private void connect(String ip, int port) throws IOException {

@@ -115,7 +115,6 @@ public class Server implements PropertyChangeListener {
                     .type(Message.CONTACTS)
                     .contacts(loggedInUsers.keySet().toArray(new User[0]))
                     .build();
-
                 entry.getValue().send(message);
             }
         }
@@ -126,10 +125,12 @@ public class Server implements PropertyChangeListener {
         }
 
     private class Connection extends Thread {
+
         public void run() {
             Socket socket = null;
             User user = null;
-            System.out.println("Server startar");
+            System.out.println("Loading...");
+            System.out.println("Server operational.");
             while (true) {
                 try {
                     socket = serverSocket.accept();
@@ -140,6 +141,7 @@ public class Server implements PropertyChangeListener {
 
                     if(msg.getType() == Message.LOGIN) {
                         new LoginHandler(socket, oos, ois, msg.getSender()).start();
+                        pcs.firePropertyChange("login", null, msg.getSender().getUsername());
                     } else {
                         // ny chatt
 
