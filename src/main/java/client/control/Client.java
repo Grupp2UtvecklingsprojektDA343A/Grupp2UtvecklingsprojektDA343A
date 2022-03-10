@@ -37,7 +37,6 @@ public class Client {
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private Message message = null;
-    private ClientHandler clientHandler;
     private ArrayList<User> currentlyOnline = new ArrayList<>();
     private final WindowHandler windowHandler = new WindowHandler(this);
 
@@ -60,6 +59,7 @@ public class Client {
                 // 4.1 kunde inte logga in
                 if (answer.getType() == Message.LOGIN_SUCCESS){
                     windowHandler.openContactsWindow(username, profilePicture);
+                    new threadHandler(this).start();
                     windowHandler.closeLogInWindow();
                 }else{
                     ILoginWindow.done();
