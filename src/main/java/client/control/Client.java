@@ -40,6 +40,7 @@ public class Client {
     private OutputClient outputClient;
     private ArrayList<User> currentlyOnline = new ArrayList<>();
     private final WindowHandler windowHandler = new WindowHandler(this);
+    private boolean disconnected;
 
 
     public void closeApplication() {
@@ -48,10 +49,10 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         stopThreads();
         // outputClient
         windowHandler.closeAllWindows();
+        disconnected = true;
     }
     public String[] convert(){
         String[] temp = new String[currentlyOnline.size()];

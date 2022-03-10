@@ -161,7 +161,6 @@ public class Server implements PropertyChangeListener {
             this.ois = ois;
             this.user = user;
         }
-
         @Override
         public void run() {
             ClientHandler clientHandler = null;
@@ -189,8 +188,18 @@ public class Server implements PropertyChangeListener {
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
-
             interrupt(); // Stoppa tråden
+        }
+        public void closeThread(PropertyChangeEvent evt){
+            if(evt.getPropertyName().equals("true") && evt.getNewValue() instanceof User){
+                if(loggedInUsers.containsKey(evt.getNewValue())){
+                    clientHandler.closeThread(evt.getNewValue(), loggedInUsers.values());
+                }
+                else {
+                    System.out.println("User not found");
+                }
+            }
+
         }
     }
 }
