@@ -11,32 +11,36 @@ import java.net.Socket;
 
 public class ServerSender extends Thread implements PropertyChangeListener {
     private final Controller controller;
-    private ObjectOutputStream oos;
+    private final ObjectOutputStream oos;
     private Socket socket;
     private Message message;
 
-    public ServerSender(Controller controller, Socket socket) {
+    public ServerSender(Controller controller, ObjectOutputStream oos) {
         this.controller = controller;
-        this.socket = socket;
-
+        this.oos = oos;
     }
 
     public synchronized void run() {
-        try {
-            oos = new ObjectOutputStream(socket.getOutputStream());
-            while(true) {
-                oos.writeObject(message);
-                oos.flush();
-                wait();
-            }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        // try {
+        //     while(true) {
+        //         oos.writeObject(message);
+        //         oos.flush();
+        //         wait();
+        //     }
+        // } catch (IOException | InterruptedException e) {
+        //     e.printStackTrace();
+        // }
     }
 
     public synchronized void send(Message message) {
-        this.message = message;
-        notifyAll();
+        // this.message = message;
+        // notifyAll();
+        try {
+            oos.writeObject(message);
+            oos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

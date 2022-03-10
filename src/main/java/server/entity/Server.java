@@ -1,5 +1,6 @@
 package server.entity;
 
+import client.control.Client;
 import globalEntity.Message;
 import globalEntity.User;
 import server.control.Controller;
@@ -17,6 +18,7 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 
@@ -29,6 +31,7 @@ public class Server implements PropertyChangeListener {
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private LocalDateTime date;
     private ServerSocket serverSocket;
+    private Client client;
 
 
     public Server(Controller controller, int port) {
@@ -79,6 +82,14 @@ public class Server implements PropertyChangeListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setToOnline(User user){
+        client.setToOnline(user);
+    }
+
+    public void setToOffline(User user){
+        client.setToOffline(user);
     }
 
     public boolean userExists(User user) {
@@ -147,20 +158,20 @@ public class Server implements PropertyChangeListener {
                 while(clientHandler == null) {
                     User user = (User) ois.readObject();
                     Message reply;
-                    System.out.println(user.getUsername() + " vill logga in: " + user);
 
                     if(!controller.userExists(user)) { // kan logga in
-                        System.out.println("kan logga in");
                         reply =  new Message.Builder().type(Message.LOGIN_SUCCESS).build();
-                        clientHandler = new ClientHandler(controller, socket);
+                        System.out.println(reply.getType());
+                        clientHandler = new ClientHandler(controller, socket, oos, ois);
                         addLoggedInUser(user, clientHandler);
+                        setToOnline(user);
                         clientHandler.start();
+                        clientHandler.getServerSender().send(reply);
                     } else { // kan inte logga in
-                        System.out.println("kan inte logga in");
                         reply =  new Message.Builder().type(Message.LOGIN_FAILED).build();
+                        oos.writeObject(reply);
+                        oos.flush();
                     }
-                    oos.writeObject(reply);
-                    oos.flush();
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();

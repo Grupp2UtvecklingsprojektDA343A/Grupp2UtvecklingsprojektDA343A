@@ -10,13 +10,12 @@ import java.net.Socket;
 
 public class ServerReceiver extends Thread {
     private final Controller controller;
-    private final Socket socket;
-    private ObjectInputStream ois;
+    private final ObjectInputStream ois;
     private Message message;
 
-    public ServerReceiver(Controller controller, Socket socket) {
-        this.socket = socket;
+    public ServerReceiver(Controller controller, ObjectInputStream ois) {
         this.controller = controller;
+        this.ois = ois;
     }
 
     public Message getMessage() {
@@ -29,7 +28,6 @@ public class ServerReceiver extends Thread {
 
     public synchronized void run() {
         try {
-            ois = new ObjectInputStream(socket.getInputStream());
             while (true) {
                 Message message = (Message) ois.readObject(); // klienten skickar något (alltid ett message)
                 controller.parseMessage(message);

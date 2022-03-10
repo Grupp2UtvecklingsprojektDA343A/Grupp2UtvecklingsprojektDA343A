@@ -35,6 +35,10 @@ public class WindowHandler {
         }
     }
 
+     public LoginWindow getLogInWindow() {
+        return logInWindow;
+    }
+
     // CONTACT WINODWS //
     public void openContactsWindow(String username, ImageIcon profilePicture) {
         if(contactsWindow == null) {

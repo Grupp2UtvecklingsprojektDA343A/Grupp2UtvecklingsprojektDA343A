@@ -2,7 +2,6 @@ package globalEntity;
 
 import javax.swing.*;
 import java.io.Serializable;
-import java.util.Objects;
 
 public class User implements Serializable {
     //todo class with username, id, profile pic
@@ -39,6 +38,10 @@ public class User implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(username, user.getUsername());
+        return username.equals(user.getUsername());
+    }
+
+    public int hashCode() {
+        return username.hashCode();
     }
 }

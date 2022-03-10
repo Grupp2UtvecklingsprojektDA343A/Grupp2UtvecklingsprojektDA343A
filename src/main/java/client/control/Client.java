@@ -1,6 +1,8 @@
 package client.control;
 
+import client.boundary.Caller;
 import client.boundary.DefaultWindow;
+import client.boundary.GUItest;
 import globalEntity.Message;
 import globalEntity.User;
 import server.entity.ClientHandler;
@@ -37,6 +39,7 @@ public class Client {
     private ObjectInputStream ois;
     private Message message = null;
     private ClientHandler clientHandler;
+    private ArrayList<User> currentlyOnline = new ArrayList<>();
     private final WindowHandler windowHandler = new WindowHandler(this);
 
 
@@ -44,29 +47,31 @@ public class Client {
         SwingUtilities.invokeLater(windowHandler::openLogInWindow);
     }
 
-    public void logIn(String username, ImageIcon profilePicture, String host, int port) {
-        this.user = new User(username, profilePicture);
+    public void logIn(String username, ImageIcon profilePicture, String host, int port, Caller caller) {
+        new Thread(() -> {
+            user = new User(username, profilePicture);
 
-        try {
-            connect(host, port); // 1 och 2
-            // Skicka user? username? // 3 och 4
-            oos.writeObject(this.user);
-            oos.flush();
-            // Ta emot
-            Message answer = (Message) ois.readObject();
-            // 4.1 kunde inte logga in
-            if (answer.getType() == Message.LOGIN_SUCCESS){
-                windowHandler.openContactsWindow(username, profilePicture);
-                windowHandler.closeLogInWindow();
-            }else{
-                WindowHandler.showErrorMessage(null,"Failed loggin","loggin failed");
-                windowHandler.openLogInWindow();
+            try {
+                connect(host, port);
+                oos.writeObject(user);
+                oos.flush();
+                // Ta emot
+                Message answer = (Message) ois.readObject();
+                // 4.1 kunde inte logga in
+                if (answer.getType() == Message.LOGIN_SUCCESS){
+                    windowHandler.openContactsWindow(username, profilePicture);
+                    windowHandler.closeLogInWindow();
+                }else{
+                    caller.done();
+                    WindowHandler.showErrorMessage(windowHandler.getLogInWindow(),"Failed loggin","loggin failed");
+                    windowHandler.openLogInWindow();
+                }
+                // 4.2 kan logga in
+
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
             }
-            // 4.2 kan logga in
-
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        }).start();
     }
 
     public void logOut(DefaultWindow parent) {
@@ -82,11 +87,27 @@ public class Client {
         this.socket = new Socket(ip,port);
         this.oos = new ObjectOutputStream(socket.getOutputStream());
         this.ois = new ObjectInputStream(socket.getInputStream());
-
+        oos.flush();
     }
 
     public void disconnect() throws IOException {
         socket.close();
+    }
+
+    public void setToOnline(User user){
+        currentlyOnline.add(user);
+        GUItest guItest = new GUItest(convert());
+    }
+
+    public void setToOffline(User user){
+        currentlyOnline.remove(user);
+    }
+
+    public String[] convert(){
+        String[] temp = new String[currentlyOnline.size()];
+        for (int i = 0; i < temp.length; i++) {
+            temp[i] = currentlyOnline.get(i).toString();
+        } return temp;
     }
 
     public void receive(){
