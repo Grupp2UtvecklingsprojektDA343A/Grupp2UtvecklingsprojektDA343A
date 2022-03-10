@@ -60,7 +60,6 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
         pack();
     }
 
-    @Override
     public void addUser(String username, ImageIcon profilePicture) {
         if(!isOnList(username)) {
             ++constraints.gridy; // rad
