@@ -23,7 +23,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.prefs.Preferences;
 
-public class LoginWindow extends DefaultWindow implements KeyListener, ILoginWindow {
+public class LoginWindow extends DefaultWindow implements KeyListener {
     private final JButton bLogin = new JButton("login");
     private final JLabel spinningGear = new JLabel(ImageHandler.createImageIcon("/gear.gif"));
     private JLabel bProfilePicture;
@@ -221,7 +221,6 @@ public class LoginWindow extends DefaultWindow implements KeyListener, ILoginWin
         getClient().closeApplication();
     }
 
-    @Override
     public void done() {
         spinningGear.setVisible(false);
     }

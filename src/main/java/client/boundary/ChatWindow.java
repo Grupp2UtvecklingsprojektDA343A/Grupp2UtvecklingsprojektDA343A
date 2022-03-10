@@ -18,7 +18,7 @@ import java.awt.Insets;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-public class ChatWindow extends DefaultWindow implements IChat {
+public class ChatWindow extends DefaultWindow {
     private JList<Object> conversation;
     private JScrollPane conversationArea;
     private JTextArea textInput;
@@ -106,7 +106,6 @@ public class ChatWindow extends DefaultWindow implements IChat {
     private void uploadFile() {
     }
 
-    @Override
     public void showMessage() {
 
     }

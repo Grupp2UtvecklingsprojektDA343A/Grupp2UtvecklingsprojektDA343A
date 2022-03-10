@@ -26,7 +26,7 @@ public class InputClient extends Thread {
 
                 switch(type) {
                     case Message.CONTACTS -> {
-                        this.client.showAllUsers(message.getContacts());
+                        this.client.updateListOfContacts(message.getContacts());
                     }
 
                     case Message.TEXT -> {

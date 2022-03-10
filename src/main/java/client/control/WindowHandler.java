@@ -64,7 +64,7 @@ public class WindowHandler {
 
     public void updateListOfContacts(User[] loggedInUsers) {
         for(User user : loggedInUsers) {
-            if(user.getUsername().equals(client.getUsername())) {
+            if(!user.getUsername().equals(client.getUsername())) {
                 contactsWindow.addUser(user.getUsername(), user.getIcon());
             }
         }

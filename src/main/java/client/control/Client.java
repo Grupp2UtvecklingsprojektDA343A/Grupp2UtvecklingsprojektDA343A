@@ -71,11 +71,6 @@ public class Client {
     public String getUsername() {
         return user.getUsername();
     }
-    public void newUser(String username, ImageIcon icon) throws IOException {
-        oos.writeObject(new User(username,icon));
-        oos.flush();
-        oos.close();
-    }
     public void logIn(String username, ImageIcon profilePicture, String host, int port, LoginWindow loginWindow) {
         new Thread(() -> {
             user = new User(username, profilePicture);
@@ -124,7 +119,7 @@ public class Client {
     public void setToOffline(User user){
         currentlyOnline.remove(user);
     }
-    public void showAllUsers(User[] loggedInUsers){
+    public void updateListOfContacts(User[] loggedInUsers){
         windowHandler.updateListOfContacts(loggedInUsers);
     }
     public void showGUI() {
