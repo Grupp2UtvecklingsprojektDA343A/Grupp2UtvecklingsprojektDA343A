@@ -19,12 +19,15 @@ public class ServerUI extends JFrame implements PropertyChangeListener {
     private JList<String> trafficList;
     private DefaultListModel<String> dlm = new DefaultListModel<>();
 
-    public ServerUI(Controller controller){
-        controller.addListener(this);
+    public ServerUI(Server server){
+        //controller.addListener(this);
+        server.addListener(this);
 
+        setTitle("Traffic log:");
         setLayout(null);
         setVisible(true);
         setSize(400,500);
+        setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         trafficList = new JList<>(dlm);
@@ -51,29 +54,28 @@ public class ServerUI extends JFrame implements PropertyChangeListener {
     }
 
     public void updateTraffic(String trafficInfo){
-        JLabel jLabel = new JLabel(trafficInfo);
-        trafficList.add(jLabel);
+        dlm.addElement(trafficInfo);
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         System.out.println("Something happened");
-        System.out.println(evt);/*
+        System.out.println();
         if (evt.getPropertyName().equals("message")){
-            traffic.add(evt.toString());
-        } else if (evt.getPropertyName().equals("logged in")){
-            traffic.add(evt.toString());
-        } else if (evt.getPropertyName().equals("logged out")){
-            traffic.add(evt.toString());
-        }*/
+            String name = String.valueOf(evt.getNewValue());
+            traffic.add(name + " just logged in.");
+        } else if (evt.getPropertyName().equals("login")){
+            updateTraffic(evt + " just logged in.");
+        } else if (evt.getPropertyName().equals("logout")){
+            updateTraffic(evt + " just logged out.");
+        }
     }
 
     private class ServerUIThread extends Thread {
         @Override
         public void run(){
             while (true){
-                //String traffic =
-                //updateTraffic();
+
 
             }
         }

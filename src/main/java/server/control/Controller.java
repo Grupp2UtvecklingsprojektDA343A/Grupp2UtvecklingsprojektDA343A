@@ -12,11 +12,11 @@ import java.beans.PropertyChangeSupport;
 public class Controller implements PropertyChangeListener {
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private Server server;
+    private ServerUI serverUI;
 
     public Controller(){
         server = new Server(this, 20008);
-        server.addListener(this);
-        ServerUI serverUI = new ServerUI(this);
+        ServerUI serverUI = new ServerUI(server);
     }
 
     public void addListener(PropertyChangeListener listener){
@@ -25,8 +25,16 @@ public class Controller implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        pcs.firePropertyChange("message", null, evt);
-        System.out.println("fjupp");
+        // System.out.println();
+        // pcs.firePropertyChange("message", null, evt);
+        // if (evt.getPropertyName().equals("login")) {
+        //     pcs.firePropertyChange("login", null, evt);
+        //     System.out.println("Test " + evt.getPropertyName());
+        // } else if (evt.getPropertyName().equals("logout")){
+        //     pcs.firePropertyChange("logout", null, evt);
+        // } else {
+        //     pcs.firePropertyChange("sent", null, evt);
+        // }
     }
 
     public synchronized void parseMessage(Message message) {
@@ -43,5 +51,9 @@ public class Controller implements PropertyChangeListener {
 
     public synchronized boolean userExists(User user) {
         return server.userExists(user);
+    }
+
+    public void addToTraffic(String traffic){
+        serverUI.updateTraffic(traffic);
     }
 }
