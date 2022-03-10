@@ -13,6 +13,7 @@ public class InputClient extends Thread {
     public InputClient(Client client,ObjectInputStream ois) {
         this.ois = ois;
         this.client = client;
+        start();
     }
 
     @Override
@@ -24,7 +25,7 @@ public class InputClient extends Thread {
 
                 switch(type) {
                     case Message.CONTACTS -> {
-                        client.showAllUsers(message.getContacts());
+                        this.client.showAllUsers(message.getContacts());
                     }
 
                     case Message.TEXT -> {
@@ -49,7 +50,6 @@ public class InputClient extends Thread {
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
-                System.exit(3);
             }
         }
     }

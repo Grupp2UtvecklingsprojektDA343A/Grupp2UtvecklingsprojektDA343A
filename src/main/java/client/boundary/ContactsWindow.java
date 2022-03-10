@@ -55,6 +55,9 @@ public class ContactsWindow extends DefaultWindow implements KeyListener, IConta
                 windowHandler.contactsWindowClosed();
             }
         });
+        repaint();
+        revalidate();
+        pack();
     }
 
     @Override

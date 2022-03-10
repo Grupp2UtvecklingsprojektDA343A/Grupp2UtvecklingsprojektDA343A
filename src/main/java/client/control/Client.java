@@ -36,9 +36,9 @@ public class Client {
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private Message message = null;
+    private InputClient inputClient;
     private ArrayList<User> currentlyOnline = new ArrayList<>();
     private final WindowHandler windowHandler = new WindowHandler(this);
-    private boolean disconnected;
 
 
     public void showGUI() {
@@ -70,6 +70,7 @@ public class Client {
 
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
+                System.exit(3);
             }
         }).start();
     }
@@ -118,7 +119,7 @@ public class Client {
             switch(type) {
                 case Message.CONTACTS -> {
                     User[] loggedInUsers = message.getContacts();
-                    for(User user : loggedInUsers) {
+                    for (User user : loggedInUsers) {
                         String username = user.getUsername();
                         ImageIcon profilePic = user.getIcon();
 
@@ -126,7 +127,6 @@ public class Client {
                 }
 
                 case Message.TEXT -> {
-                    System.out.println("bara text");
                     // mainWindow.newImageMessage(icon,sender);
                     // String sender = String.valueOf(message.getSender());
                     // String guiMessage = message.getMessage();
@@ -156,7 +156,7 @@ public class Client {
         oos.close();
     }
     public void showAllUsers(User[] loggedInUsers){
-        windowHandler.updateListOfContacts(loggedInUsers);
+        //Show all users in GUI CLASS
     }
 
     public void closeApplication() {
@@ -165,15 +165,14 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         windowHandler.closeAllWindows();
-        disconnected = true;
     }
 
     public void startChatWithUser(String username) {
         new ThreadHandler(this).start();
         windowHandler.openChatWindow(username);
     }
-
     private class ThreadHandler extends Thread{
         private InputClient inputClient;
         private OutputClient outputClient;
