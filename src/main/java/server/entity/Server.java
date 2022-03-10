@@ -131,7 +131,6 @@ public class Server implements PropertyChangeListener {
     private class Connection extends Thread {
         public void run() {
             Socket socket = null;
-            User user = null;
             System.out.println("Server startar");
             while (true) {
                 try {
@@ -139,10 +138,10 @@ public class Server implements PropertyChangeListener {
                     ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
                     ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 
-                    Message msg = (Message) ois.readObject();
+                    Message message = (Message) ois.readObject();
 
-                    if(msg.getType() == Message.LOGIN) {
-                        new LoginHandler(socket, oos, ois).start();
+                    if(message.getType() == Message.LOGIN) {
+                        new LoginHandler(socket, oos, ois, message.getSender()).start();
                     } else {
                         // ny chatt
 
@@ -159,11 +158,13 @@ public class Server implements PropertyChangeListener {
         private final Socket socket;
         private final ObjectOutputStream oos;
         private final ObjectInputStream ois;
+        private User user;
 
-        public LoginHandler(Socket socket, ObjectOutputStream oos, ObjectInputStream ois) {
+        public LoginHandler(Socket socket, ObjectOutputStream oos, ObjectInputStream ois, User user) {
             this.socket = socket;
             this.oos = oos;
             this.ois = ois;
+            this.user = user;
         }
 
         @Override
@@ -171,7 +172,10 @@ public class Server implements PropertyChangeListener {
             ClientHandler clientHandler = null;
             try {
                 while(clientHandler == null) {
-                    User user = (User) ois.readObject();
+                    if(user == null) {
+                        Message message = (Message) ois.readObject();
+                        user = message.getSender();
+                    }
                     Message reply;
 
                     if(!controller.userExists(user)) { // kan logga in
@@ -182,9 +186,10 @@ public class Server implements PropertyChangeListener {
                         clientHandler.start();
                         clientHandler.getServerSender().send(reply);
                     } else { // kan inte logga in
-                        reply =  new Message.Builder().type(Message.LOGIN_FAILED).build();
+                        reply = new Message.Builder().type(Message.LOGIN_FAILED).build();
                         oos.writeObject(reply);
                         oos.flush();
+                        user = null;
                     }
                 }
             } catch (IOException | ClassNotFoundException e) {
