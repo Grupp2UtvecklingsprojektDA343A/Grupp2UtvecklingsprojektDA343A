@@ -15,7 +15,7 @@ import java.util.HashMap;
 public class WindowHandler {
     private LoginWindow logInWindow;
     private ContactsWindow contactsWindow;
-    private final HashMap<String, ChatWindow> chatWindows = new HashMap<>();
+    private final HashMap<User, ChatWindow> chatWindows = new HashMap<>();
     private Client client;
 
     public WindowHandler(Client client) {
@@ -71,25 +71,25 @@ public class WindowHandler {
     }
 
     // CHAT WINDOWS //
-    public void openChatWindow(String username) {
-        if(isChatWindowOpen(username)) {
-            focusChatWindow(username);
+    public void openChatWindow(User user) {
+        if(isChatWindowOpen(user)) {
+            focusChatWindow(user);
         } else {
-            addChatWindow(username, new ChatWindow(client, username, this));
+            addChatWindow(user, new ChatWindow(client, user.getUsername(), user.getIcon(), this));
         }
     }
 
-    public boolean isChatWindowOpen(String username) {
-        return chatWindows.containsKey(username);
+    public boolean isChatWindowOpen(User user) {
+        return chatWindows.containsKey(user);
     }
 
-    public void focusChatWindow(String username) {
-        showWindow(chatWindows.get(username));
+    public void focusChatWindow(User user) {
+        showWindow(chatWindows.get(user));
     }
 
-    public void addChatWindow(String username, ChatWindow chatWindow) {
-        chatWindows.put(username, chatWindow);
-        focusChatWindow(username);
+    public void addChatWindow(User user, ChatWindow chatWindow) {
+        chatWindows.put(user, chatWindow);
+        focusChatWindow(user);
     }
 
     public void removeChatWindow(String username) {
@@ -108,7 +108,7 @@ public class WindowHandler {
             contactsWindow = null;
         }
 
-        for(String user : chatWindows.keySet()) {
+        for(User user : chatWindows.keySet()) {
             chatWindows.get(user).dispose();
         }
         chatWindows.clear();

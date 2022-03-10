@@ -1,7 +1,6 @@
 package client.control;
 
 import client.boundary.DefaultWindow;
-import client.boundary.GUItest;
 import client.boundary.LoginWindow;
 import globalEntity.Message;
 import globalEntity.User;
@@ -38,7 +37,7 @@ public class Client {
     private Message message = null;
     private InputClient inputClient;
     private OutputClient outputClient;
-    private ArrayList<User> currentlyOnline = new ArrayList<>();
+    private HashMap<String, User> currentlyOnline = new HashMap<>();
     private final WindowHandler windowHandler = new WindowHandler(this);
     private boolean disconnected;
 
@@ -113,14 +112,26 @@ public class Client {
         }
     }
     public void setToOnline(User user){
-        currentlyOnline.add(user);
-        GUItest guItest = new GUItest(convert());
+
     }
     public void setToOffline(User user){
-        currentlyOnline.remove(user);
+
     }
     public void updateListOfContacts(User[] loggedInUsers){
+        currentlyOnline.clear();
+        for(User user : loggedInUsers) {
+            currentlyOnline.put(user.getUsername(), user);
+        }
         windowHandler.updateListOfContacts(loggedInUsers);
+    }
+    public void sendMessage(String username, String text) {
+        Message message = new Message.Builder()
+            .type(Message.TEXT)
+            .message(text)
+            .sender(user)
+            .receiver(currentlyOnline.get(username))
+            .build();
+        outputClient.send(message);
     }
     public void showGUI() {
         SwingUtilities.invokeLater(() -> {
@@ -128,7 +139,7 @@ public class Client {
         });
     }
     public void startChatWithUser(String username) {
-        windowHandler.openChatWindow(username);
+        windowHandler.openChatWindow(user);
     }
     private void stopThreads() {
         inputClient.running = false;

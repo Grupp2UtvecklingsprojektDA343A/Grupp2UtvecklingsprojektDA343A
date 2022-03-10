@@ -1,6 +1,7 @@
 package client.control;
 
 import globalEntity.Message;
+import globalEntity.User;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -30,7 +31,8 @@ public class InputClient extends Thread {
                     }
 
                     case Message.TEXT -> {
-                        System.out.println("bara text");
+                        User sender = message.getSender();
+
                         // mainWindow.newImageMessage(icon,sender);
                         // String sender = String.valueOf(message.getSender());
                         // String guiMessage = message.getMessage();

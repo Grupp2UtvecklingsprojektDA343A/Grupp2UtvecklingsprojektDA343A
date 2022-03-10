@@ -1,6 +1,7 @@
 package server.entity;
 
 import globalEntity.Message;
+import globalEntity.User;
 import server.control.Controller;
 // import globalEntity.User;
 
@@ -30,8 +31,17 @@ public class ServerReceiver extends Thread {
         try {
             while (true) {
                 Message message = (Message) ois.readObject(); // klienten skickar något (alltid ett message)
-                controller.parseMessage(message);
-                // setMessage(message);
+                User sender = message.getSender();
+                User receiver = message.getReceiver();
+
+                switch(message.getType()) {
+                    case Message.CONTACTS -> {}
+                    case Message.TEXT -> {
+                        controller.sendMessage(message);
+                    }
+                    case Message.IMAGE -> {}
+                    case Message.TEXT_AND_IMAGE -> {}
+                }
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

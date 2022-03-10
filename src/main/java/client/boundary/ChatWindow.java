@@ -3,6 +3,7 @@ package client.boundary;
 import client.control.Client;
 import client.control.WindowHandler;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -24,12 +25,14 @@ public class ChatWindow extends DefaultWindow {
     private JTextArea textInput;
     private JLabel name, onlineStatus, profilePicture;
     private JButton sendButton;
+    private final String currentChatter;
 
-    public ChatWindow(Client client, String currentChatter, WindowHandler windowHandler) {
+    public ChatWindow(Client client, String currentChatter, ImageIcon profilePicture, WindowHandler windowHandler) {
         super(client, true);
+        this.currentChatter = currentChatter;
         // Dimension dimension = new Dimension(500, 500);
         // setSize(dimension);
-        setTitle("Arlako chatt window: " + currentChatter);
+        setTitle("Arlako chatt with: " + currentChatter);
 
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -43,9 +46,8 @@ public class ChatWindow extends DefaultWindow {
         textInput.setPreferredSize(dimension);
         setVisible(true);
         setLocationRelativeTo(null);
-        name = new JLabel("Namn Namnsson");
-        onlineStatus = new JLabel("Onfline");
-        profilePicture = new JLabel(ImageHandler.createImageIcon("/arlako.png", 30, 30));
+        name = new JLabel(currentChatter);
+        onlineStatus = new JLabel("Online");
         conversationArea = new JScrollPane();
         sendButton = new JButton("Send");
         GridBagConstraints constraints = new GridBagConstraints();
@@ -62,7 +64,13 @@ public class ChatWindow extends DefaultWindow {
         showContacts.addActionListener(l -> {
             windowHandler.showContactWindow();
         });
-        addToFileMenu(showContacts);;
+        addToFileMenu(showContacts);
+
+        sendButton.addActionListener(l -> {
+            if(!textInput.getText().isEmpty()) {
+                sendMessage(textInput.getText());
+            }
+        });
 
         textInput.setBackground(Color.WHITE);
         textInput.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -81,7 +89,7 @@ public class ChatWindow extends DefaultWindow {
 
         constraints.gridy = 0;
         constraints.gridx = 1;
-        add(profilePicture, constraints);
+        add(new JLabel(profilePicture), constraints);
 
         constraints.gridy = 1;
         add(name, constraints);
@@ -108,6 +116,10 @@ public class ChatWindow extends DefaultWindow {
 
     public void showMessage() {
 
+    }
+
+    public void sendMessage(String text) {
+        getClient().sendMessage(currentChatter, text);
     }
 
     @Override

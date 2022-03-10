@@ -29,19 +29,11 @@ public class Controller implements PropertyChangeListener {
         System.out.println("fjupp");
     }
 
-    public synchronized void parseMessage(Message message) {
-        User sender = message.getSender();
-        User receiver = message.getReceiver();
-
-        switch(message.getType()) {
-            case Message.CONTACTS -> {}
-            case Message.TEXT -> {}
-            case Message.IMAGE -> {}
-            case Message.TEXT_AND_IMAGE -> {}
-        }
-    }
-
     public synchronized boolean userExists(User user) {
         return server.userExists(user);
+    }
+
+    public void sendMessage(Message message) {
+        server.sendMessage(message);
     }
 }
