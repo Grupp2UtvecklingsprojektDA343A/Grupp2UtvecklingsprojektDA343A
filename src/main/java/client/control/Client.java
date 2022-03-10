@@ -1,6 +1,6 @@
 package client.control;
 
-import client.boundary.Caller;
+import client.boundary.ILoginWindow;
 import client.boundary.DefaultWindow;
 import client.boundary.GUItest;
 import globalEntity.Message;
@@ -9,7 +9,6 @@ import server.entity.ClientHandler;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -47,13 +46,14 @@ public class Client {
         SwingUtilities.invokeLater(windowHandler::openLogInWindow);
     }
 
-    public void logIn(String username, ImageIcon profilePicture, String host, int port, Caller caller) {
+    public void logIn(String username, ImageIcon profilePicture, String host, int port, ILoginWindow ILoginWindow) {
         new Thread(() -> {
             user = new User(username, profilePicture);
+            Message newLogin = new Message.Builder().type(Message.LOGIN).sender(user).build();
 
             try {
                 connect(host, port);
-                oos.writeObject(user);
+                oos.writeObject(newLogin);
                 oos.flush();
                 // Ta emot
                 Message answer = (Message) ois.readObject();
@@ -62,7 +62,7 @@ public class Client {
                     windowHandler.openContactsWindow(username, profilePicture);
                     windowHandler.closeLogInWindow();
                 }else{
-                    caller.done();
+                    ILoginWindow.done();
                     WindowHandler.showErrorMessage(windowHandler.getLogInWindow(),"Failed loggin","loggin failed");
                     windowHandler.openLogInWindow();
                 }
@@ -150,13 +150,8 @@ public class Client {
         oos.flush();
         oos.close();
     }
-
-    public void getAllUser(){
-        try(DataInputStream dis = new DataInputStream(socket.getInputStream())) {
-            ArrayList<String> allUsers = new ArrayList<>();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void showAllUsers(User[] loggedInUsers){
+        //Show all users in GUI CLASS
     }
 
     public void closeApplication() {
@@ -170,17 +165,21 @@ public class Client {
     }
 
     public void startChatWithUser(String username) {
-        new threadHandler().start();
+        new threadHandler(this).start();
         windowHandler.openChatWindow(username);
     }
     private class threadHandler extends Thread{
         private InputClient inputClient;
         private OutputClient outputClient;
+        private Client client;
+        public threadHandler(Client client){
+            this.client = client;
+        }
         @Override
         public void run() {
             while(!Thread.interrupted()){
                 System.out.println("Thread 1 running");
-                inputClient = new InputClient(ois);
+                inputClient = new InputClient(client,ois);
                 outputClient = new OutputClient(oos);
                 inputClient.start();
             }

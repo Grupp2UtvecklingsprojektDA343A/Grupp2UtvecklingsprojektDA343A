@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-
 public class Server implements PropertyChangeListener {
     private final Controller controller;
     private ArrayList<String> traffic = new ArrayList<>();
@@ -59,9 +58,11 @@ public class Server implements PropertyChangeListener {
 
     }
 
-    public void readFriends(String filename) { //läser vänlista
+    public ArrayList<User> readFriendlist(User user) {
+        String filename = String.format("files/"+user.getUsername()+"_friends.dat");
+        ArrayList<User> friends = new ArrayList<>();
+
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
-            ArrayList<User> friends = new ArrayList<>();
             for(User friend : friends) {
                 friend = (User) ois.readObject();
                 friends.add(friend);
@@ -69,10 +70,16 @@ public class Server implements PropertyChangeListener {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        return friends;
     }
 
-    public void createFriends(String filename) {
-        ArrayList<User> friends = new ArrayList<>(); //ta in storlek på arraylist !
+    public void createFriendlist(User user, ArrayList<User> users) {
+        ArrayList<User> friends = new ArrayList<>(users.size());
+        for(int i = 0; i < users.size(); i++) {
+            friends.add(users.get(i));
+        }
+        String filename = String.format("files/"+user.getUsername()+"_friends.dat");
+
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             for(User friend : friends) {
                 oos.writeObject(friend);
@@ -85,7 +92,7 @@ public class Server implements PropertyChangeListener {
     }
 
     public void setToOnline(User user){
-        client.setToOnline(user);
+        //client.setToOnline(user);
     }
 
     public void setToOffline(User user){
@@ -164,7 +171,6 @@ public class Server implements PropertyChangeListener {
                         System.out.println(reply.getType());
                         clientHandler = new ClientHandler(controller, socket, oos, ois);
                         addLoggedInUser(user, clientHandler);
-                        setToOnline(user);
                         clientHandler.start();
                         clientHandler.getServerSender().send(reply);
                     } else { // kan inte logga in
@@ -185,3 +191,7 @@ public class Server implements PropertyChangeListener {
         pcs.addPropertyChangeListener(listener);
     }
 }
+
+
+
+

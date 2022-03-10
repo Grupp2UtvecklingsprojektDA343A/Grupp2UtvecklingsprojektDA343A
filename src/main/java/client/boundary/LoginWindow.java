@@ -8,7 +8,6 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -23,7 +22,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class LoginWindow extends DefaultWindow implements KeyListener, Caller {
+public class LoginWindow extends DefaultWindow implements KeyListener, ILoginWindow {
     private final JButton bLogin = new JButton("login");
     private final JLabel spinningGear = new JLabel(ImageHandler.createImageIcon("/gear.gif"));
     private JLabel bProfilePicture;
