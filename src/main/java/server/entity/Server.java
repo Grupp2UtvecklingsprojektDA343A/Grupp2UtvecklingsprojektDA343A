@@ -59,9 +59,11 @@ public class Server implements PropertyChangeListener {
 
     }
 
-    public void readFriends(String filename) { //läser vänlista
+    public ArrayList<User> readFriendlist(User user) {
+        String filename = String.format("files/"+user.getUsername()+"_friends.dat");
+        ArrayList<User> friends = new ArrayList<>();
+
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
-            ArrayList<User> friends = new ArrayList<>();
             for(User friend : friends) {
                 friend = (User) ois.readObject();
                 friends.add(friend);
@@ -69,10 +71,16 @@ public class Server implements PropertyChangeListener {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        return friends;
     }
 
-    public void createFriends(String filename) {
-        ArrayList<User> friends = new ArrayList<>(); //ta in storlek på arraylist !
+    public void createFriendlist(User user, ArrayList<User> users) {
+        ArrayList<User> friends = new ArrayList<>(users.size());
+        for(int i = 0; i < users.size(); i++) {
+            friends.add(users.get(i));
+        }
+        String filename = String.format("files/"+user.getUsername()+"_friends.dat");
+
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             for(User friend : friends) {
                 oos.writeObject(friend);
