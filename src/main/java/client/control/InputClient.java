@@ -1,15 +1,17 @@
 package client.control;
 
 import globalEntity.Message;
-import globalEntity.User;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.SocketException;
 
 public class InputClient extends Thread {
     private ObjectInputStream ois;
     private Message message;
     private Client client;
+    public volatile boolean running = true;
+
     public InputClient(Client client,ObjectInputStream ois) {
         this.ois = ois;
         this.client = client;
@@ -17,16 +19,14 @@ public class InputClient extends Thread {
 
     @Override
     public void run() {
-        while (!Thread.interrupted()){
-            System.out.println("Thread 2 input thread running");
+        while (running){
             try {
                 message = (Message) ois.readObject();
                 int type = message.getType();
 
                 switch(type) {
                     case Message.CONTACTS -> {
-                        User[] loggedInUsers = message.getContacts();
-                        this.client.showAllUsers(loggedInUsers);
+                        this.client.showAllUsers(message.getContacts());
                     }
 
                     case Message.TEXT -> {
@@ -49,8 +49,11 @@ public class InputClient extends Thread {
                         System.err.println("FEL?");
                     }
                 }
+            } catch (SocketException e) {
+                client.logOut(null);
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
+                System.exit(4);
             }
         }
     }
