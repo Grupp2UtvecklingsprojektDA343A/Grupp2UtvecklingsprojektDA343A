@@ -5,6 +5,8 @@ import client.boundary.ContactsWindow;
 import client.boundary.DefaultWindow;
 import client.boundary.ImageHandler;
 import client.boundary.LoginWindow;
+import globalEntity.User;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -57,6 +59,12 @@ public class WindowHandler {
             client.closeApplication();
         } else {
             showWindow(contactsWindow);
+        }
+    }
+
+    public void updateListOfContacts(User[] loggedInUsers) {
+        for(User user : loggedInUsers) {
+            contactsWindow.addUser(user.getUsername(), user.getIcon());
         }
     }
 

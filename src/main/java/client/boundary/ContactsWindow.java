@@ -13,10 +13,12 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 public class ContactsWindow extends DefaultWindow implements KeyListener, IContacts {
     private final GridBagConstraints constraints = new GridBagConstraints();
     private WindowHandler windowHandler;
+    private final ArrayList<String> listOfUser = new ArrayList<>();
 
     public ContactsWindow(Client client, WindowHandler windowHandler, boolean showMenuBar, String username, ImageIcon profilePicture) {
         super(client, showMenuBar);
@@ -57,15 +59,26 @@ public class ContactsWindow extends DefaultWindow implements KeyListener, IConta
 
     @Override
     public void addUser(String username, ImageIcon profilePicture) {
-        ++constraints.gridy; // rad
-        constraints.gridx = 0; // column
-        constraints.gridwidth = 2;
+        if(!isOnList(username)) {
+            ++constraints.gridy; // rad
+            constraints.gridx = 0; // column
+            constraints.gridwidth = 2;
 
-        UserButton userButton = new UserButton(username, profilePicture);
-        userButton.addActionListener(l -> {
-            getClient().startChatWithUser(username);
-        });
-        add(userButton, constraints);
+            UserButton userButton = new UserButton(username, profilePicture);
+            userButton.addActionListener(l -> {
+                getClient().startChatWithUser(username);
+            });
+            add(userButton, constraints);
+            addToList(username);
+        }
+    }
+
+    private void addToList(String username) {
+        listOfUser.add(username);
+    }
+
+    private boolean isOnList(String username) {
+        return listOfUser.contains(username);
     }
 
     @Override
