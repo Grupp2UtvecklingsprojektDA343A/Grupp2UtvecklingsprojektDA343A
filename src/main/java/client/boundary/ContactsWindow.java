@@ -15,7 +15,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
-public class ContactsWindow extends DefaultWindow implements KeyListener, IContacts {
+public class ContactsWindow extends DefaultWindow implements KeyListener {
     private final GridBagConstraints constraints = new GridBagConstraints();
     private WindowHandler windowHandler;
     private final ArrayList<String> listOfUser = new ArrayList<>();
