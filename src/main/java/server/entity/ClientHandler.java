@@ -6,6 +6,7 @@ import server.control.Controller;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Collection;
 
 public class ClientHandler extends Thread {
     private final Socket socket;
@@ -21,18 +22,15 @@ public class ClientHandler extends Thread {
         this.controller = controller;
         // this.ois = ois;
         // this.oos = oos;
-
         serverReceiver = new ServerReceiver(controller, ois);
         serverReceiver.start();
         serverSender = new ServerSender(controller, oos);
         serverSender.start();
         // pcs.firePropertyChange("username", null, username);
     }
-
     public synchronized void send(Message message) {
         serverSender.send(message);
     }
-
     public ServerSender getServerSender() {
         try {
             serverSender.join();
@@ -40,5 +38,9 @@ public class ClientHandler extends Thread {
             e.printStackTrace();
         }
         return serverSender;
+    }
+    public void closeThread(Object newValue, Collection<ClientHandler> values){
+        serverReceiver.interrupt();
+        serverSender.interrupt();
     }
 }

@@ -19,7 +19,6 @@ public class ServerSender extends Thread implements PropertyChangeListener {
         this.controller = controller;
         this.oos = oos;
     }
-
     public synchronized void run() {
         // try {
         //     while(true) {
@@ -31,7 +30,6 @@ public class ServerSender extends Thread implements PropertyChangeListener {
         //     e.printStackTrace();
         // }
     }
-
     public synchronized void send(Message message) {
         // this.message = message;
         // notifyAll();
@@ -42,12 +40,10 @@ public class ServerSender extends Thread implements PropertyChangeListener {
             e.printStackTrace();
         }
     }
-
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
             case "login" -> {
-
             }
         }
     }

@@ -159,16 +159,18 @@ public class Server implements PropertyChangeListener {
         private final Socket socket;
         private final ObjectOutputStream oos;
         private final ObjectInputStream ois;
+        private ClientHandler clientHandler;
 
         public LoginHandler(Socket socket, ObjectOutputStream oos, ObjectInputStream ois) {
             this.socket = socket;
             this.oos = oos;
             this.ois = ois;
+
         }
 
         @Override
         public void run() {
-            ClientHandler clientHandler = null;
+            clientHandler = null;
             try {
                 while(clientHandler == null) {
                     User user = (User) ois.readObject();
@@ -192,6 +194,15 @@ public class Server implements PropertyChangeListener {
             }
 
             interrupt(); // Stoppa tråden
+        }
+        public void closeThread(PropertyChangeEvent evt){
+            if(evt.getPropertyName().equals("true") && evt.getNewValue() instanceof User){
+                if(loggedInUsers.containsKey(evt.getNewValue())){
+                    clientHandler.closeThread(evt.getNewValue(), loggedInUsers.values());
+                }
+            } else{
+                    System.out.println("user not found");
+                }
         }
     }
 

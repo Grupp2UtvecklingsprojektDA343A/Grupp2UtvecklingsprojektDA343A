@@ -40,6 +40,7 @@ public class Client {
     private ClientHandler clientHandler;
     private ArrayList<User> currentlyOnline = new ArrayList<>();
     private final WindowHandler windowHandler = new WindowHandler(this);
+    private boolean disconnected;
 
 
     public void showGUI() {
@@ -160,8 +161,8 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         windowHandler.closeAllWindows();
+        disconnected = true;
     }
 
     public void startChatWithUser(String username) {
