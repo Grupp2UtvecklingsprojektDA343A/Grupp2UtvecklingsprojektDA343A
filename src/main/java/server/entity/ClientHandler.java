@@ -39,8 +39,10 @@ public class ClientHandler extends Thread {
         }
         return serverSender;
     }
-    public void closeThread(Object newValue, Collection<ClientHandler> values){
+    public void closeThread(){
         serverReceiver.interrupt();
         serverSender.interrupt();
+        interrupt();
     }
+
 }

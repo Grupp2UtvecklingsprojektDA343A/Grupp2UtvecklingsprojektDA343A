@@ -4,7 +4,7 @@ import client.control.Client;
 import globalEntity.Message;
 import globalEntity.User;
 import server.control.Controller;
-
+import client.control.Client;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -83,6 +83,9 @@ public class Server implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
 
     }
+    public Long getThreadID(ClientHandler clientHandler){
+        return  clientHandler.getId();
+    }
 
     public ArrayList<User> readFriendlist(User user) {
         String filename = String.format("files/"+user.getUsername()+"_friends.dat");
@@ -154,6 +157,7 @@ public class Server implements PropertyChangeListener {
         private final ObjectOutputStream oos;
         private final ObjectInputStream ois;
         private User user;
+        private Client client;
 
         public LoginHandler(Socket socket, ObjectOutputStream oos, ObjectInputStream ois, User user) {
             this.socket = socket;
@@ -176,6 +180,7 @@ public class Server implements PropertyChangeListener {
                         reply =  new Message.Builder().type(Message.LOGIN_SUCCESS).build();
                         clientHandler = new ClientHandler(controller, socket, oos, ois);
                         addLoggedInUser(user, clientHandler);
+                        client.addPropertyChangeListener((PropertyChangeListener) this);
                         clientHandler.start();
                         clientHandler.getServerSender().send(reply);
                     } else { // kan inte logga in
@@ -193,13 +198,13 @@ public class Server implements PropertyChangeListener {
         public void closeThread(PropertyChangeEvent evt){
             if(evt.getPropertyName().equals("true") && evt.getNewValue() instanceof User){
                 if(loggedInUsers.containsKey(evt.getNewValue())){
-                    loggedInUsers.get(evt.getNewValue()).closeThread(evt.getNewValue(), loggedInUsers.values());
+                    loggedInUsers.get(evt.getNewValue()).closeThread();
+                    //loggedInUsers.get(evt.getNewValue()).interrupt();
                 }
                 else {
                     System.out.println("User not found");
                 }
             }
-
         }
     }
 }

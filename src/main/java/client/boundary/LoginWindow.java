@@ -220,7 +220,6 @@ public class LoginWindow extends DefaultWindow implements KeyListener {
     public void closeApplication() {
         getClient().closeApplication();
     }
-
     public void done() {
         spinningGear.setVisible(false);
     }
