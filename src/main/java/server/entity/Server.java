@@ -193,7 +193,7 @@ public class Server implements PropertyChangeListener {
         public void closeThread(PropertyChangeEvent evt){
             if(evt.getPropertyName().equals("true") && evt.getNewValue() instanceof User){
                 if(loggedInUsers.containsKey(evt.getNewValue())){
-                    clientHandler.closeThread(evt.getNewValue(), loggedInUsers.values());
+                    loggedInUsers.get(evt.getNewValue()).closeThread(evt.getNewValue(), loggedInUsers.values());
                 }
                 else {
                     System.out.println("User not found");
