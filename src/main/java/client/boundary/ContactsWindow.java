@@ -95,6 +95,7 @@ public class ContactsWindow extends DefaultWindow implements KeyListener, IConta
             setText(name);
             setIcon(profilePicture);
             addActionListener(l -> {
+                // Öppna ny ström mot server för den kontakten
                 // Öppna fönster mot kontakt
             });
         }
