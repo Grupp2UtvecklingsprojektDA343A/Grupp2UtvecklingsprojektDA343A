@@ -5,7 +5,6 @@ import client.boundary.DefaultWindow;
 import client.boundary.GUItest;
 import globalEntity.Message;
 import globalEntity.User;
-import server.entity.ClientHandler;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
@@ -37,7 +36,6 @@ public class Client {
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private Message message = null;
-    private ClientHandler clientHandler;
     private ArrayList<User> currentlyOnline = new ArrayList<>();
     private final WindowHandler windowHandler = new WindowHandler(this);
     private boolean disconnected;
@@ -61,6 +59,7 @@ public class Client {
                 // 4.1 kunde inte logga in
                 if (answer.getType() == Message.LOGIN_SUCCESS){
                     windowHandler.openContactsWindow(username, profilePicture);
+                    new ThreadHandler(this).start();
                     windowHandler.closeLogInWindow();
                 }else{
                     ILoginWindow.done();
@@ -152,7 +151,7 @@ public class Client {
         oos.close();
     }
     public void showAllUsers(User[] loggedInUsers){
-        //Show all users in GUI CLASS
+        windowHandler.updateListOfContacts(loggedInUsers);
     }
 
     public void closeApplication() {
@@ -166,14 +165,14 @@ public class Client {
     }
 
     public void startChatWithUser(String username) {
-        new threadHandler(this).start();
+        new ThreadHandler(this).start();
         windowHandler.openChatWindow(username);
     }
-    private class threadHandler extends Thread{
+    private class ThreadHandler extends Thread{
         private InputClient inputClient;
         private OutputClient outputClient;
         private Client client;
-        public threadHandler(Client client){
+        public ThreadHandler(Client client){
             this.client = client;
         }
         @Override

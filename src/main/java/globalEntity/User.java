@@ -7,9 +7,9 @@ public class User implements Serializable {
     //todo class with username, id, profile pic
     private String username;
 
-    private Icon icon;
+    private ImageIcon icon;
     private boolean loggedIn;
-    public User(String username, Icon icon){
+    public User(String username, ImageIcon icon){
         this.username = username;
 
         this.icon = icon;
@@ -20,10 +20,10 @@ public class User implements Serializable {
     public void setUsername(String username) {
         this.username = username;
     }
-    public Icon getIcon() {
+    public ImageIcon getIcon() {
         return icon;
     }
-    public void setIcon(Icon icon) {
+    public void setIcon(ImageIcon icon) {
         this.icon = icon;
     }
     public boolean getLoggedIn(){
