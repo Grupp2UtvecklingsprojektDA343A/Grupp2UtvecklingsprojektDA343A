@@ -1,6 +1,6 @@
 package client.control;
 
-import client.boundary.Caller;
+import client.boundary.ILoginWindow;
 import client.boundary.DefaultWindow;
 import client.boundary.GUItest;
 import globalEntity.Message;
@@ -46,7 +46,7 @@ public class Client {
         SwingUtilities.invokeLater(windowHandler::openLogInWindow);
     }
 
-    public void logIn(String username, ImageIcon profilePicture, String host, int port, Caller caller) {
+    public void logIn(String username, ImageIcon profilePicture, String host, int port, ILoginWindow ILoginWindow) {
         new Thread(() -> {
             user = new User(username, profilePicture);
 
@@ -61,7 +61,7 @@ public class Client {
                     windowHandler.openContactsWindow(username, profilePicture);
                     windowHandler.closeLogInWindow();
                 }else{
-                    caller.done();
+                    ILoginWindow.done();
                     WindowHandler.showErrorMessage(windowHandler.getLogInWindow(),"Failed loggin","loggin failed");
                     windowHandler.openLogInWindow();
                 }
