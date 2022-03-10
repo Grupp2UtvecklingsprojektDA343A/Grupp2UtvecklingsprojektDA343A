@@ -12,6 +12,7 @@ public class GUItest {
     public GUItest(String[] array){
         for (int i = 0; i < array.length; i++) {
             System.out.println(array[i]);
+            //jlist.add(array[i]);
         }
     }
 }
