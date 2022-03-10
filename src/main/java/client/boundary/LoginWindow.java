@@ -21,18 +21,26 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.prefs.Preferences;
 
 public class LoginWindow extends DefaultWindow implements KeyListener, ILoginWindow {
     private final JButton bLogin = new JButton("login");
     private final JLabel spinningGear = new JLabel(ImageHandler.createImageIcon("/gear.gif"));
     private JLabel bProfilePicture;
     private ImageIcon profilePicture;
+    private String username;
+    private String host;
+    private int port;
+    private final Preferences preferences = Preferences.userRoot().node("/ArlaKoChat");
 
     public LoginWindow(Client client, boolean showMenuBar) {
         super(client, showMenuBar);
 
         java.util.prefs.Preferences preferences = java.util.prefs.Preferences.userRoot().node("/ArlaKoChat");
         profilePicture = ImageHandler.createImageIcon(preferences.get("profilbild", "/arlako.png"), 57, 57);
+        username = preferences.get("username", "Mr. Kaffe");
+        host = preferences.get("host", "localhost");
+        port = preferences.getInt("port", 20008);
 
         setSize(500, 500);
         Dimension jTextFieldPreferredSize = new Dimension(100, 19);
@@ -41,8 +49,8 @@ public class LoginWindow extends DefaultWindow implements KeyListener, ILoginWin
         JLabel lUsername = new JLabel("Username: ");
         JLabel lHost = new JLabel("Host: ");
         JLabel lPort = new JLabel("Port: ");
-        JTextField tfUsername = new JTextField("Mr. Kaffe");
-        JTextField tfHost = new JTextField("localhost");
+        JTextField tfUsername = new JTextField(username);
+        JTextField tfHost = new JTextField(host);
         JTextField tfPort = new JTextField("20008");
 
         bProfilePicture.addMouseListener(new MouseListener() {
@@ -59,7 +67,6 @@ public class LoginWindow extends DefaultWindow implements KeyListener, ILoginWin
                     profilePicture = ImageHandler.createImageIcon(path, 57, 57);
                     bProfilePicture.setText(null);
                     bProfilePicture.setIcon(profilePicture);
-                    java.util.prefs.Preferences preferences = java.util.prefs.Preferences.userRoot().node("/ArlaKoChat");
                     preferences.put("profilbild", path);
                 }
             }
@@ -107,8 +114,13 @@ public class LoginWindow extends DefaultWindow implements KeyListener, ILoginWin
             }
 
             if (!missingFields) {
-                getClient().logIn(tfUsername.getText(), profilePicture, tfHost.getText(), port, this);
+                username = tfUsername.getText();
+                host = tfHost.getText();
+                getClient().logIn(username, profilePicture, host, port, this);
                 spinningGear.setVisible(true);
+                preferences.put("username", username);
+                preferences.put("host", host);
+                preferences.putInt("port", port);
             }
         });
 

@@ -117,6 +117,11 @@ public class Client {
             switch(type) {
                 case Message.CONTACTS -> {
                     User[] loggedInUsers = message.getContacts();
+                    for(User user : loggedInUsers) {
+                        String username = user.getUsername();
+                        ImageIcon profilePic = user.getIcon();
+
+                    }
                 }
 
                 case Message.TEXT -> {
@@ -167,6 +172,7 @@ public class Client {
         new ThreadHandler(this).start();
         windowHandler.openChatWindow(username);
     }
+
     private class ThreadHandler extends Thread{
         private InputClient inputClient;
         private OutputClient outputClient;
@@ -176,12 +182,9 @@ public class Client {
         }
         @Override
         public void run() {
-            while(!Thread.interrupted()){
-                System.out.println("Thread 1 running");
-                inputClient = new InputClient(client,ois);
-                outputClient = new OutputClient(oos);
-                inputClient.start();
-            }
+            inputClient = new InputClient(client,ois);
+            outputClient = new OutputClient(oos);
+            inputClient.start();
         }
     }
 }

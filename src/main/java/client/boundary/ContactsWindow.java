@@ -70,7 +70,11 @@ public class ContactsWindow extends DefaultWindow implements KeyListener, IConta
             });
             add(userButton, constraints);
             addToList(username);
+            System.out.println("la till " + username);
         }
+        repaint();
+        revalidate();
+        pack();
     }
 
     private void addToList(String username) {
