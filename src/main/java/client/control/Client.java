@@ -49,10 +49,11 @@ public class Client {
     public void logIn(String username, ImageIcon profilePicture, String host, int port, ILoginWindow ILoginWindow) {
         new Thread(() -> {
             user = new User(username, profilePicture);
+            Message newLogin = new Message.Builder().type(Message.LOGIN).sender(user).build();
 
             try {
                 connect(host, port);
-                oos.writeObject(user);
+                oos.writeObject(newLogin);
                 oos.flush();
                 // Ta emot
                 Message answer = (Message) ois.readObject();
