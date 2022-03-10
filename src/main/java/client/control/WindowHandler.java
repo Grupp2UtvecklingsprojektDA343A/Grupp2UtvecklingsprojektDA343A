@@ -64,7 +64,9 @@ public class WindowHandler {
 
     public void updateListOfContacts(User[] loggedInUsers) {
         for(User user : loggedInUsers) {
-            contactsWindow.addUser(user.getUsername(), user.getIcon());
+            if(user.getUsername().equals(client.getUsername())) {
+                contactsWindow.addUser(user.getUsername(), user.getIcon());
+            }
         }
     }
 
@@ -98,15 +100,18 @@ public class WindowHandler {
     public void closeAllWindows() {
         if(logInWindow != null) {
             logInWindow.dispose();
+            logInWindow = null;
         }
 
         if(contactsWindow != null) {
             contactsWindow.dispose();
+            contactsWindow = null;
         }
 
         for(String user : chatWindows.keySet()) {
             chatWindows.get(user).dispose();
         }
+        chatWindows.clear();
     }
 
     private void showWindow(JFrame window) {

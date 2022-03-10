@@ -1,8 +1,8 @@
 package client.control;
 
-import client.boundary.ILoginWindow;
 import client.boundary.DefaultWindow;
 import client.boundary.GUItest;
+import client.boundary.LoginWindow;
 import globalEntity.Message;
 import globalEntity.User;
 
@@ -37,15 +37,45 @@ public class Client {
     private ObjectInputStream ois;
     private Message message = null;
     private InputClient inputClient;
+    private OutputClient outputClient;
     private ArrayList<User> currentlyOnline = new ArrayList<>();
     private final WindowHandler windowHandler = new WindowHandler(this);
 
 
-    public void showGUI() {
-        SwingUtilities.invokeLater(windowHandler::openLogInWindow);
-    }
+    public void closeApplication() {
+        try {
+            disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-    public void logIn(String username, ImageIcon profilePicture, String host, int port, ILoginWindow ILoginWindow) {
+        stopThreads();
+        // outputClient
+        windowHandler.closeAllWindows();
+    }
+    public String[] convert(){
+        String[] temp = new String[currentlyOnline.size()];
+        for (int i = 0; i < temp.length; i++) {
+            temp[i] = currentlyOnline.get(i).toString();
+        } return temp;
+    }
+    private void connect(String ip, int port) throws IOException {
+        this.socket = new Socket(ip,port);
+        this.oos = new ObjectOutputStream(socket.getOutputStream());
+        this.ois = new ObjectInputStream(socket.getInputStream());
+    }
+    public void disconnect() throws IOException {
+        socket.close();
+    }
+    public String getUsername() {
+        return user.getUsername();
+    }
+    public void newUser(String username, ImageIcon icon) throws IOException {
+        oos.writeObject(new User(username,icon));
+        oos.flush();
+        oos.close();
+    }
+    public void logIn(String username, ImageIcon profilePicture, String host, int port, LoginWindow loginWindow) {
         new Thread(() -> {
             user = new User(username, profilePicture);
             Message newLogin = new Message.Builder().type(Message.LOGIN).sender(user).build();
@@ -62,7 +92,7 @@ public class Client {
                     new ThreadHandler(this).start();
                     windowHandler.closeLogInWindow();
                 }else{
-                    ILoginWindow.done();
+                    loginWindow.done();
                     WindowHandler.showErrorMessage(windowHandler.getLogInWindow(),"Failed loggin","loggin failed");
                     windowHandler.openLogInWindow();
                 }
@@ -74,112 +104,46 @@ public class Client {
             }
         }).start();
     }
-
     public void logOut(DefaultWindow parent) {
         try {
             disconnect();
+            stopThreads();
+            windowHandler.closeAllWindows();
         } catch (IOException e) {
             WindowHandler.showErrorMessage(parent, e.toString(), "Fel vid utloggning");
             e.printStackTrace();
+        } finally {
+            showGUI();
         }
     }
-
-    private void connect(String ip, int port) throws IOException {
-        this.socket = new Socket(ip,port);
-        this.oos = new ObjectOutputStream(socket.getOutputStream());
-        this.ois = new ObjectInputStream(socket.getInputStream());
-        oos.flush();
-    }
-
-    public void disconnect() throws IOException {
-        socket.close();
-    }
-
     public void setToOnline(User user){
         currentlyOnline.add(user);
         GUItest guItest = new GUItest(convert());
     }
-
     public void setToOffline(User user){
         currentlyOnline.remove(user);
     }
-
-    public String[] convert(){
-        String[] temp = new String[currentlyOnline.size()];
-        for (int i = 0; i < temp.length; i++) {
-            temp[i] = currentlyOnline.get(i).toString();
-        } return temp;
-    }
-
-    public void receive(){
-        try {
-            message = (Message) ois.readObject();
-            int type = message.getType();
-
-            switch(type) {
-                case Message.CONTACTS -> {
-                    User[] loggedInUsers = message.getContacts();
-                    for (User user : loggedInUsers) {
-                        String username = user.getUsername();
-                        ImageIcon profilePic = user.getIcon();
-
-                    }
-                }
-
-                case Message.TEXT -> {
-                    // mainWindow.newImageMessage(icon,sender);
-                    // String sender = String.valueOf(message.getSender());
-                    // String guiMessage = message.getMessage();
-                    // ImageIcon icon = message.getImage();
-                }
-
-                case Message.IMAGE -> {
-                    System.out.println("bara bild");
-                }
-
-                case Message.TEXT_AND_IMAGE -> {
-                    System.out.println("text och bild");
-                }
-
-                default -> {
-                    System.err.println("FEL?");
-                }
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void newUser(String username, ImageIcon icon) throws IOException {
-        oos.writeObject(new User(username,icon));
-        oos.flush();
-        oos.close();
-    }
     public void showAllUsers(User[] loggedInUsers){
-        //Show all users in GUI CLASS
+        windowHandler.updateListOfContacts(loggedInUsers);
     }
-
-    public void closeApplication() {
-        try {
-            disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        windowHandler.closeAllWindows();
+    public void showGUI() {
+        SwingUtilities.invokeLater(() -> {
+            windowHandler.openLogInWindow();
+        });
     }
-
     public void startChatWithUser(String username) {
-        new ThreadHandler(this).start();
         windowHandler.openChatWindow(username);
     }
+    private void stopThreads() {
+        inputClient.running = false;
+    }
+
     private class ThreadHandler extends Thread{
-        private InputClient inputClient;
-        private OutputClient outputClient;
         private Client client;
         public ThreadHandler(Client client){
             this.client = client;
         }
+
         @Override
         public void run() {
             inputClient = new InputClient(client,ois);
@@ -187,4 +151,6 @@ public class Client {
             inputClient.start();
         }
     }
+
+
 }

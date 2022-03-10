@@ -26,12 +26,9 @@ public class Server implements PropertyChangeListener {
     private Buffer<Message> messageBuffer = new Buffer<>();
     private HashMap<User, Buffer<Message>> messageOnHold = new HashMap<>();
     private final HashMap<User, ClientHandler> loggedInUsers = new HashMap<>();
-    private final HashMap<User, HashMap<User, ChatHandler>> chatHandler4 = new HashMap<>();
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private LocalDateTime date;
     private ServerSocket serverSocket;
-    private Client client;
-
 
     public Server(Controller controller, int port) {
         this.controller = controller;
@@ -43,10 +40,39 @@ public class Server implements PropertyChangeListener {
         new Connection().start();
     }
 
+    public void addListener(PropertyChangeListener listener){
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    public synchronized void addLoggedInUser(User user, ClientHandler clientHandler) {
+        new Thread(() -> {
+            loggedInUsers.put(user, clientHandler);
+            updateListForAllContacts();
+        }).start();
+    }
+
     public void addToTraffic(String whatHappened, String who, LocalDateTime when) {
         String trafficInfo;
         trafficInfo = String.format(whatHappened, who, when.toString());
         traffic.add(trafficInfo);
+    }
+
+    public void createFriendlist(User user, ArrayList<User> users) {
+        ArrayList<User> friends = new ArrayList<>(users.size());
+        for(int i = 0; i < users.size(); i++) {
+            friends.add(users.get(i));
+        }
+        String filename = String.format("files/"+user.getUsername()+"_friends.dat");
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+            for(User friend : friends) {
+                oos.writeObject(friend);
+            }
+            oos.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void messagesToSend(Message message) {
@@ -73,47 +99,10 @@ public class Server implements PropertyChangeListener {
         return friends;
     }
 
-    public void createFriendlist(User user, ArrayList<User> users) {
-        ArrayList<User> friends = new ArrayList<>(users.size());
-        for(int i = 0; i < users.size(); i++) {
-            friends.add(users.get(i));
-        }
-        String filename = String.format("files/"+user.getUsername()+"_friends.dat");
-
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
-            for(User friend : friends) {
-                oos.writeObject(friend);
-            }
-            oos.flush();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void setToOnline(User user){
-        //client.setToOnline(user);
-    }
-
-    public void setToOffline(User user){
-        client.setToOffline(user);
-    }
-
-    public boolean userExists(User user) {
-        return loggedInUsers.containsKey(user);
-    }
-
     public void sendMessage(Message reply) {
         User receiver = reply.getReceiver();
         ClientHandler clientHandler = loggedInUsers.get(receiver);
         clientHandler.send(reply);
-    }
-
-    public synchronized void addLoggedInUser(User user, ClientHandler clientHandler) {
-        new Thread(() -> {
-            loggedInUsers.put(user, clientHandler);
-            updateListForAllContacts();
-        }).start();
     }
 
     private void updateListForAllContacts() {
@@ -128,6 +117,11 @@ public class Server implements PropertyChangeListener {
             }
         }
     }
+
+    public boolean userExists(User user) {
+            return loggedInUsers.containsKey(user);
+        }
+
     private class Connection extends Thread {
         public void run() {
             Socket socket = null;
@@ -142,7 +136,7 @@ public class Server implements PropertyChangeListener {
                     Message msg = (Message) ois.readObject();
 
                     if(msg.getType() == Message.LOGIN) {
-                        new LoginHandler(socket, oos, ois).start();
+                        new LoginHandler(socket, oos, ois, msg.getSender()).start();
                     } else {
                         // ny chatt
 
@@ -159,11 +153,13 @@ public class Server implements PropertyChangeListener {
         private final Socket socket;
         private final ObjectOutputStream oos;
         private final ObjectInputStream ois;
+        private User user;
 
-        public LoginHandler(Socket socket, ObjectOutputStream oos, ObjectInputStream ois) {
+        public LoginHandler(Socket socket, ObjectOutputStream oos, ObjectInputStream ois, User user) {
             this.socket = socket;
             this.oos = oos;
             this.ois = ois;
+            this.user = user;
         }
 
         @Override
@@ -171,19 +167,23 @@ public class Server implements PropertyChangeListener {
             ClientHandler clientHandler = null;
             try {
                 while(clientHandler == null) {
-                    User user = (User) ois.readObject();
+                    if(user == null) {
+                        Message message = (Message) ois.readObject();
+                        user = message.getSender();
+                    }
                     Message reply;
 
                     if(!controller.userExists(user)) { // kan logga in
                         reply =  new Message.Builder().type(Message.LOGIN_SUCCESS).build();
                         clientHandler = new ClientHandler(controller, socket, oos, ois);
+                        addLoggedInUser(user, clientHandler);
                         clientHandler.start();
                         clientHandler.getServerSender().send(reply);
-                        addLoggedInUser(user, clientHandler);
                     } else { // kan inte logga in
                         reply =  new Message.Builder().type(Message.LOGIN_FAILED).build();
                         oos.writeObject(reply);
                         oos.flush();
+                        user = null;
                     }
                 }
             } catch (IOException | ClassNotFoundException e) {
@@ -192,14 +192,6 @@ public class Server implements PropertyChangeListener {
 
             interrupt(); // Stoppa tråden
         }
-    }
-
-    public void addListener(PropertyChangeListener listener){
-        pcs.addPropertyChangeListener(listener);
-    }
-
-    private class ChatHandler {
-
     }
 }
 
