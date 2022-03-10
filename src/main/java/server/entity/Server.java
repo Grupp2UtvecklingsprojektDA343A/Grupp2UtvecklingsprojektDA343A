@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-
 public class Server implements PropertyChangeListener {
     private final Controller controller;
     private ArrayList<String> traffic = new ArrayList<>();
@@ -93,7 +92,7 @@ public class Server implements PropertyChangeListener {
     }
 
     public void setToOnline(User user){
-        client.setToOnline(user);
+        //client.setToOnline(user);
     }
 
     public void setToOffline(User user){
@@ -172,7 +171,6 @@ public class Server implements PropertyChangeListener {
                         System.out.println(reply.getType());
                         clientHandler = new ClientHandler(controller, socket, oos, ois);
                         addLoggedInUser(user, clientHandler);
-                        setToOnline(user);
                         clientHandler.start();
                         clientHandler.getServerSender().send(reply);
                     } else { // kan inte logga in
@@ -193,3 +191,7 @@ public class Server implements PropertyChangeListener {
         pcs.addPropertyChangeListener(listener);
     }
 }
+
+
+
+

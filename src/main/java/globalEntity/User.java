@@ -41,6 +41,7 @@ public class User implements Serializable {
         return username.equals(user.getUsername());
     }
 
+    @Override
     public int hashCode() {
         return username.hashCode();
     }

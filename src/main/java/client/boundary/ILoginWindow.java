@@ -1,5 +1,5 @@
 package client.boundary;
 
-public interface Caller {
+public interface ILoginWindow {
     void done();
 }
