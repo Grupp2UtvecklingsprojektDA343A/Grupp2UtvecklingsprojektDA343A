@@ -7,6 +7,9 @@ import globalEntity.User;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -40,6 +43,7 @@ public class Client {
     private HashMap<String, User> currentlyOnline = new HashMap<>();
     private final WindowHandler windowHandler = new WindowHandler(this);
     private boolean disconnected;
+    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 
     public void closeApplication() {
@@ -51,7 +55,6 @@ public class Client {
         stopThreads();
         // outputClient
         windowHandler.closeAllWindows();
-        disconnected = true;
     }
     public String[] convert(){
         String[] temp = new String[currentlyOnline.size()];
@@ -104,12 +107,17 @@ public class Client {
             disconnect();
             stopThreads();
             windowHandler.closeAllWindows();
+            disconnected = true;
+            pcs.firePropertyChange("true", null, user);
         } catch (IOException e) {
             WindowHandler.showErrorMessage(parent, e.toString(), "Fel vid utloggning");
             e.printStackTrace();
         } finally {
             showGUI();
         }
+    }
+    public void addPropertyChangeListener(PropertyChangeListener listener){
+        pcs.addPropertyChangeListener(listener);
     }
     public void setToOnline(User user){
 
@@ -158,6 +166,5 @@ public class Client {
             inputClient.start();
         }
     }
-
 
 }
