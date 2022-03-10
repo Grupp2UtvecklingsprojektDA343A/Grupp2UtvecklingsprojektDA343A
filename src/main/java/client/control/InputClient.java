@@ -18,15 +18,13 @@ public class InputClient extends Thread {
     @Override
     public void run() {
         while (!Thread.interrupted()){
-            System.out.println("Thread 2 input thread running");
             try {
                 message = (Message) ois.readObject();
                 int type = message.getType();
 
                 switch(type) {
                     case Message.CONTACTS -> {
-                        User[] loggedInUsers = message.getContacts();
-                        this.client.showAllUsers(loggedInUsers);
+                        client.showAllUsers(message.getContacts());
                     }
 
                     case Message.TEXT -> {
@@ -51,6 +49,7 @@ public class InputClient extends Thread {
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
+                System.exit(3);
             }
         }
     }

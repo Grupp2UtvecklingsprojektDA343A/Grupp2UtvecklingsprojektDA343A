@@ -176,11 +176,10 @@ public class Server implements PropertyChangeListener {
 
                     if(!controller.userExists(user)) { // kan logga in
                         reply =  new Message.Builder().type(Message.LOGIN_SUCCESS).build();
-                        System.out.println(reply.getType());
                         clientHandler = new ClientHandler(controller, socket, oos, ois);
-                        addLoggedInUser(user, clientHandler);
                         clientHandler.start();
                         clientHandler.getServerSender().send(reply);
+                        addLoggedInUser(user, clientHandler);
                     } else { // kan inte logga in
                         reply =  new Message.Builder().type(Message.LOGIN_FAILED).build();
                         oos.writeObject(reply);
