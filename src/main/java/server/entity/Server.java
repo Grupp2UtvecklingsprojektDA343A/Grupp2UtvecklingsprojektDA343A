@@ -18,7 +18,6 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 public class Server implements PropertyChangeListener {
@@ -27,6 +26,7 @@ public class Server implements PropertyChangeListener {
     private Buffer<Message> messageBuffer = new Buffer<>();
     private HashMap<User, Buffer<Message>> messageOnHold = new HashMap<>();
     private final HashMap<User, ClientHandler> loggedInUsers = new HashMap<>();
+    private final HashMap<User, HashMap<User, ChatHandler>> chatHandler4 = new HashMap<>();
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private LocalDateTime date;
     private ServerSocket serverSocket;
@@ -109,39 +109,45 @@ public class Server implements PropertyChangeListener {
         clientHandler.send(reply);
     }
 
-    public void addLoggedInUser(User user, ClientHandler clientHandler) {
-        loggedInUsers.put(user, clientHandler);
-        for(Map.Entry<User, ClientHandler> entry : loggedInUsers.entrySet()) {
-            System.out.println("alla som finns: " + entry.getKey().getUsername());
-        }
+    public synchronized void addLoggedInUser(User user, ClientHandler clientHandler) {
+        new Thread(() -> {
+            loggedInUsers.put(user, clientHandler);
+            updateListForAllContacts();
+        }).start();
     }
 
-    // private void updateListForAllContacts() {
-    //     synchronized (loggedInUsers) {
-    //         for(Map.Entry<User, ClientHandler> entry : loggedInUsers.entrySet()) {
-    //             Message message = new Message.Builder()
-    //                 .type(Message.CONTACTS)
-    //                 .contacts(loggedInUsers.keySet().toArray(new User[0]))
-    //                 .build();
-    //             try {
-    //                 entry.getValue().send(message);
-    //             } catch (IOException e) {
-    //                 e.printStackTrace();
-    //             }
-    //         }
-    //     }
-    // }
+    private void updateListForAllContacts() {
+        synchronized (loggedInUsers) {
+            for(Map.Entry<User, ClientHandler> entry : loggedInUsers.entrySet()) {
+                Message message = new Message.Builder()
+                    .type(Message.CONTACTS)
+                    .contacts(loggedInUsers.keySet().toArray(new User[0]))
+                    .build();
 
+                entry.getValue().send(message);
+            }
+        }
+    }
     private class Connection extends Thread {
         public void run() {
             Socket socket = null;
-            User user = null;
             System.out.println("Server startar");
             while (true) {
                 try {
                     socket = serverSocket.accept();
-                    new LoginHandler(socket).start();
-                } catch (IOException e) {
+                    ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                    ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+
+                    Message message = (Message) ois.readObject();
+
+                    if(message.getType() == Message.LOGIN) {
+                        new LoginHandler(socket, oos, ois, message.getSender()).start();
+                    } else {
+                        // ny chatt
+
+                    }
+
+                } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             }
@@ -150,20 +156,26 @@ public class Server implements PropertyChangeListener {
 
     private class LoginHandler extends Thread {
         private final Socket socket;
+        private final ObjectOutputStream oos;
+        private final ObjectInputStream ois;
+        private User user;
 
-        public LoginHandler(Socket socket) {
+        public LoginHandler(Socket socket, ObjectOutputStream oos, ObjectInputStream ois, User user) {
             this.socket = socket;
+            this.oos = oos;
+            this.ois = ois;
+            this.user = user;
         }
 
         @Override
         public void run() {
             ClientHandler clientHandler = null;
             try {
-                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-
                 while(clientHandler == null) {
-                    User user = (User) ois.readObject();
+                    if(user == null) {
+                        Message message = (Message) ois.readObject();
+                        user = message.getSender();
+                    }
                     Message reply;
 
                     if(!controller.userExists(user)) { // kan logga in
@@ -174,9 +186,10 @@ public class Server implements PropertyChangeListener {
                         clientHandler.start();
                         clientHandler.getServerSender().send(reply);
                     } else { // kan inte logga in
-                        reply =  new Message.Builder().type(Message.LOGIN_FAILED).build();
+                        reply = new Message.Builder().type(Message.LOGIN_FAILED).build();
                         oos.writeObject(reply);
                         oos.flush();
+                        user = null;
                     }
                 }
             } catch (IOException | ClassNotFoundException e) {
@@ -189,6 +202,10 @@ public class Server implements PropertyChangeListener {
 
     public void addListener(PropertyChangeListener listener){
         pcs.addPropertyChangeListener(listener);
+    }
+
+    private class ChatHandler {
+
     }
 }
 
