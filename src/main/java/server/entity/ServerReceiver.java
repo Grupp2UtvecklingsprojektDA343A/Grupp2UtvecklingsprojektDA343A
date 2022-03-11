@@ -13,6 +13,7 @@ public class ServerReceiver extends Thread {
     private final Controller controller;
     private final ObjectInputStream ois;
     private Message message;
+    public volatile boolean running = true;
 
     public ServerReceiver(Controller controller, ObjectInputStream ois) {
         this.controller = controller;
@@ -29,7 +30,7 @@ public class ServerReceiver extends Thread {
 
     public synchronized void run() {
         try {
-            while (true) {
+            while (running) {
                 Message message = (Message) ois.readObject(); // klienten skickar något (alltid ett message)
                 User sender = message.getSender();
                 User receiver = message.getReceiver();
