@@ -64,10 +64,16 @@ public class WindowHandler {
     }
 
     public void updateListOfContacts(ArrayList<User> loggedInUsers) {
+        loggedInUsers.remove(client.getUser());
+        contactsWindow.updateListOfContacts(loggedInUsers);
+
+
+
+
+        // GAMMALT
         for(User user : loggedInUsers) {
-            if(!user.getUsername().equals(client.getUsername())) {
-                contactsWindow.addUser(user.getUsername(), user.getIcon());
-            }
+
+            contactsWindow.addUser(user.getUsername(), user.getIcon());
         }
     }
 
@@ -136,4 +142,7 @@ public class WindowHandler {
     }
 
 
+    public void setToOffline(User user) {
+
+    }
 }

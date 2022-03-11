@@ -2,6 +2,8 @@ package client.boundary;
 
 import client.control.Client;
 import client.control.WindowHandler;
+import globalEntity.User;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -66,7 +68,7 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
         if(!isOnList(username)) {
             ++constraints.gridy; // rad
 
-            FriendButton friend = new FriendButton();
+            FriendButton friend = new FriendButton(username);
             constraints.gridx = 0; // column
             constraints.gridwidth = 1;
             add(friend, constraints);
@@ -114,6 +116,9 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
 
     }
 
+    public void updateListOfContacts(ArrayList<String> loggedInUsers) {
+    }
+
     private class UserButton extends JButton {
         public UserButton(String username, ImageIcon profilePicture) {
             setText(username);
@@ -126,10 +131,12 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
 
     private class FriendButton extends JButton {
         private boolean isFriend = false;
+        private String username;
         private final ImageIcon star = ImageHandler.createImageIcon("/favorite.png", 50, 50);
         private final ImageIcon unstar = ImageHandler.createImageIcon("/unfavorite.png", 50, 50);
 
-        public FriendButton() {
+        public FriendButton(String username) {
+            this.username = username;
             setIcon(unstar);
             setBorderPainted(false);
             setFocusPainted(false);
@@ -142,7 +149,7 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
                 } else {
                     setIcon(unstar);
                 }
-
+                getClient().saveContact(username, isFriend);
                 repaint();
             });
         }

@@ -41,7 +41,7 @@ public class Controller implements PropertyChangeListener {
     public void disconnect(Message message) {
         server.disconnect(message);
     }
-    
+
     public void createFriendList(Message message){
         User user = message.getSender();
         ArrayList<User> users = message.getContacts();
