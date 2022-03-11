@@ -147,10 +147,14 @@ public class Client {
         });
     }
     public void startChatWithUser(String username) {
-        windowHandler.openChatWindow(user);
+        windowHandler.openChatWindow(currentlyOnline.get(username));
     }
     private void stopThreads() {
         inputClient.running = false;
+    }
+
+    public void displayMessage(User sender, String text) {
+        windowHandler.displayMessage(sender, text);
     }
 
     private class ThreadHandler extends Thread{

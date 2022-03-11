@@ -24,7 +24,21 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
         super(client, showMenuBar);
         this.windowHandler = windowHandler;
 
+        JMenuItem logOut = new JMenuItem("Log out");
+        logOut.addActionListener(l -> {
+            getClient().logOut(this);
+        });
+        addToFileMenu(logOut);
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                windowHandler.contactsWindowClosed();
+            }
+        });
+
         setSize(200, 500);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
         JLabel lImage = new JLabel(profilePicture);
         JLabel lUsername = new JLabel(username);
@@ -42,33 +56,25 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
         // constraints.gridwidth = 1;
         add(lUsername, constraints);
 
-        JMenuItem logOut = new JMenuItem("Log out");
-        logOut.addActionListener(l -> {
-            getClient().logOut(this);
-        });
-        addToFileMenu(logOut);
-
-        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentHidden(ComponentEvent e) {
-                windowHandler.contactsWindowClosed();
-            }
-        });
         repaint();
         revalidate();
         pack();
     }
+
+
     public void addUser(String username, ImageIcon profilePicture) {
         if(!isOnList(username)) {
             ++constraints.gridy; // rad
+
+            FriendButton friend = new FriendButton();
             constraints.gridx = 0; // column
+            constraints.gridwidth = 1;
+            add(friend, constraints);
+
+            constraints.gridx = 1; // column
             constraints.gridwidth = 2;
 
             UserButton userButton = new UserButton(username, profilePicture);
-            userButton.addActionListener(l -> {
-                getClient().startChatWithUser(username);
-            });
             add(userButton, constraints);
             addToList(username);
         }
@@ -84,6 +90,7 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
     private boolean isOnList(String username) {
         return listOfUser.contains(username);
     }
+
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -107,13 +114,36 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
 
     }
 
-    private static class UserButton extends JButton {
-        public UserButton(String name, ImageIcon profilePicture) {
-            setText(name);
+    private class UserButton extends JButton {
+        public UserButton(String username, ImageIcon profilePicture) {
+            setText(username);
             setIcon(profilePicture);
             addActionListener(l -> {
-                // Öppna ny ström mot server för den kontakten
-                // Öppna fönster mot kontakt
+                getClient().startChatWithUser(username);
+            });
+        }
+    }
+
+    private class FriendButton extends JButton {
+        private boolean isFriend = false;
+        private final ImageIcon star = ImageHandler.createImageIcon("/favorite.png", 50, 50);
+        private final ImageIcon unstar = ImageHandler.createImageIcon("/unfavorite.png", 50, 50);
+
+        public FriendButton() {
+            setIcon(unstar);
+            setBorderPainted(false);
+            setFocusPainted(false);
+            setContentAreaFilled(false);
+
+            addActionListener(l -> {
+                isFriend = !isFriend;
+                if(isFriend) {
+                    setIcon(star);
+                } else {
+                    setIcon(unstar);
+                }
+
+                repaint();
             });
         }
     }
