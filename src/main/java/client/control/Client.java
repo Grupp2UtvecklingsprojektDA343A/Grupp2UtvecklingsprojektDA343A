@@ -159,6 +159,14 @@ public class Client {
         windowHandler.displayMessage(sender, text, time);
     }
 
+    public void displayImage(User sender, ImageIcon image, String time) {
+        windowHandler.displayImage(sender,image,time);
+    }
+
+    public void displayImageAndText(User sender, ImageIcon image, String text, String time) {
+        windowHandler.displayImageAndText(sender,image,text,text);
+    }
+
     private class ThreadHandler extends Thread{
         private Client client;
         public ThreadHandler(Client client){
