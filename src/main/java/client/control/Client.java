@@ -49,6 +49,7 @@ public class Client {
 
     public void closeApplication() {
         try {
+            outputClient.send(new Message.Builder().type(Message.LOGOUT).sender(user).build());
             disconnect();
         } catch (IOException e) {
             e.printStackTrace();
@@ -105,7 +106,6 @@ public class Client {
     }
     public void logOut(DefaultWindow parent) {
         try {
-            outputClient.send(new Message.Builder().type(Message.LOGOUT).sender(user).build());
             disconnect();
             stopThreads();
             windowHandler.closeAllWindows();

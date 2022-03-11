@@ -209,6 +209,7 @@ public class Server implements PropertyChangeListener {
         User user = message.getSender();
         if(loggedInUsers.containsKey(user)){
             loggedInUsers.get(user).closeThread();
+            loggedInUsers.remove(user);
             //loggedInUsers.get(evt.getNewValue()).interrupt();
             updateListForAllContacts();
         }
