@@ -124,13 +124,21 @@ public class Client {
 
     }
     public void setToOffline(User user){
-
+        windowHandler.setToOffline(user);
     }
     public void updateListOfContacts(ArrayList<User> loggedInUsers){
-        currentlyOnline.clear();
-        for(User user : loggedInUsers) {
-            currentlyOnline.put(user.getUsername(), user);
+        HashMap<String, User> oldOnlineList = new HashMap<>(currentlyOnline);
+
+        for(User user : oldOnlineList.values()) {
+            if(!loggedInUsers.contains(user)) {
+                if(friendList.containsKey(user.getUsername())) {
+                    setToOffline(user);
+                } else {
+                    currentlyOnline.remove(user.getUsername());
+                }
+            }
         }
+
         windowHandler.updateListOfContacts(loggedInUsers);
     }
     public void sendMessage(String username, String text, LocalDateTime timestamp) {
@@ -157,6 +165,18 @@ public class Client {
 
     public void displayMessage(User sender, String text, String time) {
         windowHandler.displayMessage(sender, text, time);
+    }
+
+    public void saveContact(String username, boolean isFriend) {
+        if(isFriend) {
+            friendList.put(username, currentlyOnline.get(username));
+        } else {
+            friendList.remove(username);
+        }
+    }
+
+    public User getUser() {
+        return user;
     }
 
     private class ThreadHandler extends Thread{
