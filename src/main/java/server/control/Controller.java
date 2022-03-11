@@ -4,10 +4,10 @@ import globalEntity.Message;
 import globalEntity.User;
 import server.boundary.ServerUI;
 import server.entity.Server;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 
 public class Controller implements PropertyChangeListener {
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -40,4 +40,10 @@ public class Controller implements PropertyChangeListener {
     public void disconnect(Message message) {
         server.disconnect(message);
     }
+    public void createFriendList(Message message){
+        User user = message.getSender();
+        User [] users = message.getContacts().clone();
+        server.createFriendList(user, users);
+    }
+
 }

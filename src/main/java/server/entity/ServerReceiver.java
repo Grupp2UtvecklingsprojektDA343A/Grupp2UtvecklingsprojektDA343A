@@ -35,7 +35,9 @@ public class ServerReceiver extends Thread {
                 User receiver = message.getReceiver();
 
                 switch(message.getType()) {
-                    case Message.CONTACTS -> {}
+                    case Message.CONTACTS -> {
+                        controller.createFriendList(message);
+                    }
                     case Message.TEXT -> {
                         controller.sendMessage(message);
                     }
