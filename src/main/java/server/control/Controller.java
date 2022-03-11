@@ -8,6 +8,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Controller implements PropertyChangeListener {
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -28,11 +29,9 @@ public class Controller implements PropertyChangeListener {
         pcs.firePropertyChange("message", null, evt);
         System.out.println("fjupp");
     }
-
     public synchronized boolean userExists(User user) {
         return server.userExists(user);
     }
-
     public void sendMessage(Message message) {
         server.sendMessage(message);
     }
@@ -44,7 +43,8 @@ public class Controller implements PropertyChangeListener {
     
     public void createFriendList(Message message){
         User user = message.getSender();
-        ArrayList<User> users = message.getContacts();
+        ArrayList<User> users = new ArrayList<>(message.getContacts().size());
+        Collections.copy(users, message.getContacts());
         server.createFriendList(user, users);
     }
 }

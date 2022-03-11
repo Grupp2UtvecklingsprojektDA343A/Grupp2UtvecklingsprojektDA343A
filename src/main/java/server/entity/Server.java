@@ -1,10 +1,8 @@
 package server.entity;
-
 import client.control.Client;
 import globalEntity.Message;
 import globalEntity.User;
 import server.control.Controller;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
