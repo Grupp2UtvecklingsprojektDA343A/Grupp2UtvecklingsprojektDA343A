@@ -93,7 +93,16 @@ public class WindowHandler {
     }
 
     public void removeChatWindow(String username) {
+        chatWindows.remove(new User(username, null));
+    }
 
+    public void displayMessage(User sender, String text) {
+        ChatWindow chatWindow = chatWindows.get(sender);
+        if(chatWindow == null) {
+            openChatWindow(sender);
+            chatWindow = chatWindows.get(sender);
+        }
+        chatWindow.addMessage(text);
     }
 
     // GLOBAL
