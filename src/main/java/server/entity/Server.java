@@ -57,19 +57,17 @@ public class Server implements PropertyChangeListener {
         traffic.add(trafficInfo);
     }
 
-    public void createFriendList(User user, ArrayList<User> users) {
-        ArrayList<User> friends = new ArrayList<>(users.size());
-        for(int i = 0; i < users.size(); i++) {
-            friends.add(users.get(i));
+    public void createFriendList(User user, User[] users) {
+        User[] friends = new User[users.length];
+        for(int i = 0; i < users.length; i++) {
+            friends[i] = users[i];
         }
         String filename = String.format("files/"+user.getUsername()+"_friends.dat");
-
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             for(User friend : friends) {
                 oos.writeObject(friend);
             }
             oos.flush();
-
         } catch (IOException e) {
             e.printStackTrace();
         }

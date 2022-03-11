@@ -38,7 +38,7 @@ public class Controller implements PropertyChangeListener {
     }
     public void createFriendList(Message message){
         User user = message.getSender();
-        ArrayList<User> users = message.getContacts();
+        User [] users = message.getContacts().clone();
         server.createFriendList(user, users);
     }
 
