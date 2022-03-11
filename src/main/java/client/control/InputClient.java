@@ -33,7 +33,8 @@ public class InputClient extends Thread {
                     case Message.TEXT -> {
                         User sender = message.getSender();
                         String text = message.getMessage();
-                        client.displayMessage(sender, text);
+                        String time = message.getSent().toString();
+                        client.displayMessage(sender, text, time);
                         // mainWindow.newImageMessage(icon,sender);
                         // String sender = String.valueOf(message.getSender());
                         // String guiMessage = message.getMessage();

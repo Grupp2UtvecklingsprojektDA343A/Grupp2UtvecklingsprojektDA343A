@@ -42,6 +42,9 @@ public class ServerReceiver extends Thread {
                         controller.sendMessage(message);
                     }
                     case Message.IMAGE -> {}
+                    case Message.LOGOUT -> {
+                        controller.disconnect(message);
+                    }
                     case Message.TEXT_AND_IMAGE -> {}
                 }
             }

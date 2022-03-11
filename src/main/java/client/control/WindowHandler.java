@@ -96,13 +96,14 @@ public class WindowHandler {
         chatWindows.remove(new User(username, null));
     }
 
-    public void displayMessage(User sender, String text) {
+    public void displayMessage(User sender, String text, String time) {
         ChatWindow chatWindow = chatWindows.get(sender);
         if(chatWindow == null) {
             openChatWindow(sender);
             chatWindow = chatWindows.get(sender);
         }
-        chatWindow.addMessage(text);
+        String fulltext = time+": "+text;
+        chatWindow.addMessage(fulltext);
     }
 
     // GLOBAL
