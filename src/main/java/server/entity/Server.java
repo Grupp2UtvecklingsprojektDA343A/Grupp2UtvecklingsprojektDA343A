@@ -57,10 +57,10 @@ public class Server implements PropertyChangeListener {
         traffic.add(trafficInfo);
     }
 
-    public void createFriendList(User user, User[] users) {
-        User[] friends = new User[users.length];
-        for(int i = 0; i < users.length; i++) {
-            friends[i] = users[i];
+    public void createFriendList(User user, ArrayList<User> users) {
+        ArrayList<User> friends = new ArrayList<>(users.size());
+        for(int i = 0; i < friends.size(); i++) {
+            friends.add(users.get(i));
         }
         String filename = String.format("files/"+user.getUsername()+"_friends.dat");
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
@@ -81,14 +81,9 @@ public class Server implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
 
     }
-    public Long getThreadID(ClientHandler clientHandler){
-        return  clientHandler.getId();
-    }
-
-    public ArrayList<User> readFriendlist(User user) {
+    public ArrayList<User> readFriendList(User user) {
         String filename = String.format("files/"+user.getUsername()+"_friends.dat");
         ArrayList<User> friends = new ArrayList<>();
-
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
             for(User friend : friends) {
                 friend = (User) ois.readObject();
