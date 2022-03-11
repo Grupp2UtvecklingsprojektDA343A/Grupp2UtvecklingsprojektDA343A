@@ -57,7 +57,7 @@ public class Server implements PropertyChangeListener {
         traffic.add(trafficInfo);
     }
 
-    public void createFriendlist(User user, ArrayList<User> users) {
+    public void createFriendList(User user, ArrayList<User> users) {
         ArrayList<User> friends = new ArrayList<>(users.size());
         for(int i = 0; i < users.size(); i++) {
             friends.add(users.get(i));
@@ -180,7 +180,7 @@ public class Server implements PropertyChangeListener {
                         reply =  new Message.Builder().type(Message.LOGIN_SUCCESS).build();
                         clientHandler = new ClientHandler(controller, socket, oos, ois);
                         addLoggedInUser(user, clientHandler);
-                        client.addPropertyChangeListener((PropertyChangeListener) this);
+                        //client.addPropertyChangeListener(clientHandler);
                         clientHandler.start();
                         clientHandler.getServerSender().send(reply);
                     } else { // kan inte logga in
