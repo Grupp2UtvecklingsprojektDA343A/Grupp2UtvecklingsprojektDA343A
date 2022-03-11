@@ -4,7 +4,7 @@ import client.control.Client;
 import globalEntity.Message;
 import globalEntity.User;
 import server.control.Controller;
-import client.control.Client;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -180,7 +180,7 @@ public class Server implements PropertyChangeListener {
                         reply =  new Message.Builder().type(Message.LOGIN_SUCCESS).build();
                         clientHandler = new ClientHandler(controller, socket, oos, ois);
                         addLoggedInUser(user, clientHandler);
-                        client.addPropertyChangeListener((PropertyChangeListener) this);
+                        //client.addPropertyChangeListener((PropertyChangeListener) this);
                         clientHandler.start();
                         clientHandler.getServerSender().send(reply);
                     } else { // kan inte logga in
@@ -206,6 +206,18 @@ public class Server implements PropertyChangeListener {
                 }
             }
         }
+    }
+    public void disconnect(Message message){
+        User user = message.getSender();
+        if(loggedInUsers.containsKey(user)){
+            loggedInUsers.get(user).closeThread();
+            //loggedInUsers.get(evt.getNewValue()).interrupt();
+            updateListForAllContacts();
+        }
+        else {
+            System.out.println("User not found");
+        }
+
     }
 }
 

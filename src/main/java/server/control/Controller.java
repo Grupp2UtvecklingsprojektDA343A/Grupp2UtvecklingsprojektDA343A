@@ -36,4 +36,8 @@ public class Controller implements PropertyChangeListener {
     public void sendMessage(Message message) {
         server.sendMessage(message);
     }
+
+    public void disconnect(Message message) {
+        server.disconnect(message);
+    }
 }

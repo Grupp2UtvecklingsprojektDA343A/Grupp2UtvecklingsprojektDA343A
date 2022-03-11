@@ -118,7 +118,7 @@ public class ChatWindow extends DefaultWindow {
     private void uploadFile() {
     }
 
-    public void addMessage(String message, ImageIcon image) {
+    public void addMessage(String message, ImageIcon image ) {
         addMessage(message);
         addMessage(image);
     }

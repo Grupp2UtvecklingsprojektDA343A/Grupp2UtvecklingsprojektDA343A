@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -104,6 +105,7 @@ public class Client {
     }
     public void logOut(DefaultWindow parent) {
         try {
+            outputClient.send(new Message.Builder().type(Message.LOGOUT).sender(user).build());
             disconnect();
             stopThreads();
             windowHandler.closeAllWindows();
@@ -136,6 +138,7 @@ public class Client {
         Message message = new Message.Builder()
             .type(Message.TEXT)
             .message(text)
+            .sent(LocalDateTime.now())
             .sender(user)
             .receiver(currentlyOnline.get(username))
             .build();
@@ -153,8 +156,8 @@ public class Client {
         inputClient.running = false;
     }
 
-    public void displayMessage(User sender, String text) {
-        windowHandler.displayMessage(sender, text);
+    public void displayMessage(User sender, String text, String time) {
+        windowHandler.displayMessage(sender, text, time);
     }
 
     private class ThreadHandler extends Thread{
