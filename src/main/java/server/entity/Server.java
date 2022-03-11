@@ -104,11 +104,11 @@ public class Server implements PropertyChangeListener {
     private void updateListForAllContacts() {
         synchronized (loggedInUsers) {
             for(Map.Entry<User, ClientHandler> entry : loggedInUsers.entrySet()) {
+
                 Message message = new Message.Builder()
                     .type(Message.CONTACTS)
-                    .contacts(loggedInUsers.keySet().toArray(new User[0]))
+                    .contacts(new ArrayList<>(loggedInUsers.keySet()))
                     .build();
-
                 entry.getValue().send(message);
             }
         }

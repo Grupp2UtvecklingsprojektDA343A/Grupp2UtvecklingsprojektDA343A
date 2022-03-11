@@ -3,6 +3,7 @@ package globalEntity;
 import javax.swing.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 /**
  * This class is used to build messages.
@@ -27,7 +28,7 @@ public class Message implements Serializable {
     private LocalDateTime received;
     private int type;
 
-    private User[] contacts;
+    private ArrayList<User> contacts;
 
     /**
      * Getter for user.
@@ -145,7 +146,7 @@ public class Message implements Serializable {
      *
      * @return
      */
-    public User[] getContacts() {
+    public ArrayList<User> getContacts() {
         return contacts;
     }
 
@@ -153,7 +154,7 @@ public class Message implements Serializable {
      *
      * @param contacts
      */
-    public void setContacts(User[] contacts) {
+    public void setContacts(ArrayList<User> contacts) {
         this.contacts = contacts;
     }
 
@@ -199,7 +200,7 @@ public class Message implements Serializable {
             return this;
         }
 
-        public Builder contacts(User[] contacts) {
+        public Builder contacts(ArrayList<User> contacts) {
             message.setContacts(contacts);
             return this;
         }

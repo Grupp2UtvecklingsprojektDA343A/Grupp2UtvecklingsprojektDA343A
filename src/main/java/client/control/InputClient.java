@@ -6,6 +6,7 @@ import globalEntity.User;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.SocketException;
+import java.time.format.DateTimeFormatter;
 
 public class InputClient extends Thread {
     private ObjectInputStream ois;
@@ -33,7 +34,7 @@ public class InputClient extends Thread {
                     case Message.TEXT -> {
                         User sender = message.getSender();
                         String text = message.getMessage();
-                        String time = message.getSent().toString();
+                        String time = message.getSent().format(DateTimeFormatter.ISO_LOCAL_TIME);
                         client.displayMessage(sender, text, time);
                         // mainWindow.newImageMessage(icon,sender);
                         // String sender = String.valueOf(message.getSender());
