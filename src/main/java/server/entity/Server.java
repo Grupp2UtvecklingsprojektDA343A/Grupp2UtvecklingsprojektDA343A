@@ -23,7 +23,6 @@ import java.util.Map;
 public class Server implements PropertyChangeListener {
     private final Controller controller;
     private ArrayList<String> traffic = new ArrayList<>();
-    private Buffer<Message> messageBuffer = new Buffer<>();
     private HashMap<User, Buffer<Message>> messageOnHold = new HashMap<>();
     private final HashMap<User, ClientHandler> loggedInUsers = new HashMap<>();
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -73,8 +72,17 @@ public class Server implements PropertyChangeListener {
         }
     }
 
-    public void messagesToSend(Message message) {
-        messageBuffer.put(message);
+    public synchronized void messagesToSend(Message message) {
+        User receiver = message.getReceiver();
+        Buffer<Message> buffer;
+        if(messageOnHold.containsKey(receiver)) {
+            buffer = messageOnHold.get(receiver);
+            buffer.put(message);
+        } else {
+            buffer = new Buffer<>();
+            buffer.put(message);
+        }
+        messageOnHold.put(receiver, buffer);
     }
 
     @Override
@@ -102,8 +110,12 @@ public class Server implements PropertyChangeListener {
 
     public void sendMessage(Message reply) {
         User receiver = reply.getReceiver();
-        ClientHandler clientHandler = loggedInUsers.get(receiver);
-        clientHandler.send(reply);
+        if(loggedInUsers.containsKey(receiver)) {
+            ClientHandler clientHandler = loggedInUsers.get(receiver);
+            clientHandler.send(reply);
+        } else {
+            messagesToSend(reply);
+        }
     }
 
     private void updateListForAllContacts() {
@@ -181,6 +193,16 @@ public class Server implements PropertyChangeListener {
                         //client.addPropertyChangeListener((PropertyChangeListener) this);
                         clientHandler.start();
                         clientHandler.getServerSender().send(reply);
+                        if(messageOnHold.containsKey(user)) {
+                            Buffer buffer = messageOnHold.get(user);
+                            while(!buffer.isEmpty()) {
+                                try {
+                                    clientHandler.getServerSender().send((Message) buffer.get());
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
                     } else { // kan inte logga in
                         reply =  new Message.Builder().type(Message.LOGIN_FAILED).build();
                         oos.writeObject(reply);
