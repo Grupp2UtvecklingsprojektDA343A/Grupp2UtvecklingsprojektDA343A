@@ -17,6 +17,8 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ChatWindow extends DefaultWindow {
     private final DefaultListModel<Object> chatMessages = new DefaultListModel<>();
@@ -118,7 +120,7 @@ public class ChatWindow extends DefaultWindow {
     private void uploadFile() {
     }
 
-    public void addMessage(String message, ImageIcon image ) {
+    public void addMessage(String message, ImageIcon image) {
         addMessage(message);
         addMessage(image);
     }
@@ -132,8 +134,9 @@ public class ChatWindow extends DefaultWindow {
     }
 
     public void sendMessage(String text) {
-        addMessage(text);
-        getClient().sendMessage(currentChatter, text);
+        LocalDateTime timestamp = LocalDateTime.now();
+        addMessage(timestamp.format(DateTimeFormatter.ISO_LOCAL_TIME) + ": " + text);
+        getClient().sendMessage(currentChatter, text, timestamp);
     }
 
     @Override

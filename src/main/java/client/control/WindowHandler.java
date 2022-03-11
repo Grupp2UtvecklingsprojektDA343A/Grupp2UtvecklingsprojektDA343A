@@ -10,6 +10,7 @@ import globalEntity.User;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class WindowHandler {
@@ -62,7 +63,7 @@ public class WindowHandler {
         }
     }
 
-    public void updateListOfContacts(User[] loggedInUsers) {
+    public void updateListOfContacts(ArrayList<User> loggedInUsers) {
         for(User user : loggedInUsers) {
             if(!user.getUsername().equals(client.getUsername())) {
                 contactsWindow.addUser(user.getUsername(), user.getIcon());

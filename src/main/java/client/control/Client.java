@@ -7,7 +7,6 @@ import globalEntity.User;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -127,18 +126,18 @@ public class Client {
     public void setToOffline(User user){
 
     }
-    public void updateListOfContacts(User[] loggedInUsers){
+    public void updateListOfContacts(ArrayList<User> loggedInUsers){
         currentlyOnline.clear();
         for(User user : loggedInUsers) {
             currentlyOnline.put(user.getUsername(), user);
         }
         windowHandler.updateListOfContacts(loggedInUsers);
     }
-    public void sendMessage(String username, String text) {
+    public void sendMessage(String username, String text, LocalDateTime timestamp) {
         Message message = new Message.Builder()
             .type(Message.TEXT)
             .message(text)
-            .sent(LocalDateTime.now())
+            .sent(timestamp)
             .sender(user)
             .receiver(currentlyOnline.get(username))
             .build();
