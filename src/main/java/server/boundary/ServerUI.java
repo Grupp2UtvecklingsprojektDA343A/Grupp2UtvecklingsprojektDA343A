@@ -1,5 +1,6 @@
 package server.boundary;
 
+import globalEntity.User;
 import server.control.Controller;
 import server.entity.Server;
 
@@ -19,12 +20,15 @@ public class ServerUI extends JFrame implements PropertyChangeListener {
     private JList<String> trafficList;
     private DefaultListModel<String> dlm = new DefaultListModel<>();
 
-    public ServerUI(Controller controller){
-        controller.addListener(this);
+    public ServerUI(Server server){
+        //controller.addListener(this);
+        server.addListener(this);
 
+        setTitle("Traffic log:");
         setLayout(null);
         setVisible(true);
         setSize(400,500);
+        setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         trafficList = new JList<>(dlm);
@@ -36,12 +40,8 @@ public class ServerUI extends JFrame implements PropertyChangeListener {
         jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         add(jsp);
-        addTestTraffic();
+        //addTestTraffic();
         new ServerUIThread().start();
-    }
-
-    private void getTraffic(ArrayList<String> traffic){
-
     }
 
     public void addTestTraffic(){
@@ -50,30 +50,30 @@ public class ServerUI extends JFrame implements PropertyChangeListener {
         dlm.addElement("Test 3");
     }
 
-    public void updateTraffic(String trafficInfo){
-        JLabel jLabel = new JLabel(trafficInfo);
-        trafficList.add(jLabel);
+    public void updateTraffic(String trafficInfo){//nytt
+        dlm.addElement(trafficInfo);//nytt
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        System.out.println("Something happened");
-        System.out.println(evt);/*
-        if (evt.getPropertyName().equals("message")){
-            traffic.add(evt.toString());
-        } else if (evt.getPropertyName().equals("logged in")){
-            traffic.add(evt.toString());
-        } else if (evt.getPropertyName().equals("logged out")){
-            traffic.add(evt.toString());
-        }*/
+        // System.out.println("Something happened");
+        // System.out.println();
+        // if (evt.getPropertyName().equals("message")){
+        //     User user = (User) evt.getNewValue();
+        //     String name = user.getUsername();
+        //     traffic.add(name + " just logged in.");
+        // } else if (evt.getPropertyName().equals("login")){
+        //     updateTraffic(evt + " just logged in.");
+        // } else if (evt.getPropertyName().equals("logout")){
+        //     updateTraffic(evt + " just logged out.");
+        // }
     }
 
     private class ServerUIThread extends Thread {
         @Override
         public void run(){
             while (true){
-                //String traffic =
-                //updateTraffic();
+
 
             }
         }

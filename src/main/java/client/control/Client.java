@@ -63,7 +63,7 @@ public class Client {
     public String[] convert(){
         String[] temp = new String[currentlyOnline.size()];
         for (int i = 0; i < temp.length; i++) {
-            temp[i] = currentlyOnline.get(i).toString();
+            temp[i] = currentlyOnline.get(i).getUsername();
         } return temp;
     }
 
@@ -198,6 +198,14 @@ public class Client {
 
     public void displayMessage(User sender, String text, String time) {
         windowHandler.displayMessage(sender, text, time);
+    }
+
+    public void displayImage(User sender, ImageIcon image, String time) {
+        windowHandler.displayImage(sender,image,time);
+    }
+
+    public void displayImageAndText(User sender, ImageIcon image, String text, String time) {
+        windowHandler.displayImageAndText(sender,image,text,text);
     }
 
     public void saveContact(String username, boolean isFriend) {

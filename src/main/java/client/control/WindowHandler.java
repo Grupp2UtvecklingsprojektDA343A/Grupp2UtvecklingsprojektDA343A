@@ -137,6 +137,21 @@ public class WindowHandler {
         JOptionPane.showMessageDialog(parent, errorMessage, title, JOptionPane.ERROR_MESSAGE);
     }
 
+    public void displayImage(User sender, ImageIcon image, String time) {
+        /*ChatWindow chatWindow = chatWindows.get(sender);
+        if(chatWindow == null) {
+            openChatWindow(sender);
+            chatWindow = chatWindows.get(sender);
+        }
+        String fulltext = time+": "+image;
+        chatWindow.addMessage(fulltext);*/
+        //förberedelser för image i ett message
+    }
+
+    public void displayImageAndText(User sender, ImageIcon image, String text, String text1) {
+        //förberedelser för image och text i ett message
+    }
+
 
     public void setToOffline(User user, boolean isFriend) {
         if(isFriend) {
