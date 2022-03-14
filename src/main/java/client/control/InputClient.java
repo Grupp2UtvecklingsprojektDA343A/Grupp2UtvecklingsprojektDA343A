@@ -37,6 +37,7 @@ public class InputClient extends Thread {
                         String text = message.getMessage();
                         String time = message.getSent().format(DateTimeFormatter.ISO_LOCAL_TIME);
                         client.displayMessage(sender, text, time);
+                        client.notifyReceived();
                         // mainWindow.newImageMessage(icon,sender);
                         // String sender = String.valueOf(message.getSender());
                         // String guiMessage = message.getMessage();

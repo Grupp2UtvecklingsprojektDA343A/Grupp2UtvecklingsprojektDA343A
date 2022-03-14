@@ -167,6 +167,11 @@ public class Client {
         windowHandler.displayImageAndText(sender,image,text,text);
     }
 
+    public void notifyReceived() {
+        Message message = new Message.Builder().type(9).receiver(this.user).received(LocalDateTime.now()).build();
+        outputClient.send(message);
+    }
+
     private class ThreadHandler extends Thread{
         private Client client;
         public ThreadHandler(Client client){

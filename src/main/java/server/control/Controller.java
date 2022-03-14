@@ -4,9 +4,18 @@ import globalEntity.Message;
 import globalEntity.User;
 import server.boundary.ServerUI;
 import server.entity.Server;
+import server.entity.Traffic;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -14,6 +23,7 @@ public class Controller implements PropertyChangeListener {
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private Server server;
     private ServerUI serverUI;
+    private ArrayList<Traffic> traffic = new ArrayList<>();
 
     public Controller(){
         server = new Server(this, 20008);
@@ -27,15 +37,22 @@ public class Controller implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        pcs.firePropertyChange("message", null, evt);//nytt
-        if(evt.getPropertyName().equals("loginOK")){//nytt
-            serverUI.updateTraffic(evt.getNewValue() + " just logged in.");//nytt
-        } else if (evt.getPropertyName().equals("logout")){//nytt
-            serverUI.updateTraffic(evt.getNewValue() + " just logged out.");//nytt
-        } else if (evt.getPropertyName().equals("sent")){//nytt
-            serverUI.updateTraffic((String) evt.getNewValue());//nytt
-        } else if (evt.getPropertyName().equals("loginFail")){//nytt
-            serverUI.updateTraffic(evt.getNewValue() + " failed to login.");//nytt
+        pcs.firePropertyChange("message", null, evt);
+
+        if(evt.getPropertyName().equals("loginOK")){
+            //serverUI.updateTraffic(evt.getNewValue() + " just logged in.");
+        } else if (evt.getPropertyName().equals("logout")){
+            //serverUI.updateTraffic(evt.getNewValue() + " just logged out.");
+        } else if (evt.getPropertyName().equals("sent")){
+            logTraffic(evt);
+            Traffic traffic = (Traffic) evt.getNewValue();
+            serverUI.updateTraffic(traffic.getText());
+            //serverUI.updateTraffic((String) evt.getNewValue());
+        } else if (evt.getPropertyName().equals("loginFail")){
+            //serverUI.updateTraffic(evt.getNewValue() + " failed to login.");
+        } else if (evt.getPropertyName().equals("receivedByUser")){
+            trafficToList();
+            logTraffic(evt);
         }
     }
 
@@ -47,10 +64,49 @@ public class Controller implements PropertyChangeListener {
         //serverUI.updateTraffic(traffic);
     }
 
-    public void sendMessage(Message message){
-        server.sendMessage(message);
+    public void logTraffic(PropertyChangeEvent evt){
+        String path = "files//traffic";
+        try {
+            FileOutputStream fos = new FileOutputStream(path);
+            BufferedOutputStream bos = new BufferedOutputStream(fos);
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+
+            Traffic traffic = (Traffic) evt.getNewValue();
+
+            oos.writeObject(traffic);
+            oos.flush();
+            oos.close();
+
+            for (int i = 0; i < this.traffic.size(); i++) {
+                System.out.println(this.traffic.get(i).getText());
+            }
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
+    public void trafficToList(){
+        try {
+            String path = "files//traffic";
+            FileInputStream fis = new FileInputStream(path);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            ObjectInputStream ois = new ObjectInputStream(bis);
+
+            Traffic readable = null;
+
+            while ((readable = (Traffic) ois.readObject()) != null){
+            traffic.add(readable);
+            }
+
+        } catch (IOException | ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void sendMessage(Message message, Traffic traffic){
+        server.sendMessage(message, traffic);
+    }
 
     public void disconnect(Message message) {
         server.disconnect(message);

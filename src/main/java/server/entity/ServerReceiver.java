@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class ServerReceiver extends Thread {
     private final Controller controller;
     private final ObjectInputStream ois;
+    private Server server;
     private Message message;
     public volatile boolean running = true;
 
@@ -42,15 +43,24 @@ public class ServerReceiver extends Thread {
                         controller.createFriendList(message);
                     }
                     case Message.TEXT -> {
-                        LocalDateTime time = LocalDateTime.now();//nytt
-                        message.setReceived(time);//nytt
-                        controller.sendMessage(message);//nytt
+                        Traffic traffic = new Traffic.Builder().text(message.getSender().getUsername()
+                             + " sent a message to "
+                             + message.getReceiver().getUsername()
+                             + ".").serverRecieved(LocalDateTime.now()).build();
+                        controller.sendMessage(message, traffic);
                     }
                     case Message.IMAGE -> {}
                     case Message.LOGOUT -> {
                         controller.disconnect(message);
                     }
                     case Message.TEXT_AND_IMAGE -> {}
+                    case Message.NOTIFY_RECEIVED -> {
+                        /*Traffic traffic = new Traffic.Builder().text(
+                            message.getReceiver().getUsername()+ " received "
+                            + message.getSender()
+                            + "'s message at ").clientRecieved(message.getReceived()).build();
+                        server.notifyReceived(traffic);*/
+                    }
                 }
             }
         } catch (IOException | ClassNotFoundException e) {

@@ -1,4 +1,5 @@
 package server.entity;
+
 import client.control.Client;
 import globalEntity.Message;
 import globalEntity.User;
@@ -19,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import server.entity.Traffic;
 
 public class Server implements PropertyChangeListener {
     private final Controller controller;
@@ -112,9 +114,13 @@ public class Server implements PropertyChangeListener {
         return message; //Här ska det returneras ett messageobjekt istället.
     }
 
-    public void sendMessage(Message reply) {
+    public void sendMessage(Message reply, Traffic traffic) {
         User receiver = reply.getReceiver();
         if(loggedInUsers.containsKey(receiver)) {
+            ClientHandler clientHandler = loggedInUsers.get(receiver);
+            clientHandler.send(reply);
+            pcs.firePropertyChange("sent", null, traffic);
+            /*
             pcs.firePropertyChange(//nytt
                 "sent",//nytt
                 null,//nytt
@@ -124,8 +130,7 @@ public class Server implements PropertyChangeListener {
                     + " sent a message to "//nytt
                     + reply.getReceiver().getUsername()//nytt
                     + ".");//nytt
-            ClientHandler clientHandler = loggedInUsers.get(receiver);
-            clientHandler.send(reply);
+             */
         } else {
             messagesToSend(reply);
         }
@@ -147,6 +152,10 @@ public class Server implements PropertyChangeListener {
     public boolean userExists(User user) {
             return loggedInUsers.containsKey(user);
         }
+
+    public void notifyReceived(Traffic traffic) {
+        pcs.firePropertyChange("receivedByUser", null, traffic);
+    }
 
     private class Connection extends Thread {
 

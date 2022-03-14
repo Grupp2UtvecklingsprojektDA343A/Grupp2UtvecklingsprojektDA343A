@@ -19,6 +19,7 @@ public class Message implements Serializable {
     public static final int LOGIN_SUCCESS = 6;
     public static final int LOGIN_FAILED = 7;
     public static final int LOGOUT = 8;
+    public static final int NOTIFY_RECEIVED = 9;
 
     private User sender;
     private User receiver;
