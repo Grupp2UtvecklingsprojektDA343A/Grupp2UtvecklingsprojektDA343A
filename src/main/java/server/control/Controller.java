@@ -18,7 +18,7 @@ public class Controller implements PropertyChangeListener {
     public Controller(){
         server = new Server(this, 20008);
         server.addListener(this);
-        ServerUI serverUI = new ServerUI(server);
+        serverUI = new ServerUI(server);
     }
 
     public void addListener(PropertyChangeListener listener){
@@ -28,17 +28,23 @@ public class Controller implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         pcs.firePropertyChange("message", null, evt);
-        System.out.println("fjupp");
+        if(evt.getPropertyName().equals("loginOK")){
+            serverUI.updateTraffic(evt.getNewValue() + " just logged in.");
+        } else if (evt.getPropertyName().equals("logout")){
+            serverUI.updateTraffic(evt.getNewValue() + " just logged out.");
+        } else if (evt.getPropertyName().equals("sent")){
+            serverUI.updateTraffic((String) evt.getNewValue());
+        } else if (evt.getPropertyName().equals("loginFail")){
+            serverUI.updateTraffic(evt.getNewValue() + " failed to login.");
+        }
     }
 
     public synchronized boolean userExists(User user) {
         return server.userExists(user);
     }
-    public void sendMessage(Message message) {
-
 
     public void addToTraffic(String traffic){
-        serverUI.updateTraffic(traffic);
+        //serverUI.updateTraffic(traffic);
     }
 
     public void sendMessage(Message message){

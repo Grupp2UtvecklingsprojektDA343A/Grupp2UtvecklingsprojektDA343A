@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -104,6 +105,15 @@ public class Server implements PropertyChangeListener {
     public void sendMessage(Message reply) {
         User receiver = reply.getReceiver();
         if(loggedInUsers.containsKey(receiver)) {
+            pcs.firePropertyChange(
+                "sent",
+                null,
+                reply.getSent().format(DateTimeFormatter.ISO_LOCAL_TIME)
+                    + ": "
+                    + reply.getSender().getUsername()
+                    + " sent a message to "
+                    + reply.getReceiver().getUsername()
+                    + ".");
             ClientHandler clientHandler = loggedInUsers.get(receiver);
             clientHandler.send(reply);
         } else {
@@ -126,7 +136,7 @@ public class Server implements PropertyChangeListener {
 
     public boolean userExists(User user) {
             return loggedInUsers.containsKey(user);
-        }
+    }
 
     private class Connection extends Thread {
 
@@ -186,6 +196,7 @@ public class Server implements PropertyChangeListener {
                     if(!controller.userExists(user)) { // kan logga in
                         reply =  new Message.Builder().type(Message.LOGIN_SUCCESS).build();
                         clientHandler = new ClientHandler(controller, socket, oos, ois);
+                        pcs.firePropertyChange("loginOK", null, user.getUsername());
                         addLoggedInUser(user, clientHandler);
                         //client.addPropertyChangeListener((PropertyChangeListener) this);
                         clientHandler.start();
@@ -202,6 +213,7 @@ public class Server implements PropertyChangeListener {
                         }
                     } else { // kan inte logga in
                         reply =  new Message.Builder().type(Message.LOGIN_FAILED).build();
+                        pcs.firePropertyChange("loginFail", null, user.getUsername());
                         oos.writeObject(reply);
                         oos.flush();
                         user = null;
@@ -227,6 +239,7 @@ public class Server implements PropertyChangeListener {
     public void disconnect(Message message){
         User user = message.getSender();
         if(loggedInUsers.containsKey(user)){
+            pcs.firePropertyChange("logout", null, user.getUsername());
             loggedInUsers.get(user).closeThread();
             loggedInUsers.remove(user);
             //loggedInUsers.get(evt.getNewValue()).interrupt();

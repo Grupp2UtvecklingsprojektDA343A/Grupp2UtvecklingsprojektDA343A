@@ -40,12 +40,8 @@ public class ServerUI extends JFrame implements PropertyChangeListener {
         jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         add(jsp);
-        addTestTraffic();
+        //addTestTraffic();
         new ServerUIThread().start();
-    }
-
-    private void getTraffic(ArrayList<String> traffic){
-
     }
 
     public void addTestTraffic(){
@@ -55,7 +51,7 @@ public class ServerUI extends JFrame implements PropertyChangeListener {
     }
 
     public void updateTraffic(String trafficInfo){
-        dlm.addElement(trafficInfo + " just logged in.");
+        dlm.addElement(trafficInfo);
     }
 
     @Override

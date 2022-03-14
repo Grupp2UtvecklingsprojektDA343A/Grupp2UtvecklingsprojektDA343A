@@ -8,6 +8,8 @@ import server.control.Controller;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class ServerReceiver extends Thread {
     private final Controller controller;
@@ -40,6 +42,8 @@ public class ServerReceiver extends Thread {
                         controller.createFriendList(message);
                     }
                     case Message.TEXT -> {
+                        LocalDateTime time = LocalDateTime.now();
+                        message.setReceived(time);
                         controller.sendMessage(message);
                     }
                     case Message.IMAGE -> {}
