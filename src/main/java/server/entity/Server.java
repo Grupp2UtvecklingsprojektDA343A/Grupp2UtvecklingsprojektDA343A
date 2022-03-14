@@ -1,10 +1,8 @@
 package server.entity;
-
 import client.control.Client;
 import globalEntity.Message;
 import globalEntity.User;
 import server.control.Controller;
-import client.control.Client;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -23,7 +21,6 @@ import java.util.Map;
 public class Server implements PropertyChangeListener {
     private final Controller controller;
     private ArrayList<String> traffic = new ArrayList<>();
-    private Buffer<Message> messageBuffer = new Buffer<>();
     private HashMap<User, Buffer<Message>> messageOnHold = new HashMap<>();
     private final HashMap<User, ClientHandler> loggedInUsers = new HashMap<>();
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -57,40 +54,42 @@ public class Server implements PropertyChangeListener {
         traffic.add(trafficInfo);
     }
 
-    public void createFriendlist(User user, ArrayList<User> users) {
+    public void createFriendList(User user, ArrayList<User> users) {
         ArrayList<User> friends = new ArrayList<>(users.size());
-        for(int i = 0; i < users.size(); i++) {
+        for(int i = 0; i < friends.size(); i++) {
             friends.add(users.get(i));
         }
         String filename = String.format("files/"+user.getUsername()+"_friends.dat");
-
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             for(User friend : friends) {
                 oos.writeObject(friend);
             }
             oos.flush();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void messagesToSend(Message message) {
-        messageBuffer.put(message);
+    public synchronized void messagesToSend(Message message) {
+        User receiver = message.getReceiver();
+        Buffer<Message> buffer;
+        if(messageOnHold.containsKey(receiver)) {
+            buffer = messageOnHold.get(receiver);
+            buffer.put(message);
+        } else {
+            buffer = new Buffer<>();
+            buffer.put(message);
+        }
+        messageOnHold.put(receiver, buffer);
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
 
     }
-    public Long getThreadID(ClientHandler clientHandler){
-        return  clientHandler.getId();
-    }
-
-    public ArrayList<User> readFriendlist(User user) {
+    public ArrayList<User> readFriendList(User user) {
         String filename = String.format("files/"+user.getUsername()+"_friends.dat");
         ArrayList<User> friends = new ArrayList<>();
-
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
             for(User friend : friends) {
                 friend = (User) ois.readObject();
@@ -104,16 +103,21 @@ public class Server implements PropertyChangeListener {
 
     public void sendMessage(Message reply) {
         User receiver = reply.getReceiver();
-        ClientHandler clientHandler = loggedInUsers.get(receiver);
-        clientHandler.send(reply);
+        if(loggedInUsers.containsKey(receiver)) {
+            ClientHandler clientHandler = loggedInUsers.get(receiver);
+            clientHandler.send(reply);
+        } else {
+            messagesToSend(reply);
+        }
     }
 
     private void updateListForAllContacts() {
         synchronized (loggedInUsers) {
             for(Map.Entry<User, ClientHandler> entry : loggedInUsers.entrySet()) {
+
                 Message message = new Message.Builder()
                     .type(Message.CONTACTS)
-                    .contacts(loggedInUsers.keySet().toArray(new User[0]))
+                    .contacts(new ArrayList<>(loggedInUsers.keySet()))
                     .build();
                 entry.getValue().send(message);
             }
@@ -183,9 +187,19 @@ public class Server implements PropertyChangeListener {
                         reply =  new Message.Builder().type(Message.LOGIN_SUCCESS).build();
                         clientHandler = new ClientHandler(controller, socket, oos, ois);
                         addLoggedInUser(user, clientHandler);
-                        client.addPropertyChangeListener((PropertyChangeListener) this);
+                        //client.addPropertyChangeListener((PropertyChangeListener) this);
                         clientHandler.start();
                         clientHandler.getServerSender().send(reply);
+                        if(messageOnHold.containsKey(user)) {
+                            Buffer buffer = messageOnHold.get(user);
+                            while(!buffer.isEmpty()) {
+                                try {
+                                    clientHandler.getServerSender().send((Message) buffer.get());
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
                     } else { // kan inte logga in
                         reply =  new Message.Builder().type(Message.LOGIN_FAILED).build();
                         oos.writeObject(reply);
@@ -209,6 +223,19 @@ public class Server implements PropertyChangeListener {
                 }
             }
         }
+    }
+    public void disconnect(Message message){
+        User user = message.getSender();
+        if(loggedInUsers.containsKey(user)){
+            loggedInUsers.get(user).closeThread();
+            loggedInUsers.remove(user);
+            //loggedInUsers.get(evt.getNewValue()).interrupt();
+            updateListForAllContacts();
+        }
+        else {
+            System.out.println("User not found");
+        }
+
     }
 }
 

@@ -4,10 +4,11 @@ import globalEntity.Message;
 import globalEntity.User;
 import server.boundary.ServerUI;
 import server.entity.Server;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Controller implements PropertyChangeListener {
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -16,6 +17,7 @@ public class Controller implements PropertyChangeListener {
 
     public Controller(){
         server = new Server(this, 20008);
+        server.addListener(this);
         ServerUI serverUI = new ServerUI(server);
     }
 
@@ -25,33 +27,15 @@ public class Controller implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        // System.out.println();
-        // pcs.firePropertyChange("message", null, evt);
-        // if (evt.getPropertyName().equals("login")) {
-        //     pcs.firePropertyChange("login", null, evt);
-        //     System.out.println("Test " + evt.getPropertyName());
-        // } else if (evt.getPropertyName().equals("logout")){
-        //     pcs.firePropertyChange("logout", null, evt);
-        // } else {
-        //     pcs.firePropertyChange("sent", null, evt);
-        // }
-    }
-
-    public synchronized void parseMessage(Message message) {
-        User sender = message.getSender();
-        User receiver = message.getReceiver();
-
-        switch(message.getType()) {
-            case Message.CONTACTS -> {}
-            case Message.TEXT -> {}
-            case Message.IMAGE -> {}
-            case Message.TEXT_AND_IMAGE -> {}
-        }
+        pcs.firePropertyChange("message", null, evt);
+        System.out.println("fjupp");
     }
 
     public synchronized boolean userExists(User user) {
         return server.userExists(user);
     }
+    public void sendMessage(Message message) {
+
 
     public void addToTraffic(String traffic){
         serverUI.updateTraffic(traffic);
@@ -59,5 +43,17 @@ public class Controller implements PropertyChangeListener {
 
     public void sendMessage(Message message){
         server.sendMessage(message);
+    }
+
+
+    public void disconnect(Message message) {
+        server.disconnect(message);
+    }
+    
+    public void createFriendList(Message message){
+        User user = message.getSender();
+        ArrayList<User> users = new ArrayList<>(message.getContacts().size());
+        Collections.copy(users, message.getContacts());
+        server.createFriendList(user, users);
     }
 }

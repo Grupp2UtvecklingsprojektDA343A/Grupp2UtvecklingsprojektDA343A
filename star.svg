@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg5"
+   inkscape:export-filename="C:\Users\emile\OneDrive\Kurser\DA343A - OOT, tradar och datakommunikation\uppgifter\Grupp2UtvecklingsprojektDA343A\favorite.png"
+   inkscape:export-xdpi="80.82"
+   inkscape:export-ydpi="80.82"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="star.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     showborder="false"
+     inkscape:zoom="1.3879489"
+     inkscape:cx="141.93606"
+     inkscape:cy="343.31234"
+     inkscape:window-width="1920"
+     inkscape:window-height="1111"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       sodipodi:type="star"
+       style="fill:#fff3b9;stroke:#fbeb00;stroke-opacity:1;stroke-width:17.70200043;stroke-miterlimit:4;stroke-dasharray:none;stroke-linejoin:round;stroke-linecap:round;stroke-dashoffset:0;paint-order:normal;fill-opacity:1"
+       id="path31"
+       inkscape:flatsided="false"
+       sodipodi:sides="5"
+       sodipodi:cx="155.62532"
+       sodipodi:cy="321.33746"
+       sodipodi:r1="302.93741"
+       sodipodi:r2="151.4687"
+       sodipodi:arg1="0.78539816"
+       sodipodi:arg2="1.4137167"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 369.83442,535.54656 179.32025,470.94134 18.094616,591.25667 20.665716,390.10282 -143.58243,273.94761 48.520773,214.23291 108.23547,22.129717 224.39067,186.37786 425.54453,183.80676 305.22919,345.03239 Z"
+       transform="matrix(0.11981532,-0.23589961,0.23589961,0.11981532,-53.273815,83.231339)"
+       inkscape:transform-center-x="0.031824817"
+       inkscape:transform-center-y="-7.6235799"
+       inkscape:export-filename="C:\Users\emile\OneDrive\Kurser\DA343A - OOT, tradar och datakommunikation\uppgifter\Grupp2UtvecklingsprojektDA343A\unfavorite.png"
+       inkscape:export-xdpi="350.35999"
+       inkscape:export-ydpi="350.35999" />
+  </g>
+</svg>

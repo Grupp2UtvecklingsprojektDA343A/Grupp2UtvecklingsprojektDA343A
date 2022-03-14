@@ -10,6 +10,7 @@ import globalEntity.User;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class WindowHandler {
@@ -62,7 +63,7 @@ public class WindowHandler {
         }
     }
 
-    public void updateListOfContacts(User[] loggedInUsers) {
+    public void updateListOfContacts(ArrayList<User> loggedInUsers) {
         for(User user : loggedInUsers) {
             if(!user.getUsername().equals(client.getUsername())) {
                 contactsWindow.addUser(user.getUsername(), user.getIcon());
@@ -93,7 +94,17 @@ public class WindowHandler {
     }
 
     public void removeChatWindow(String username) {
+        chatWindows.remove(new User(username, null));
+    }
 
+    public void displayMessage(User sender, String text, String time) {
+        ChatWindow chatWindow = chatWindows.get(sender);
+        if(chatWindow == null) {
+            openChatWindow(sender);
+            chatWindow = chatWindows.get(sender);
+        }
+        String fulltext = time+": "+text;
+        chatWindow.addMessage(fulltext);
     }
 
     // GLOBAL
@@ -125,4 +136,18 @@ public class WindowHandler {
     }
 
 
+    public void displayImage(User sender, ImageIcon image, String time) {
+        /*ChatWindow chatWindow = chatWindows.get(sender);
+        if(chatWindow == null) {
+            openChatWindow(sender);
+            chatWindow = chatWindows.get(sender);
+        }
+        String fulltext = time+": "+image;
+        chatWindow.addMessage(fulltext);*/
+        //förberedelser för image i ett message
+    }
+
+    public void displayImageAndText(User sender, ImageIcon image, String text, String text1) {
+        //förberedelser för image och text i ett message
+    }
 }

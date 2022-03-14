@@ -7,13 +7,13 @@ import globalEntity.User;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -48,6 +48,7 @@ public class Client {
 
     public void closeApplication() {
         try {
+            outputClient.send(new Message.Builder().type(Message.LOGOUT).sender(user).build());
             disconnect();
         } catch (IOException e) {
             e.printStackTrace();
@@ -125,17 +126,18 @@ public class Client {
     public void setToOffline(User user){
 
     }
-    public void updateListOfContacts(User[] loggedInUsers){
+    public void updateListOfContacts(ArrayList<User> loggedInUsers){
         currentlyOnline.clear();
         for(User user : loggedInUsers) {
             currentlyOnline.put(user.getUsername(), user);
         }
         windowHandler.updateListOfContacts(loggedInUsers);
     }
-    public void sendMessage(String username, String text) {
+    public void sendMessage(String username, String text, LocalDateTime timestamp) {
         Message message = new Message.Builder()
             .type(Message.TEXT)
             .message(text)
+            .sent(timestamp)
             .sender(user)
             .receiver(currentlyOnline.get(username))
             .build();
@@ -147,10 +149,22 @@ public class Client {
         });
     }
     public void startChatWithUser(String username) {
-        windowHandler.openChatWindow(user);
+        windowHandler.openChatWindow(currentlyOnline.get(username));
     }
     private void stopThreads() {
         inputClient.running = false;
+    }
+
+    public void displayMessage(User sender, String text, String time) {
+        windowHandler.displayMessage(sender, text, time);
+    }
+
+    public void displayImage(User sender, ImageIcon image, String time) {
+        windowHandler.displayImage(sender,image,time);
+    }
+
+    public void displayImageAndText(User sender, ImageIcon image, String text, String time) {
+        windowHandler.displayImageAndText(sender,image,text,text);
     }
 
     private class ThreadHandler extends Thread{

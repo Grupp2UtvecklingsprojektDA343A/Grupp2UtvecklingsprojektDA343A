@@ -40,7 +40,7 @@ public class ClientHandler extends Thread {
         return serverSender;
     }
     public void closeThread(){
-        serverReceiver.interrupt();
+        serverReceiver.running = false;
         serverSender.interrupt();
         interrupt();
     }

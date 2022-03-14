@@ -3,9 +3,11 @@ package client.control;
 import globalEntity.Message;
 import globalEntity.User;
 
+import javax.swing.ImageIcon;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.SocketException;
+import java.time.format.DateTimeFormatter;
 
 public class InputClient extends Thread {
     private ObjectInputStream ois;
@@ -32,7 +34,9 @@ public class InputClient extends Thread {
 
                     case Message.TEXT -> {
                         User sender = message.getSender();
-
+                        String text = message.getMessage();
+                        String time = message.getSent().format(DateTimeFormatter.ISO_LOCAL_TIME);
+                        client.displayMessage(sender, text, time);
                         // mainWindow.newImageMessage(icon,sender);
                         // String sender = String.valueOf(message.getSender());
                         // String guiMessage = message.getMessage();
@@ -40,11 +44,18 @@ public class InputClient extends Thread {
                     }
 
                     case Message.IMAGE -> {
-                        System.out.println("bara bild");
+                        User sender = message.getSender();
+                        ImageIcon image = message.getImage();
+                        String time = message.getSent().format(DateTimeFormatter.ISO_LOCAL_TIME);
+                        client.displayImage(sender, image, time);
                     }
 
                     case Message.TEXT_AND_IMAGE -> {
-                        System.out.println("text och bild");
+                        User sender = message.getSender();
+                        String text = message.getMessage();
+                        ImageIcon image = message.getImage();
+                        String time = message.getSent().format(DateTimeFormatter.ISO_LOCAL_TIME);
+                        client.displayImageAndText(sender, image,text, time);
                     }
 
                     default -> {
