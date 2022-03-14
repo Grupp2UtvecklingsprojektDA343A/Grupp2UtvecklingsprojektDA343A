@@ -27,15 +27,15 @@ public class Controller implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        pcs.firePropertyChange("message", null, evt);
-        if(evt.getPropertyName().equals("loginOK")){
-            serverUI.updateTraffic(evt.getNewValue() + " just logged in.");
-        } else if (evt.getPropertyName().equals("logout")){
-            serverUI.updateTraffic(evt.getNewValue() + " just logged out.");
-        } else if (evt.getPropertyName().equals("sent")){
-            serverUI.updateTraffic((String) evt.getNewValue());
-        } else if (evt.getPropertyName().equals("loginFail")){
-            serverUI.updateTraffic(evt.getNewValue() + " failed to login.");
+        pcs.firePropertyChange("message", null, evt);//nytt
+        if(evt.getPropertyName().equals("loginOK")){//nytt
+            serverUI.updateTraffic(evt.getNewValue() + " just logged in.");//nytt
+        } else if (evt.getPropertyName().equals("logout")){//nytt
+            serverUI.updateTraffic(evt.getNewValue() + " just logged out.");//nytt
+        } else if (evt.getPropertyName().equals("sent")){//nytt
+            serverUI.updateTraffic((String) evt.getNewValue());//nytt
+        } else if (evt.getPropertyName().equals("loginFail")){//nytt
+            serverUI.updateTraffic(evt.getNewValue() + " failed to login.");//nytt
         }
     }
 

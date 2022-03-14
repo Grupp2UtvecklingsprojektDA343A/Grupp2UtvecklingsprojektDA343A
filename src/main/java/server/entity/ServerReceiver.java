@@ -42,9 +42,9 @@ public class ServerReceiver extends Thread {
                         controller.createFriendList(message);
                     }
                     case Message.TEXT -> {
-                        LocalDateTime time = LocalDateTime.now();
-                        message.setReceived(time);
-                        controller.sendMessage(message);
+                        LocalDateTime time = LocalDateTime.now();//nytt
+                        message.setReceived(time);//nytt
+                        controller.sendMessage(message);//nytt
                     }
                     case Message.IMAGE -> {}
                     case Message.LOGOUT -> {

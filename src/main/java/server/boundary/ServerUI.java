@@ -50,8 +50,8 @@ public class ServerUI extends JFrame implements PropertyChangeListener {
         dlm.addElement("Test 3");
     }
 
-    public void updateTraffic(String trafficInfo){
-        dlm.addElement(trafficInfo);
+    public void updateTraffic(String trafficInfo){//nytt
+        dlm.addElement(trafficInfo);//nytt
     }
 
     @Override

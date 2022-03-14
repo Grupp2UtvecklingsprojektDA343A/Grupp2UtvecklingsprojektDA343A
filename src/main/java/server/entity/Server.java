@@ -115,15 +115,15 @@ public class Server implements PropertyChangeListener {
     public void sendMessage(Message reply) {
         User receiver = reply.getReceiver();
         if(loggedInUsers.containsKey(receiver)) {
-            pcs.firePropertyChange(
-                "sent",
-                null,
-                reply.getSent().format(DateTimeFormatter.ISO_LOCAL_TIME)
-                    + ": "
-                    + reply.getSender().getUsername()
-                    + " sent a message to "
-                    + reply.getReceiver().getUsername()
-                    + ".");
+            pcs.firePropertyChange(//nytt
+                "sent",//nytt
+                null,//nytt
+                reply.getSent().format(DateTimeFormatter.ISO_LOCAL_TIME)//nytt
+                    + ": "//nytt
+                    + reply.getSender().getUsername()//nytt
+                    + " sent a message to "//nytt
+                    + reply.getReceiver().getUsername()//nytt
+                    + ".");//nytt
             ClientHandler clientHandler = loggedInUsers.get(receiver);
             clientHandler.send(reply);
         } else {
@@ -165,7 +165,7 @@ public class Server implements PropertyChangeListener {
 
                     if (msg.getType() == Message.LOGIN) {
                         new LoginHandler(socket, oos, ois, msg.getSender()).start();
-                        pcs.firePropertyChange("login", null, msg.getSender().getUsername());
+                        pcs.firePropertyChange("login", null, msg.getSender().getUsername());//nytt
                         controller.addToTraffic(msg.getSender().getUsername());
                     } else {
                         // ny chatt
@@ -207,7 +207,7 @@ public class Server implements PropertyChangeListener {
                     if (!controller.userExists(user)) { // kan logga in
                         reply = new Message.Builder().type(Message.LOGIN_SUCCESS).build();
                         clientHandler = new ClientHandler(controller, socket, oos, ois);
-                        pcs.firePropertyChange("loginOK", null, user.getUsername());
+                        pcs.firePropertyChange("loginOK", null, user.getUsername());//nytt
                         addLoggedInUser(user, clientHandler);
                         //client.addPropertyChangeListener((PropertyChangeListener) this);
                         clientHandler.start();
@@ -230,7 +230,7 @@ public class Server implements PropertyChangeListener {
                         }
                     } else { // kan inte logga in
                         reply =  new Message.Builder().type(Message.LOGIN_FAILED).build();
-                        pcs.firePropertyChange("loginFail", null, user.getUsername());
+                        pcs.firePropertyChange("loginFail", null, user.getUsername());//nytt
                         oos.writeObject(reply);
                         oos.flush();
                         user = null;
