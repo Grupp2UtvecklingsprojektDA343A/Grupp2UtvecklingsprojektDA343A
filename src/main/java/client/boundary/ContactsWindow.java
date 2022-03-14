@@ -2,7 +2,6 @@ package client.boundary;
 
 import client.control.Client;
 import client.control.WindowHandler;
-import globalEntity.User;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -15,16 +14,14 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ContactsWindow extends DefaultWindow implements KeyListener {
     private final GridBagConstraints constraints = new GridBagConstraints();
-    private WindowHandler windowHandler;
-    private final ArrayList<String> listOfUser = new ArrayList<>();
+    private final ConcurrentHashMap<String, UserButton> listOfUser = new ConcurrentHashMap<>();
 
     public ContactsWindow(Client client, WindowHandler windowHandler, boolean showMenuBar, String username, ImageIcon profilePicture) {
         super(client, showMenuBar);
-        this.windowHandler = windowHandler;
 
         JMenuItem logOut = new JMenuItem("Log out");
         logOut.addActionListener(l -> {
@@ -78,19 +75,17 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
 
             UserButton userButton = new UserButton(username, profilePicture);
             add(userButton, constraints);
-            addToList(username);
+            listOfUser.put(username, userButton);
         }
+
         repaint();
         revalidate();
         pack();
     }
 
-    private void addToList(String username) {
-        listOfUser.add(username);
-    }
 
-    private boolean isOnList(String username) {
-        return listOfUser.contains(username);
+    public boolean isOnList(String username) {
+        return listOfUser.containsKey(username);
     }
 
 
@@ -116,7 +111,12 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
 
     }
 
-    public void updateListOfContacts(ArrayList<String> loggedInUsers) {
+    public void loggedOut(String username) {
+        getPanel().remove(listOfUser.get(username));
+        repaint();
+        revalidate();
+        pack();
+        System.out.println("nu tog vi bort: " + username);
     }
 
     private class UserButton extends JButton {

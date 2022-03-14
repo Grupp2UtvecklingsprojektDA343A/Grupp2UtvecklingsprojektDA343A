@@ -11,12 +11,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WindowHandler {
     private LoginWindow logInWindow;
     private ContactsWindow contactsWindow;
-    private final HashMap<User, ChatWindow> chatWindows = new HashMap<>();
+    private final ConcurrentHashMap<User, ChatWindow> chatWindows = new ConcurrentHashMap<>();
     private Client client;
 
     public WindowHandler(Client client) {
@@ -64,16 +64,12 @@ public class WindowHandler {
     }
 
     public void updateListOfContacts(ArrayList<User> loggedInUsers) {
-        loggedInUsers.remove(client.getUser());
-        contactsWindow.updateListOfContacts(loggedInUsers);
-
-
-
-
-        // GAMMALT
         for(User user : loggedInUsers) {
-
-            contactsWindow.addUser(user.getUsername(), user.getIcon());
+            if(chatWindows.containsKey(user)) {
+                chatWindows.get(user).loggedIn();
+            } else {
+                contactsWindow.addUser(user.getUsername(), user.getIcon());
+            }
         }
     }
 
@@ -142,7 +138,15 @@ public class WindowHandler {
     }
 
 
-    public void setToOffline(User user) {
-
+    public void setToOffline(User user, boolean isFriend) {
+        if(isFriend) {
+            chatWindows.get(user).loggedOut();
+        } else {
+            if(chatWindows.containsKey(user)) {
+                chatWindows.get(user).dispose();
+            }
+            chatWindows.remove(user);
+            contactsWindow.loggedOut(user.getUsername());
+        }
     }
 }

@@ -12,13 +12,15 @@ import java.util.ArrayList;
  */
 public class Message implements Serializable {
     public static final int CONTACTS = 1;
-    public static final int TEXT = 2;
     public static final int IMAGE = 3;
-    public static final int TEXT_AND_IMAGE = 4;
     public static final int LOGIN = 5;
-    public static final int LOGIN_SUCCESS = 6;
     public static final int LOGIN_FAILED = 7;
+    public static final int LOGIN_SUCCESS = 6;
     public static final int LOGOUT = 8;
+    public static final int TEXT = 2;
+    public static final int TEXT_AND_IMAGE = 4;
+    public static final int USER_LOGGED_OUT = 9;
+    public static final int USER_LOGGED_IN = 10;
 
     private User sender;
     private User receiver;
