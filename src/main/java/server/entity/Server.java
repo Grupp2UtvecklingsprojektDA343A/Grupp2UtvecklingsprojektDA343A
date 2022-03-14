@@ -142,6 +142,7 @@ public class Server implements PropertyChangeListener {
                     if(msg.getType() == Message.LOGIN) {
                         new LoginHandler(socket, oos, ois, msg.getSender()).start();
                         pcs.firePropertyChange("login", null, msg.getSender().getUsername());
+                        controller.addToTraffic(msg.getSender().getUsername());
                     } else {
                         // ny chatt
 

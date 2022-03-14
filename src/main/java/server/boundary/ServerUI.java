@@ -1,5 +1,6 @@
 package server.boundary;
 
+import globalEntity.User;
 import server.control.Controller;
 import server.entity.Server;
 
@@ -54,21 +55,22 @@ public class ServerUI extends JFrame implements PropertyChangeListener {
     }
 
     public void updateTraffic(String trafficInfo){
-        dlm.addElement(trafficInfo);
+        dlm.addElement(trafficInfo + " just logged in.");
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        System.out.println("Something happened");
-        System.out.println();
-        if (evt.getPropertyName().equals("message")){
-            String name = String.valueOf(evt.getNewValue());
-            traffic.add(name + " just logged in.");
-        } else if (evt.getPropertyName().equals("login")){
-            updateTraffic(evt + " just logged in.");
-        } else if (evt.getPropertyName().equals("logout")){
-            updateTraffic(evt + " just logged out.");
-        }
+        // System.out.println("Something happened");
+        // System.out.println();
+        // if (evt.getPropertyName().equals("message")){
+        //     User user = (User) evt.getNewValue();
+        //     String name = user.getUsername();
+        //     traffic.add(name + " just logged in.");
+        // } else if (evt.getPropertyName().equals("login")){
+        //     updateTraffic(evt + " just logged in.");
+        // } else if (evt.getPropertyName().equals("logout")){
+        //     updateTraffic(evt + " just logged out.");
+        // }
     }
 
     private class ServerUIThread extends Thread {

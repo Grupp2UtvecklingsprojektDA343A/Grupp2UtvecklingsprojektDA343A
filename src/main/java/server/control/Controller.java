@@ -56,4 +56,8 @@ public class Controller implements PropertyChangeListener {
     public void addToTraffic(String traffic){
         serverUI.updateTraffic(traffic);
     }
+
+    public void sendMessage(Message message){
+        server.sendMessage(message);
+    }
 }
