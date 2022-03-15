@@ -1,5 +1,6 @@
 package server.boundary;
 
+import client.boundary.ImageHandler;
 import globalEntity.User;
 import server.control.Controller;
 import server.entity.Server;
@@ -31,6 +32,11 @@ public class ServerUI extends JFrame implements PropertyChangeListener {
         setSize(400,500);
         setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        ImageIcon arlako = ImageHandler.createImageIcon("/arlako.png");
+        if(arlako != null) {
+            setIconImage(arlako.getImage());
+        }
 
         trafficList = new JList<>(dlm);
 
