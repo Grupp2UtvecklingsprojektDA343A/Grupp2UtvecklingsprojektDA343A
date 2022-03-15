@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
+   width="163.99344mm"
+   height="156.59224mm"
+   viewBox="0 0 163.99344 156.59224"
    version="1.1"
    id="svg5"
    inkscape:export-filename="C:\Users\emile\OneDrive\Kurser\DA343A - OOT, tradar och datakommunikation\uppgifter\Grupp2UtvecklingsprojektDA343A\favorite.png"
@@ -26,25 +26,30 @@
      inkscape:pagecheckerboard="0"
      inkscape:document-units="mm"
      showgrid="false"
-     showborder="false"
-     inkscape:zoom="1.3879489"
-     inkscape:cx="141.93606"
-     inkscape:cy="343.31234"
+     showborder="true"
+     inkscape:zoom="0.98142808"
+     inkscape:cx="114.62888"
+     inkscape:cy="325.54601"
      inkscape:window-width="1920"
      inkscape:window-height="1111"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="layer1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
   <defs
      id="defs2" />
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     transform="translate(40.852674,0.89903863)">
     <path
        sodipodi:type="star"
-       style="fill:#fff3b9;stroke:#fbeb00;stroke-opacity:1;stroke-width:17.70200043;stroke-miterlimit:4;stroke-dasharray:none;stroke-linejoin:round;stroke-linecap:round;stroke-dashoffset:0;paint-order:normal;fill-opacity:1"
+       style="fill:#fbeb00;fill-opacity:1;stroke:#fbeb00;stroke-width:43.602;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
        id="path31"
        inkscape:flatsided="false"
        sodipodi:sides="5"
@@ -60,7 +65,7 @@
        transform="matrix(0.11981532,-0.23589961,0.23589961,0.11981532,-53.273815,83.231339)"
        inkscape:transform-center-x="0.031824817"
        inkscape:transform-center-y="-7.6235799"
-       inkscape:export-filename="C:\Users\emile\OneDrive\Kurser\DA343A - OOT, tradar och datakommunikation\uppgifter\Grupp2UtvecklingsprojektDA343A\unfavorite.png"
+       inkscape:export-filename="C:\Users\emile\OneDrive\Kurser\DA343A - OOT, tradar och datakommunikation\uppgifter\Grupp2UtvecklingsprojektDA343A\favorite.png"
        inkscape:export-xdpi="350.35999"
        inkscape:export-ydpi="350.35999" />
   </g>
