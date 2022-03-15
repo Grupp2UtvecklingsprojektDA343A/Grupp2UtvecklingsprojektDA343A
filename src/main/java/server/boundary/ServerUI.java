@@ -27,11 +27,7 @@ public class ServerUI extends JFrame implements PropertyChangeListener {
 
     public ServerUI(Server server){
         this.server = server;
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
+        SwingUtilities.invokeLater(this::createAndShowGUI);
     }
 
     private void createAndShowGUI() {
@@ -88,6 +84,7 @@ public class ServerUI extends JFrame implements PropertyChangeListener {
             newValue.getText());
 
         updateTraffic(fullMessage);
+        traffic.add(fullMessage);
     }
 
     private class ServerUIThread extends Thread {
