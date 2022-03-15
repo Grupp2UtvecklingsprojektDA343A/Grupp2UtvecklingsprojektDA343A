@@ -28,10 +28,6 @@ public class InputClient extends Thread {
                 int type = message.getType();
 
                 switch(type) {
-                    case Message.CONTACTS -> {
-                        this.client.updateListOfContacts(message.getContacts());
-                    }
-
                     case Message.TEXT -> {
                         User sender = message.getSender();
                         String text = message.getMessage();
@@ -57,6 +53,14 @@ public class InputClient extends Thread {
                         ImageIcon image = message.getImage();
                         String time = message.getSent().format(DateTimeFormatter.ISO_LOCAL_TIME);
                         client.displayImageAndText(sender, image,text, time);
+                    }
+
+                    case Message.USER_LOGGED_IN -> {
+                        client.setToOnline(message.getSender());
+                    }
+
+                    case Message.USER_LOGGED_OUT -> {
+                        client.setToOffline(message.getSender());
                     }
 
                     default -> {

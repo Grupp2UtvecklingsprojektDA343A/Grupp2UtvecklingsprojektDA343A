@@ -11,12 +11,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WindowHandler {
     private LoginWindow logInWindow;
     private ContactsWindow contactsWindow;
-    private final HashMap<User, ChatWindow> chatWindows = new HashMap<>();
+    private final ConcurrentHashMap<User, ChatWindow> chatWindows = new ConcurrentHashMap<>();
     private Client client;
 
     public WindowHandler(Client client) {
@@ -65,7 +65,9 @@ public class WindowHandler {
 
     public void updateListOfContacts(ArrayList<User> loggedInUsers) {
         for(User user : loggedInUsers) {
-            if(!user.getUsername().equals(client.getUsername())) {
+            if(chatWindows.containsKey(user)) {
+                chatWindows.get(user).loggedIn();
+            } else {
                 contactsWindow.addUser(user.getUsername(), user.getIcon());
             }
         }
@@ -135,7 +137,6 @@ public class WindowHandler {
         JOptionPane.showMessageDialog(parent, errorMessage, title, JOptionPane.ERROR_MESSAGE);
     }
 
-
     public void displayImage(User sender, ImageIcon image, String time) {
         /*ChatWindow chatWindow = chatWindows.get(sender);
         if(chatWindow == null) {
@@ -149,5 +150,18 @@ public class WindowHandler {
 
     public void displayImageAndText(User sender, ImageIcon image, String text, String text1) {
         //förberedelser för image och text i ett message
+    }
+
+
+    public void setToOffline(User user, boolean isFriend) {
+        if(isFriend) {
+            chatWindows.get(user).loggedOut();
+        } else {
+            if(chatWindows.containsKey(user)) {
+                chatWindows.get(user).dispose();
+            }
+            chatWindows.remove(user);
+            contactsWindow.loggedOut(user.getUsername());
+        }
     }
 }

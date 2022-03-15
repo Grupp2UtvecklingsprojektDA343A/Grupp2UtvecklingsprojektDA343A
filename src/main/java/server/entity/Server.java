@@ -1,5 +1,4 @@
 package server.entity;
-
 import client.control.Client;
 import globalEntity.Message;
 import globalEntity.User;
@@ -21,12 +20,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import server.entity.Traffic;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Server implements PropertyChangeListener {
     private final Controller controller;
     private ArrayList<String> traffic = new ArrayList<>();
-    private HashMap<User, Buffer<Message>> messageOnHold = new HashMap<>();
-    private final HashMap<User, ClientHandler> loggedInUsers = new HashMap<>();
+    private ConcurrentHashMap<User, Buffer<Message>> messageOnHold = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<User, ClientHandler> loggedInUsers = new ConcurrentHashMap<>();
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private LocalDateTime date;
     private ServerSocket serverSocket;
@@ -47,8 +47,16 @@ public class Server implements PropertyChangeListener {
 
     public synchronized void addLoggedInUser(User user, ClientHandler clientHandler) {
         new Thread(() -> {
+            Message message = new Message.Builder()
+                .type(Message.USER_LOGGED_IN)
+                .sender(user) // <--- har loggat in
+                .build();
+
+            for(ClientHandler ch : loggedInUsers.values()) {
+                ch.send(message);
+            }
+
             loggedInUsers.put(user, clientHandler);
-            updateListForAllContacts();
         }).start();
     }
 
@@ -136,16 +144,13 @@ public class Server implements PropertyChangeListener {
         }
     }
 
-    private void updateListForAllContacts() {
-        synchronized (loggedInUsers) {
-            for (Map.Entry<User, ClientHandler> entry : loggedInUsers.entrySet()) {
-
-                Message message = new Message.Builder()
-                    .type(Message.CONTACTS)
-                    .contacts(new ArrayList<>(loggedInUsers.keySet()))
-                    .build();
-                entry.getValue().send(message);
-            }
+    private void sendUserLoggedOut(User loggedOutUser) {
+        for(ClientHandler ch : loggedInUsers.values()) {
+            Message message = new Message.Builder()
+                .type(Message.USER_LOGGED_OUT)
+                .sender(loggedOutUser)
+                .build();
+            ch.send(message);
         }
     }
 
@@ -213,8 +218,11 @@ public class Server implements PropertyChangeListener {
                     }
                     Message reply;
 
-                    if (!controller.userExists(user)) { // kan logga in
-                        reply = new Message.Builder().type(Message.LOGIN_SUCCESS).build();
+                    if(!controller.userExists(user)) { // kan logga in
+                        reply =  new Message.Builder()
+                            .type(Message.LOGIN_SUCCESS)
+                            .contacts(new ArrayList<>(loggedInUsers.keySet()))
+                            .build();
                         clientHandler = new ClientHandler(controller, socket, oos, ois);
                         pcs.firePropertyChange("loginOK", null, user.getUsername());//nytt
                         addLoggedInUser(user, clientHandler);
@@ -269,8 +277,9 @@ public class Server implements PropertyChangeListener {
             loggedInUsers.get(user).closeThread();
             loggedInUsers.remove(user);
             //loggedInUsers.get(evt.getNewValue()).interrupt();
-            updateListForAllContacts();
-        } else {
+            sendUserLoggedOut(user);
+        }
+        else {
             System.out.println("User not found");
         }
 

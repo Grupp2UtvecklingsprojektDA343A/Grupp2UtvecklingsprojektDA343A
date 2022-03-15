@@ -3,6 +3,7 @@ package server.boundary;
 import globalEntity.User;
 import server.control.Controller;
 import server.entity.Server;
+import server.entity.Traffic;
 
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -52,6 +53,12 @@ public class ServerUI extends JFrame implements PropertyChangeListener {
 
     public void updateTraffic(String trafficInfo){//nytt
         dlm.addElement(trafficInfo);//nytt
+    }
+
+    public void updateTraffic(Traffic[] trafficInfo){
+        for (Traffic element : trafficInfo){
+            dlm.addElement(element.getText());
+        }
     }
 
     @Override

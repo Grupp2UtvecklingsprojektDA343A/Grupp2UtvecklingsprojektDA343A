@@ -2,6 +2,7 @@ package client.boundary;
 
 import client.control.Client;
 import client.control.WindowHandler;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,16 +14,14 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ContactsWindow extends DefaultWindow implements KeyListener {
     private final GridBagConstraints constraints = new GridBagConstraints();
-    private WindowHandler windowHandler;
-    private final ArrayList<String> listOfUser = new ArrayList<>();
+    private final ConcurrentHashMap<String, UserButton> listOfUser = new ConcurrentHashMap<>();
 
     public ContactsWindow(Client client, WindowHandler windowHandler, boolean showMenuBar, String username, ImageIcon profilePicture) {
         super(client, showMenuBar);
-        this.windowHandler = windowHandler;
 
         JMenuItem logOut = new JMenuItem("Log out");
         logOut.addActionListener(l -> {
@@ -66,7 +65,7 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
         if(!isOnList(username)) {
             ++constraints.gridy; // rad
 
-            FriendButton friend = new FriendButton();
+            FriendButton friend = new FriendButton(username);
             constraints.gridx = 0; // column
             constraints.gridwidth = 1;
             add(friend, constraints);
@@ -76,19 +75,17 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
 
             UserButton userButton = new UserButton(username, profilePicture);
             add(userButton, constraints);
-            addToList(username);
+            listOfUser.put(username, userButton);
         }
+
         repaint();
         revalidate();
         pack();
     }
 
-    private void addToList(String username) {
-        listOfUser.add(username);
-    }
 
-    private boolean isOnList(String username) {
-        return listOfUser.contains(username);
+    public boolean isOnList(String username) {
+        return listOfUser.containsKey(username);
     }
 
 
@@ -114,6 +111,14 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
 
     }
 
+    public void loggedOut(String username) {
+        getPanel().remove(listOfUser.get(username));
+        repaint();
+        revalidate();
+        pack();
+        System.out.println("nu tog vi bort: " + username);
+    }
+
     private class UserButton extends JButton {
         public UserButton(String username, ImageIcon profilePicture) {
             setText(username);
@@ -126,10 +131,12 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
 
     private class FriendButton extends JButton {
         private boolean isFriend = false;
+        private String username;
         private final ImageIcon star = ImageHandler.createImageIcon("/favorite.png", 50, 50);
         private final ImageIcon unstar = ImageHandler.createImageIcon("/unfavorite.png", 50, 50);
 
-        public FriendButton() {
+        public FriendButton(String username) {
+            this.username = username;
             setIcon(unstar);
             setBorderPainted(false);
             setFocusPainted(false);
@@ -142,7 +149,7 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
                 } else {
                     setIcon(unstar);
                 }
-
+                getClient().saveContact(username, isFriend);
                 repaint();
             });
         }

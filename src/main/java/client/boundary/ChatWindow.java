@@ -143,4 +143,12 @@ public class ChatWindow extends DefaultWindow {
     void closeApplication() {
 
     }
+
+    public void loggedIn() {
+        setTitle("OFFLINE: Arlako chatt with: " + currentChatter);
+    }
+
+    public void loggedOut() {
+        setTitle("OFFLINE: Arlako chatt with: " + currentChatter);
+    }
 }

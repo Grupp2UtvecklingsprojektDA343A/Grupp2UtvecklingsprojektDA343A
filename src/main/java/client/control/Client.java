@@ -15,7 +15,9 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*todo
 Funktionalitet för klient
@@ -34,13 +36,13 @@ Servern måste kunna lagra klienter i en objektsamling.
 public class Client {
     private Socket socket;
     private User user;
-    private HashMap<String, User> friendList;
+    private ConcurrentHashMap<String, User> friendList = new ConcurrentHashMap<>();
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private Message message = null;
     private InputClient inputClient;
     private OutputClient outputClient;
-    private HashMap<String, User> currentlyOnline = new HashMap<>();
+    private ConcurrentHashMap<String, User> currentlyOnline = new ConcurrentHashMap<>();
     private final WindowHandler windowHandler = new WindowHandler(this);
     private boolean disconnected;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -57,23 +59,34 @@ public class Client {
         // outputClient
         windowHandler.closeAllWindows();
     }
+
     public String[] convert(){
         String[] temp = new String[currentlyOnline.size()];
         for (int i = 0; i < temp.length; i++) {
             temp[i] = currentlyOnline.get(i).getUsername();
         } return temp;
     }
+
     private void connect(String ip, int port) throws IOException {
         this.socket = new Socket(ip,port);
         this.oos = new ObjectOutputStream(socket.getOutputStream());
         this.ois = new ObjectInputStream(socket.getInputStream());
     }
+
     public void disconnect() throws IOException {
         socket.close();
     }
+
     public String getUsername() {
         return user.getUsername();
     }
+
+    public boolean isFriend(String username) {
+        System.out.println("loggade ut: " + username);
+        System.out.println("jag är: " + user.getUsername());
+        return friendList.containsKey(username);
+    }
+
     public void logIn(String username, ImageIcon profilePicture, String host, int port, LoginWindow loginWindow) {
         new Thread(() -> {
             user = new User(username, profilePicture);
@@ -90,6 +103,7 @@ public class Client {
                     windowHandler.openContactsWindow(username, profilePicture);
                     new ThreadHandler(this).start();
                     windowHandler.closeLogInWindow();
+                    updateListOfContacts(answer.getContacts());
                 }else{
                     loginWindow.done();
                     WindowHandler.showErrorMessage(windowHandler.getLogInWindow(),"Failed loggin","loggin failed");
@@ -103,6 +117,7 @@ public class Client {
             }
         }).start();
     }
+
     public void logOut(DefaultWindow parent) {
         try {
             disconnect();
@@ -117,22 +132,45 @@ public class Client {
             showGUI();
         }
     }
+
     public void addPropertyChangeListener(PropertyChangeListener listener){
         pcs.addPropertyChangeListener(listener);
     }
+
     public void setToOnline(User user){
-
-    }
-    public void setToOffline(User user){
-
-    }
-    public void updateListOfContacts(ArrayList<User> loggedInUsers){
-        currentlyOnline.clear();
-        for(User user : loggedInUsers) {
+        if(!currentlyOnline.contains(user)) {
             currentlyOnline.put(user.getUsername(), user);
         }
+
+
+        windowHandler.updateListOfContacts(new ArrayList<>(List.of(user)));
+    }
+
+    public void setToOffline(User user){
+        boolean friend = isFriend(user.getUsername());
+        if(friend) {
+            currentlyOnline.remove(user.getUsername());
+        }
+
+        windowHandler.setToOffline(user, friend);
+    }
+
+    public void updateListOfContacts(ArrayList<User> loggedInUsers){
+        ConcurrentHashMap<String, User> oldOnlineList = new ConcurrentHashMap<>(currentlyOnline);
+
+        for(User user : oldOnlineList.values()) {
+            if(!loggedInUsers.contains(user)) {
+                if(friendList.containsKey(user.getUsername())) {
+                    setToOffline(user);
+                } else {
+                    currentlyOnline.remove(user.getUsername());
+                }
+            }
+        }
+
         windowHandler.updateListOfContacts(loggedInUsers);
     }
+
     public void sendMessage(String username, String text, LocalDateTime timestamp) {
         Message message = new Message.Builder()
             .type(Message.TEXT)
@@ -143,14 +181,17 @@ public class Client {
             .build();
         outputClient.send(message);
     }
+
     public void showGUI() {
         SwingUtilities.invokeLater(() -> {
             windowHandler.openLogInWindow();
         });
     }
+
     public void startChatWithUser(String username) {
         windowHandler.openChatWindow(currentlyOnline.get(username));
     }
+
     private void stopThreads() {
         inputClient.running = false;
     }
@@ -172,6 +213,18 @@ public class Client {
         outputClient.send(message);
     }
 
+    public void saveContact(String username, boolean isFriend) {
+        if(isFriend) {
+            friendList.put(username, currentlyOnline.get(username));
+        } else {
+            friendList.remove(username);
+        }
+    }
+
+    public User getUser() {
+        return user;
+    }
+
     private class ThreadHandler extends Thread{
         private Client client;
         public ThreadHandler(Client client){
@@ -185,5 +238,4 @@ public class Client {
             inputClient.start();
         }
     }
-
 }

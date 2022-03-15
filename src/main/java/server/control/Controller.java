@@ -23,7 +23,8 @@ public class Controller implements PropertyChangeListener {
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private Server server;
     private ServerUI serverUI;
-    private ArrayList<Traffic> traffic = new ArrayList<>();
+    private ArrayList<Traffic> trafficList = new ArrayList<>();
+    private Traffic trafficArray[] = null;
 
     public Controller(){
         server = new Server(this, 20008);
@@ -44,9 +45,13 @@ public class Controller implements PropertyChangeListener {
         } else if (evt.getPropertyName().equals("logout")){
             //serverUI.updateTraffic(evt.getNewValue() + " just logged out.");
         } else if (evt.getPropertyName().equals("sent")){
+            trafficToList();
+            logTraffic(evt);
+            /*
             logTraffic(evt);
             Traffic traffic = (Traffic) evt.getNewValue();
             serverUI.updateTraffic(traffic.getText());
+             */
             //serverUI.updateTraffic((String) evt.getNewValue());
         } else if (evt.getPropertyName().equals("loginFail")){
             //serverUI.updateTraffic(evt.getNewValue() + " failed to login.");
@@ -73,12 +78,13 @@ public class Controller implements PropertyChangeListener {
 
             Traffic traffic = (Traffic) evt.getNewValue();
 
-            oos.writeObject(traffic);
+            trafficList.add(traffic);
+            oos.writeObject(trafficList);
             oos.flush();
             oos.close();
 
-            for (int i = 0; i < this.traffic.size(); i++) {
-                System.out.println(this.traffic.get(i).getText());
+            for (int i = 0; i < this.trafficList.size(); i++) {
+                System.out.println(this.trafficList.get(i).getText());
             }
 
         } catch (IOException e){
@@ -87,21 +93,24 @@ public class Controller implements PropertyChangeListener {
     }
 
     public void trafficToList(){
+
         try {
             String path = "files//traffic";
             FileInputStream fis = new FileInputStream(path);
             BufferedInputStream bis = new BufferedInputStream(fis);
             ObjectInputStream ois = new ObjectInputStream(bis);
 
-            Traffic readable = null;
-
-            while ((readable = (Traffic) ois.readObject()) != null){
-            traffic.add(readable);
-            }
+            trafficArray = (Traffic[]) ois.readObject();
+            serverUI.updateTraffic(trafficArray);
 
         } catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
+
+        for (int i = 0; i < trafficArray.length; i++) {
+            System.out.println(trafficArray[i]);
+        }
+        System.out.println();
     }
 
     public void sendMessage(Message message, Traffic traffic){
@@ -111,7 +120,7 @@ public class Controller implements PropertyChangeListener {
     public void disconnect(Message message) {
         server.disconnect(message);
     }
-    
+
     public void createFriendList(Message message){
         User user = message.getSender();
         ArrayList<User> users = new ArrayList<>(message.getContacts().size());
