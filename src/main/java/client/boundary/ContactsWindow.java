@@ -116,7 +116,6 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
         repaint();
         revalidate();
         pack();
-        System.out.println("nu tog vi bort: " + username);
     }
 
     private class UserButton extends JButton {
@@ -131,12 +130,10 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
 
     private class FriendButton extends JButton {
         private boolean isFriend = false;
-        private String username;
         private final ImageIcon star = ImageHandler.createImageIcon("/favorite.png", 50, 50);
         private final ImageIcon unstar = ImageHandler.createImageIcon("/unfavorite.png", 50, 50);
 
         public FriendButton(String username) {
-            this.username = username;
             setIcon(unstar);
             setBorderPainted(false);
             setFocusPainted(false);

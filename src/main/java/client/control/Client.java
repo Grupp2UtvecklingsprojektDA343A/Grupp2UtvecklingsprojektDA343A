@@ -82,8 +82,6 @@ public class Client {
     }
 
     public boolean isFriend(String username) {
-        System.out.println("loggade ut: " + username);
-        System.out.println("jag är: " + user.getUsername());
         return friendList.containsKey(username);
     }
 
