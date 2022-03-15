@@ -10,8 +10,10 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.swing.*;
 
@@ -21,13 +23,23 @@ public class ServerUI extends JFrame implements PropertyChangeListener {
     private ArrayList<String> traffic;
     private JList<String> trafficList;
     private DefaultListModel<String> dlm = new DefaultListModel<>();
+    private final DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm:ss.A");
 
     public ServerUI(Server server){
+        this.server = server;
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                createAndShowGUI();
+            }
+        });
+    }
+
+    private void createAndShowGUI() {
         //controller.addListener(this);
         server.addListener(this);
 
         setTitle("Traffic log:");
-        setLayout(null);
+        setLayout(new GridLayout(1,1));
         setVisible(true);
         setSize(400,500);
         setResizable(true);
@@ -41,14 +53,14 @@ public class ServerUI extends JFrame implements PropertyChangeListener {
         trafficList = new JList<>(dlm);
 
         JScrollPane jsp = new JScrollPane();
-        jsp.setSize(400,500);
+        // jsp.setSize(400,500);
         jsp.setViewportView(trafficList);
-        jsp.setLocation(0,0);
+        // jsp.setLocation(0,0);
         jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         add(jsp);
         //addTestTraffic();
-        new ServerUIThread().start();
+        // new ServerUIThread().start();
     }
 
     public void addTestTraffic(){
@@ -69,17 +81,13 @@ public class ServerUI extends JFrame implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        // System.out.println("Something happened");
-        // System.out.println();
-        // if (evt.getPropertyName().equals("message")){
-        //     User user = (User) evt.getNewValue();
-        //     String name = user.getUsername();
-        //     traffic.add(name + " just logged in.");
-        // } else if (evt.getPropertyName().equals("login")){
-        //     updateTraffic(evt + " just logged in.");
-        // } else if (evt.getPropertyName().equals("logout")){
-        //     updateTraffic(evt + " just logged out.");
-        // }
+        Traffic newValue = (Traffic) evt.getNewValue();
+        String fullMessage = String.format("C:%s S:%s - %s",
+            newValue.getClientRecievedTime().format(format),
+            newValue.getServerReceivedTime().format(format),
+            newValue.getText());
+
+        updateTraffic(fullMessage);
     }
 
     private class ServerUIThread extends Thread {

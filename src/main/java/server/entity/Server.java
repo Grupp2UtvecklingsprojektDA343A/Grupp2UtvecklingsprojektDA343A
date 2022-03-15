@@ -140,6 +140,7 @@ public class Server implements PropertyChangeListener {
                     + ".");//nytt
              */
         } else {
+            pcs.firePropertyChange("queued", null, traffic);
             messagesToSend(reply);
         }
     }
@@ -178,8 +179,16 @@ public class Server implements PropertyChangeListener {
                     Message msg = (Message) ois.readObject();
 
                     if (msg.getType() == Message.LOGIN) {
+                        Traffic traffic = new Traffic.Builder()
+                            .text("Login request from: " + msg.getSender().getUsername())
+                            .clientRecieved(msg.getSent())
+                            .serverRecieved(LocalDateTime.now())
+                            .build();
+
+                        pcs.firePropertyChange("login", null, traffic);//nytt
+
                         new LoginHandler(socket, oos, ois, msg.getSender()).start();
-                        pcs.firePropertyChange("login", null, msg.getSender().getUsername());//nytt
+
                         controller.addToTraffic(msg.getSender().getUsername());
                     } else {
                         // ny chatt
@@ -224,7 +233,15 @@ public class Server implements PropertyChangeListener {
                             .contacts(new ArrayList<>(loggedInUsers.keySet()))
                             .build();
                         clientHandler = new ClientHandler(controller, socket, oos, ois);
-                        pcs.firePropertyChange("loginOK", null, user.getUsername());//nytt
+
+                        Traffic traffic = new Traffic.Builder()
+                            .text(user.getUsername() + " just logged in.")
+                            .clientRecieved(LocalDateTime.now())
+                            .serverRecieved(LocalDateTime.now())
+                            .build();
+
+                        pcs.firePropertyChange("loginOK", null, traffic);//nytt
+                        System.out.println("avfyra!");
                         addLoggedInUser(user, clientHandler);
                         //client.addPropertyChangeListener((PropertyChangeListener) this);
                         clientHandler.start();
@@ -273,7 +290,12 @@ public class Server implements PropertyChangeListener {
     public void disconnect(Message message){
         User user = message.getSender();
         if(loggedInUsers.containsKey(user)){
-            pcs.firePropertyChange("logout", null, user.getUsername());
+            Traffic traffic = new Traffic.Builder()
+                .text(message.getSender().getUsername() + "just logged out.")
+                .clientRecieved(message.getSent())
+                .serverRecieved(LocalDateTime.now())
+                .build();
+            pcs.firePropertyChange("logout", null, traffic);
             loggedInUsers.get(user).closeThread();
             loggedInUsers.remove(user);
             //loggedInUsers.get(evt.getNewValue()).interrupt();

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="132.6778mm"
+   height="132.6778mm"
+   viewBox="0 0 132.6778 132.6778"
+   version="1.1"
+   id="svg5"
+   inkscape:export-filename="C:\Users\emile\OneDrive\Kurser\DA343A - OOT, tradar och datakommunikation\uppgifter\Grupp2UtvecklingsprojektDA343A\offline.png"
+   inkscape:export-xdpi="350.35999"
+   inkscape:export-ydpi="350.35999"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="status.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="0.69397447"
+     inkscape:cx="156.34581"
+     inkscape:cy="450.30475"
+     inkscape:window-width="1920"
+     inkscape:window-height="1111"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-17.919121,-29.356865)">
+    <circle
+       style="fill:#00ff00;stroke:none;stroke-width:11.5364;stroke-linecap:square;stroke-linejoin:round"
+       id="path846"
+       cx="84.258018"
+       cy="95.695763"
+       r="66.338898"
+       inkscape:transform-center-x="24.781772"
+       inkscape:transform-center-y="-14.869063"
+       inkscape:export-filename="C:\Users\emile\OneDrive\Kurser\DA343A - OOT, tradar och datakommunikation\uppgifter\Grupp2UtvecklingsprojektDA343A\online.png"
+       inkscape:export-xdpi="350.35999"
+       inkscape:export-ydpi="350.35999" />
+  </g>
+</svg>

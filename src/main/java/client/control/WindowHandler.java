@@ -57,7 +57,7 @@ public class WindowHandler {
 
     public void contactsWindowClosed() {
         if(chatWindows.size() == 0) {
-            client.closeApplication();
+            client.logOut(null, true);
         } else {
             showWindow(contactsWindow);
         }
@@ -67,9 +67,9 @@ public class WindowHandler {
         for(User user : loggedInUsers) {
             if(chatWindows.containsKey(user)) {
                 chatWindows.get(user).loggedIn();
-            } else {
-                contactsWindow.addUser(user.getUsername(), user.getIcon());
             }
+
+            contactsWindow.addUser(user.getUsername(), user.getIcon());
         }
     }
 
@@ -154,14 +154,10 @@ public class WindowHandler {
 
 
     public void setToOffline(User user, boolean isFriend) {
-        if(isFriend) {
-            chatWindows.get(user).loggedOut();
-        } else {
-            if(chatWindows.containsKey(user)) {
-                chatWindows.get(user).dispose();
-            }
-            chatWindows.remove(user);
-            contactsWindow.loggedOut(user.getUsername());
+        if(chatWindows.containsKey(user)) {
+            chatWindows.get(user).loggedOut(isFriend);
         }
+
+        contactsWindow.loggedOut(user.getUsername(), isFriend);
     }
 }

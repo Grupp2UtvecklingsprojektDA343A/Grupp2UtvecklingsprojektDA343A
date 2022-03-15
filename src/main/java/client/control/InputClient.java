@@ -68,7 +68,7 @@ public class InputClient extends Thread {
                     }
                 }
             } catch (SocketException e) {
-                client.logOut(null);
+                client.logOut(null, false);
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
                 System.exit(4);

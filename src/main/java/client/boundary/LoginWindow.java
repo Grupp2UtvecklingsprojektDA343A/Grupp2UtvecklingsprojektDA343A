@@ -218,7 +218,7 @@ public class LoginWindow extends DefaultWindow implements KeyListener {
 
     @Override
     public void closeApplication() {
-        getClient().closeApplication();
+        getClient().logOut(null, false);
     }
     public void done() {
         spinningGear.setVisible(false);

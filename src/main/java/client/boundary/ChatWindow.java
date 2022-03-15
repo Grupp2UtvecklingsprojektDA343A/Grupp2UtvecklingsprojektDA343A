@@ -22,8 +22,12 @@ import java.time.format.DateTimeFormatter;
 
 public class ChatWindow extends DefaultWindow {
     private final DefaultListModel<Object> chatMessages = new DefaultListModel<>();
-    private JTextArea textInput;
+    private final JTextArea textInput = new JTextArea();
     private final String currentChatter;
+    private final JButton sendButton = new JButton("Send");
+    private final JLabel onlineStatus = new JLabel();
+    private final ImageIcon online = ImageHandler.createImageIcon("/online.png", 50, 50);
+    private final ImageIcon offline = ImageHandler.createImageIcon("/offline.png", 50, 50);
 
     public ChatWindow(Client client, String currentChatter, ImageIcon profilePicture, WindowHandler windowHandler) {
         super(client, true);
@@ -63,17 +67,15 @@ public class ChatWindow extends DefaultWindow {
         Dimension dimension = new Dimension(400, 50);
 
 
-        textInput = new JTextArea();
         textInput.setPreferredSize(dimension);
         textInput.setBackground(Color.WHITE);
         textInput.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         textInput.setPreferredSize(dimension);
 
+        onlineStatus.setIcon(online);
+
         JLabel name = new JLabel(currentChatter);
 
-        JLabel onlineStatus = new JLabel("Online");
-
-        JButton sendButton = new JButton("Send");
         sendButton.addActionListener(l -> {
             if(!textInput.getText().isEmpty()) {
                 sendMessage(textInput.getText());
@@ -145,10 +147,23 @@ public class ChatWindow extends DefaultWindow {
     }
 
     public void loggedIn() {
-        setTitle("OFFLINE: Arlako chatt with: " + currentChatter);
+        onlineStatus.setIcon(online);
+        sendButton.setEnabled(true);
+        textInput.setEnabled(true);
+
+        sendButton.setContentAreaFilled(true);
+        textInput.setBackground(Color.WHITE);
     }
 
-    public void loggedOut() {
-        setTitle("OFFLINE: Arlako chatt with: " + currentChatter);
+    public void loggedOut(boolean isFriend) {
+        if(!isFriend) {
+            sendButton.setEnabled(false);
+            textInput.setEnabled(false);
+
+            sendButton.setContentAreaFilled(false);
+            textInput.setBackground(Color.GRAY);
+        }
+
+        onlineStatus.setIcon(offline);
     }
 }

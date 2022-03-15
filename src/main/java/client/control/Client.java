@@ -47,19 +47,6 @@ public class Client {
     private boolean disconnected;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
-
-    public void closeApplication() {
-        try {
-            outputClient.send(new Message.Builder().type(Message.LOGOUT).sender(user).build());
-            disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        stopThreads();
-        // outputClient
-        windowHandler.closeAllWindows();
-    }
-
     public String[] convert(){
         String[] temp = new String[currentlyOnline.size()];
         for (int i = 0; i < temp.length; i++) {
@@ -73,7 +60,17 @@ public class Client {
         this.ois = new ObjectInputStream(socket.getInputStream());
     }
 
-    public void disconnect() throws IOException {
+    public void disconnect(boolean sendLogoutMessage) throws IOException {
+        if(sendLogoutMessage) {
+            Message msg = new Message.Builder()
+                .type(Message.LOGOUT)
+                .sent(LocalDateTime.now())
+                .sender(user)
+                .contacts(new ArrayList<>(friendList.values()))
+                .build();
+            outputClient.send(msg);
+        }
+
         socket.close();
     }
 
@@ -88,7 +85,7 @@ public class Client {
     public void logIn(String username, ImageIcon profilePicture, String host, int port, LoginWindow loginWindow) {
         new Thread(() -> {
             user = new User(username, profilePicture);
-            Message newLogin = new Message.Builder().type(Message.LOGIN).sender(user).build();
+            Message newLogin = new Message.Builder().type(Message.LOGIN).sent(LocalDateTime.now()).sender(user).build();
 
             try {
                 connect(host, port);
@@ -116,9 +113,9 @@ public class Client {
         }).start();
     }
 
-    public void logOut(DefaultWindow parent) {
+    public void logOut(DefaultWindow parent, boolean sendLogoutMessage) {
         try {
-            disconnect();
+            disconnect(sendLogoutMessage);
             stopThreads();
             windowHandler.closeAllWindows();
             disconnected = true;
@@ -140,13 +137,13 @@ public class Client {
             currentlyOnline.put(user.getUsername(), user);
         }
 
-
         windowHandler.updateListOfContacts(new ArrayList<>(List.of(user)));
     }
 
     public void setToOffline(User user){
         boolean friend = isFriend(user.getUsername());
-        if(friend) {
+
+        if(!friend) {
             currentlyOnline.remove(user.getUsername());
         }
 
@@ -158,7 +155,7 @@ public class Client {
 
         for(User user : oldOnlineList.values()) {
             if(!loggedInUsers.contains(user)) {
-                if(friendList.containsKey(user.getUsername())) {
+                if(isFriend(user.getUsername())) {
                     setToOffline(user);
                 } else {
                     currentlyOnline.remove(user.getUsername());
@@ -213,7 +210,12 @@ public class Client {
     }
 
     public void notifyReceived() {
-        Message message = new Message.Builder().type(9).receiver(this.user).received(LocalDateTime.now()).build();
+        Message message = new Message.Builder()
+            .type(Message.NOTIFY_RECEIVED)
+            .sent(LocalDateTime.now())
+            .receiver(this.user)
+            .received(LocalDateTime.now())
+            .build();
         outputClient.send(message);
     }
 
