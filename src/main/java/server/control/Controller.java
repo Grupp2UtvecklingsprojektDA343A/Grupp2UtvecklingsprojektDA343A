@@ -118,6 +118,7 @@ public class Controller implements PropertyChangeListener {
     }
 
     public void disconnect(Message message) {
+        createFriendList(message);
         server.disconnect(message);
     }
 

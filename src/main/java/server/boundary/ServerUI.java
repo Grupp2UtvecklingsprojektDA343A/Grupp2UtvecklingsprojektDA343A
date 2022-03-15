@@ -20,7 +20,7 @@ import javax.swing.*;
 public class ServerUI extends JFrame implements PropertyChangeListener {
     private Server server;
     private JPanel panel; //innehållet i fönstret
-    private ArrayList<String> traffic;
+    private ArrayList<String> traffic = new ArrayList<>();
     private JList<String> trafficList;
     private DefaultListModel<String> dlm = new DefaultListModel<>();
     private final DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm:ss.A");

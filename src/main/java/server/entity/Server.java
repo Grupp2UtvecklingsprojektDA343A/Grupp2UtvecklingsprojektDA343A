@@ -264,7 +264,12 @@ public class Server implements PropertyChangeListener {
                         }
                     } else { // kan inte logga in
                         reply =  new Message.Builder().type(Message.LOGIN_FAILED).build();
-                        pcs.firePropertyChange("loginFail", null, user.getUsername());//nytt
+                        Traffic traffic = new Traffic.Builder()
+                            .text(user.getUsername() + " failed to login.")
+                            .clientRecieved(LocalDateTime.now())
+                            .serverRecieved(LocalDateTime.now())
+                            .build();
+                        pcs.firePropertyChange("loginFail", null, traffic);//nytt
                         oos.writeObject(reply);
                         oos.flush();
                         user = null;
