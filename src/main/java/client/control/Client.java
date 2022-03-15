@@ -168,6 +168,12 @@ public class Client {
             }
         }
 
+        for(User user : loggedInUsers) {
+            if(!currentlyOnline.containsKey(user.getUsername())) {
+                currentlyOnline.put(user.getUsername(), user);
+            }
+        }
+
         windowHandler.updateListOfContacts(loggedInUsers);
     }
 
