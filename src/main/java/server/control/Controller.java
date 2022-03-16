@@ -16,6 +16,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -26,6 +30,15 @@ public class Controller implements PropertyChangeListener {
     private ArrayList<Traffic> trafficList = new ArrayList<>();
 
     public Controller(){
+        if (! Files.isDirectory(Paths.get("files/"))) {
+            Path p = FileSystems.getDefault().getPath("files/");
+            try {
+                Files.createDirectory(p);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         server = new Server(this, 20008);
         server.addListener(this);
         trafficLogGUI = new TrafficLogGUI(server);
