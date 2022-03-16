@@ -3,7 +3,6 @@ package client.control;
 import client.boundary.ChatWindow;
 import client.boundary.ContactsWindow;
 import client.boundary.DefaultWindow;
-import client.boundary.ImageHandler;
 import client.boundary.LoginWindow;
 import globalEntity.User;
 
@@ -71,6 +70,10 @@ public class WindowHandler {
 
             contactsWindow.addUser(user.getUsername(), user.getIcon());
         }
+    }
+
+    public void clickStar(User user) {
+        contactsWindow.clickStar(user.getUsername());
     }
 
     // CHAT WINDOWS //

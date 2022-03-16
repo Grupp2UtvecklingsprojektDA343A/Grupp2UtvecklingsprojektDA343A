@@ -89,9 +89,9 @@ public class Client {
                 // 4.1 kunde inte logga in
                 if (answer.getType() == Message.LOGIN_SUCCESS){
                     windowHandler.openContactsWindow(username, profilePicture);
-                    new ThreadHandler(this).start();
                     windowHandler.closeLogInWindow();
                     updateListOfContacts(answer.getContacts());
+                    new ThreadHandler(this).start();
                 }else{
                     loginWindow.done();
                     WindowHandler.showErrorMessage(windowHandler.getLogInWindow(),"Failed loggin","loggin failed");
@@ -146,6 +146,7 @@ public class Client {
 
     public void updateListOfContacts(ArrayList<User> loggedInUsers){
         currentlyOnline.clear();
+        System.out.println("clear");
         for(User user : loggedInUsers) {
             currentlyOnline.put(user.getUsername(), user);
             setToOnline(user);
@@ -216,10 +217,20 @@ public class Client {
         return currentlyOnline.containsKey(username);
     }
 
-    public void uploadContact(User receiver,  ArrayList<User> friends) {
-        boolean online = currentlyOnline.containsKey(user.getUsername());
-        //Lägg till koppling till gui.
+    public void loadFavorites(ArrayList<User> friends) {
+        for(User friend : friends) {
+            boolean offline = !currentlyOnline.containsKey(friend.getUsername());
+            if(offline) {
+                // updateListOfContacts(new ArrayList<>(List.of(friend)));
+                setToOnline(friend);
+            }
 
+            windowHandler.clickStar(friend);
+
+            if(offline) {
+                setToOffline(friend);
+            }
+        }
     }
 
     public ArrayList<String> getCurrentlyOnline() {

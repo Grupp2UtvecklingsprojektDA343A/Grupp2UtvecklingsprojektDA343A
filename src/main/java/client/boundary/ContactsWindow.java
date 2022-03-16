@@ -125,6 +125,11 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
         pack();
     }
 
+    public void clickStar(String username) {
+        JButton b = listOfUser.get(username)[0];
+        b.doClick();
+    }
+
     private class UserButton extends JButton {
         public UserButton(String username, ImageIcon profilePicture) {
             setText(username);

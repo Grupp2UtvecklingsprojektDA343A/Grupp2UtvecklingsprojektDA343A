@@ -100,9 +100,7 @@ public class Controller implements PropertyChangeListener {
 
     public void createFriendList(Message message){
         User user = message.getSender();
-        ArrayList<User> users = new ArrayList<>();
-        ArrayList<User> contacts = message.getContacts();
-        users.addAll(contacts);
+        ArrayList<User> users = new ArrayList<>(message.getContacts());
         server.createFriendList(user, users);
     }
 
