@@ -77,6 +77,7 @@ public class InputClient extends Thread {
                         for(User u : friends){
                             System.out.println(u.getUsername());
                         }
+                        System.out.println();
                         client.uploadContact(receiver, friends);
                     }
                     default -> {
