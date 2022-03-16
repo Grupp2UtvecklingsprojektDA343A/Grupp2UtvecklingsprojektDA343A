@@ -15,11 +15,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import server.entity.Traffic;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Server {
