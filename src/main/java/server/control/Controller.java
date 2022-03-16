@@ -45,7 +45,7 @@ public class Controller implements PropertyChangeListener {
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
+    public synchronized void propertyChange(PropertyChangeEvent evt) {
         writeTrafficToFile(evt);
         readTrafficFile();
     }
