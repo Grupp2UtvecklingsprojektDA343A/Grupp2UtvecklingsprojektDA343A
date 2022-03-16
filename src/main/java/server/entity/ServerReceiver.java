@@ -54,7 +54,7 @@ public class ServerReceiver extends Thread {
                     case Message.TEXT_AND_IMAGE -> {}
                     case Message.NOTIFY_RECEIVED -> {
                         Traffic traffic = new Traffic.Builder().text(message.getReceiver().getUsername()
-                            + " received a message at specified time. ")
+                            + " received a message. ")
                             .eventTime(message.getReceived()).build();
                         controller.notifyUser(traffic);
                     }

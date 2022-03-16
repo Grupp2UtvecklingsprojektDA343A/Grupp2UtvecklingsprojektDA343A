@@ -79,7 +79,6 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
             add(userButton, constraints);
             listOfUser.put(username, new JButton[]{friend, userButton});
         }
-
         pack();
     }
 

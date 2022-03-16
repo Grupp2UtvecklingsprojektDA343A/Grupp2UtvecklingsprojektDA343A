@@ -244,6 +244,10 @@ public class Client {
 
     }
 
+    public ArrayList<String> getCurrentlyOnline() {
+        return currentlyOnline;
+    }
+
     private class ThreadHandler extends Thread{
         private Client client;
         public ThreadHandler(Client client){

@@ -98,19 +98,18 @@ public class Server {
         ArrayList<User> friends = new ArrayList<>();
         Message message = null;
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
-            while (true) {
-                User friend = (User) ois.readObject();
+            for (User friend : friends) {
+                friend = (User) ois.readObject();
                 friends.add(friend);
             }
-
+            message = new Message.Builder()
+                .type(Message.CONTACTS)
+                .contacts(friends)
+                .receiver(user)
+                .build();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        message = new Message.Builder()
-            .type(Message.CONTACTS)
-            .contacts(friends)
-            .receiver(user)
-            .build();
         return message;
     }
 

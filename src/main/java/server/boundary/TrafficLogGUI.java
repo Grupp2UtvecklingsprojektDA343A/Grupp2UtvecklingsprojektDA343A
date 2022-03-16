@@ -24,7 +24,7 @@ public class TrafficLogGUI extends JFrame {
     }
 
     private void createAndShowGUI() {
-        setTitle("Traffic log:");
+        setTitle("Server is running. Traffic log:");
         setLayout(new GridLayout(1,1));
         setVisible(true);
         setSize(700,500);
