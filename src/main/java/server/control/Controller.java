@@ -32,7 +32,7 @@ public class Controller implements PropertyChangeListener {
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
+    public synchronized void propertyChange(PropertyChangeEvent evt) {
         writeTrafficToFile(evt);
         readTrafficFile();
     }
@@ -64,7 +64,7 @@ public class Controller implements PropertyChangeListener {
     }
 
     public void readTrafficFile(){
-        ArrayList<Traffic> traffic= new ArrayList<>();
+        ArrayList<Traffic> traffic = new ArrayList<>();
         try {
             String path  = "files/traffic";
             ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(path)));

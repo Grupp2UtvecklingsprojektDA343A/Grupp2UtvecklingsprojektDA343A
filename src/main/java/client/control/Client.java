@@ -238,6 +238,10 @@ public class Client {
             return currentlyOnline.contains(username);
     }
 
+    public ArrayList<String> getCurrentlyOnline() {
+        return currentlyOnline;
+    }
+
     private class ThreadHandler extends Thread{
         private Client client;
         public ThreadHandler(Client client){
