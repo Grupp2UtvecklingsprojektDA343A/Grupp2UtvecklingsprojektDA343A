@@ -67,6 +67,7 @@ public class Server {
         for (int i = 0; i < friends.size(); i++) {
             friends.add(users.get(i));
         }
+
         String filename = String.format("files/" + user.getUsername() + "_friends.dat");
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             for (User friend : friends) {
@@ -235,7 +236,6 @@ public class Server {
                             .build();
 
                         pcs.firePropertyChange("loginOK", null, traffic);//nytt
-                        System.out.println("avfyra!");
                         addLoggedInUser(user, clientHandler);
                         //client.addPropertyChangeListener((PropertyChangeListener) this);
                         clientHandler.start();
