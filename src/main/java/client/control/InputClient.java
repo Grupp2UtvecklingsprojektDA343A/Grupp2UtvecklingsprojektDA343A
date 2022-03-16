@@ -71,9 +71,11 @@ public class InputClient extends Thread {
                         for(User u : users){
                             System.out.println(u.getUsername());
                         }
+                        //Debugging
                         User receiver = message.getSender();
                         ArrayList<User> friends = new ArrayList<>();
                         friends.addAll(users);
+                        //Debugging
                         for(User u : friends){
                             System.out.println(u.getUsername());
                         }
