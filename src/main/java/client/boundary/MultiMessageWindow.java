@@ -37,5 +37,7 @@ public class MultiMessageWindow extends JFrame {
         private JButton send;
         private JButton add;
         private JButton remove;
+
+
     }
 }
