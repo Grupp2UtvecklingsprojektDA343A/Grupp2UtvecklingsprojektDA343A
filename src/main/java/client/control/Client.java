@@ -171,7 +171,11 @@ public class Client {
     }
 
     public void startChatWithUser(String username, boolean online) {
-        windowHandler.openChatWindow(currentlyOnline.get(username), online);
+        if(currentlyOnline.containsKey(username)) {
+            windowHandler.openChatWindow(currentlyOnline.get(username), online);
+        } else {
+            windowHandler.openChatWindow(friendList.get(username), online);
+        }
     }
 
     private void stopThreads() {
