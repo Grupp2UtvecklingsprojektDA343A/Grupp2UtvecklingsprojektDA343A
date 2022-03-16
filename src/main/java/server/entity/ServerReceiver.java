@@ -43,9 +43,10 @@ public class ServerReceiver extends Thread {
                         controller.createFriendList(message);
                     }
                     case Message.TEXT -> {
-                        String text = String.format("%s sent a message to %s.", sender, receiver);
-
-                        Traffic traffic = new Traffic.Builder().text(text).serverRecieved(LocalDateTime.now()).build();
+                        Traffic traffic = new Traffic.Builder().text(message.getSender().getUsername()
+                             + " sent a message to "
+                             + message.getReceiver().getUsername()
+                             + ".").serverRecieved(LocalDateTime.now()).build();
                         controller.sendMessage(message, traffic);
                     }
                     case Message.IMAGE -> {}
@@ -54,11 +55,7 @@ public class ServerReceiver extends Thread {
                     }
                     case Message.TEXT_AND_IMAGE -> {}
                     case Message.NOTIFY_RECEIVED -> {
-                        /*Traffic traffic = new Traffic.Builder().text(
-                            message.getReceiver().getUsername()+ " received "
-                            + message.getSender()
-                            + "'s message at ").clientRecieved(message.getReceived()).build();
-                        server.notifyReceived(traffic);*/
+
                     }
                 }
             }

@@ -2,7 +2,7 @@ package server.control;
 
 import globalEntity.Message;
 import globalEntity.User;
-import server.boundary.ServerUI;
+import server.boundary.TrafficLogGUI;
 import server.entity.Server;
 import server.entity.Traffic;
 
@@ -22,43 +22,19 @@ import java.util.Collections;
 public class Controller implements PropertyChangeListener {
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private Server server;
-    private ServerUI serverUI;
+    private TrafficLogGUI trafficLogGUI;
     private ArrayList<Traffic> trafficList = new ArrayList<>();
-    private Traffic trafficArray[] = null;
 
     public Controller(){
         server = new Server(this, 20008);
         server.addListener(this);
-        serverUI = new ServerUI(server);
-    }
-
-    public void addListener(PropertyChangeListener listener){
-        pcs.addPropertyChangeListener(listener);
+        trafficLogGUI = new TrafficLogGUI(server);
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        pcs.firePropertyChange("message", null, evt);
-
-        if(evt.getPropertyName().equals("loginOK")){
-            //serverUI.updateTraffic(evt.getNewValue() + " just logged in.");
-        } else if (evt.getPropertyName().equals("logout")){
-            //serverUI.updateTraffic(evt.getNewValue() + " just logged out.");
-        } else if (evt.getPropertyName().equals("sent")){
-            trafficToList();
-            logTraffic(evt);
-            /*
-            logTraffic(evt);
-            Traffic traffic = (Traffic) evt.getNewValue();
-            serverUI.updateTraffic(traffic.getText());
-             */
-            //serverUI.updateTraffic((String) evt.getNewValue());
-        } else if (evt.getPropertyName().equals("loginFail")){
-            //serverUI.updateTraffic(evt.getNewValue() + " failed to login.");
-        } else if (evt.getPropertyName().equals("receivedByUser")){
-            trafficToList();
-            logTraffic(evt);
-        }
+        writeTrafficToFile(evt);
+        readTrafficFile();
     }
 
     public synchronized boolean userExists(User user) {
@@ -69,48 +45,35 @@ public class Controller implements PropertyChangeListener {
         //serverUI.updateTraffic(traffic);
     }
 
-    public void logTraffic(PropertyChangeEvent evt){
-        String path = "files//traffic";
+    public void writeTrafficToFile(PropertyChangeEvent evt){
+        String path = "files/traffic";
         try {
             FileOutputStream fos = new FileOutputStream(path);
             BufferedOutputStream bos = new BufferedOutputStream(fos);
             ObjectOutputStream oos = new ObjectOutputStream(bos);
 
             Traffic traffic = (Traffic) evt.getNewValue();
-
             trafficList.add(traffic);
             oos.writeObject(trafficList);
             oos.flush();
             oos.close();
-
-            for (int i = 0; i < this.trafficList.size(); i++) {
-                System.out.println(this.trafficList.get(i).getText());
-            }
 
         } catch (IOException e){
             e.printStackTrace();
         }
     }
 
-    public void trafficToList(){
-
+    public void readTrafficFile(){
+        ArrayList<Traffic> traffic= new ArrayList<>();
         try {
-            String path = "files//traffic";
-            FileInputStream fis = new FileInputStream(path);
-            BufferedInputStream bis = new BufferedInputStream(fis);
-            ObjectInputStream ois = new ObjectInputStream(bis);
-
-            trafficArray = (Traffic[]) ois.readObject();
-            serverUI.updateTraffic(trafficArray);
-
-        } catch (IOException | ClassNotFoundException e){
+            String path  = "files/traffic";
+            ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(path)));
+            traffic = (ArrayList<Traffic>) ois.readObject();
+            trafficLogGUI.updateTraffic(traffic);
+            ois.close();
+        }catch (Exception e){
             e.printStackTrace();
         }
-
-        for (int i = 0; i < trafficArray.length; i++) {
-            System.out.println(trafficArray[i]);
-        }
-        System.out.println();
     }
 
     public void sendMessage(Message message, Traffic traffic){

@@ -1,6 +1,7 @@
 package globalEntity;
 
 import javax.swing.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ public class Message implements Serializable {
     public static final int USER_LOGGED_OUT = 10;
     public static final int USER_LOGGED_IN = 11;
 
+    //@Serial
+    //private static final long serialVersionUID = -687991492884005033L;
     private User sender;
     private User receiver;
     private String message;

@@ -128,17 +128,6 @@ public class Server implements PropertyChangeListener {
             ClientHandler clientHandler = loggedInUsers.get(receiver);
             clientHandler.send(reply);
             pcs.firePropertyChange("sent", null, traffic);
-            /*
-            pcs.firePropertyChange(//nytt
-                "sent",//nytt
-                null,//nytt
-                reply.getSent().format(DateTimeFormatter.ISO_LOCAL_TIME)//nytt
-                    + ": "//nytt
-                    + reply.getSender().getUsername()//nytt
-                    + " sent a message to "//nytt
-                    + reply.getReceiver().getUsername()//nytt
-                    + ".");//nytt
-             */
         } else {
             pcs.firePropertyChange("queued", null, traffic);
             messagesToSend(reply);
