@@ -130,7 +130,7 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
             setText(username);
             setIcon(profilePicture);
             addActionListener(l -> {
-                getClient().startChatWithUser(username);
+                getClient().startChatWithUser(username, getClient().isOnline(username));
             });
         }
     }

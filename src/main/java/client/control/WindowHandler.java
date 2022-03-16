@@ -74,11 +74,11 @@ public class WindowHandler {
     }
 
     // CHAT WINDOWS //
-    public void openChatWindow(User user) {
+    public void openChatWindow(User user, boolean online) {
         if(isChatWindowOpen(user)) {
             focusChatWindow(user);
         } else {
-            addChatWindow(user, new ChatWindow(client, user.getUsername(), user.getIcon(), this));
+            addChatWindow(user, new ChatWindow(client, user.getUsername(), user.getIcon(), this, online));
         }
     }
 
@@ -99,10 +99,10 @@ public class WindowHandler {
         chatWindows.remove(new User(username, null));
     }
 
-    public void displayMessage(User sender, String text, String time) {
+    public void displayMessage(User sender, String text, String time, boolean online) {
         ChatWindow chatWindow = chatWindows.get(sender);
         if(chatWindow == null) {
-            openChatWindow(sender);
+            openChatWindow(sender, online);
             chatWindow = chatWindows.get(sender);
         }
         String fulltext = time+": "+text;

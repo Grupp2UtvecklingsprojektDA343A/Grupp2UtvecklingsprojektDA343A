@@ -15,7 +15,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -42,15 +41,16 @@ public class Client {
     private Message message = null;
     private InputClient inputClient;
     private OutputClient outputClient;
-    private ConcurrentHashMap<String, User> currentlyOnline = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, User> contacts = new ConcurrentHashMap<>();
+    private final ArrayList<String> currentlyOnline = new ArrayList<>();
     private final WindowHandler windowHandler = new WindowHandler(this);
     private boolean disconnected;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     public String[] convert(){
-        String[] temp = new String[currentlyOnline.size()];
+        String[] temp = new String[contacts.size()];
         for (int i = 0; i < temp.length; i++) {
-            temp[i] = currentlyOnline.get(i).getUsername();
+            temp[i] = contacts.get(i).getUsername();
         } return temp;
     }
 
@@ -133,10 +133,11 @@ public class Client {
     }
 
     public void setToOnline(User user){
-        if(!currentlyOnline.contains(user)) {
-            currentlyOnline.put(user.getUsername(), user);
+        if(!contacts.contains(user)) {
+            contacts.put(user.getUsername(), user);
         }
 
+        currentlyOnline.add(user.getUsername());
         windowHandler.updateListOfContacts(new ArrayList<>(List.of(user)));
     }
 
@@ -144,28 +145,29 @@ public class Client {
         boolean friend = isFriend(user.getUsername());
 
         if(!friend) {
-            currentlyOnline.remove(user.getUsername());
+            contacts.remove(user.getUsername());
         }
 
+        currentlyOnline.remove(user.getUsername());
         windowHandler.setToOffline(user, friend);
     }
 
     public void updateListOfContacts(ArrayList<User> loggedInUsers){
-        ConcurrentHashMap<String, User> oldOnlineList = new ConcurrentHashMap<>(currentlyOnline);
+        ConcurrentHashMap<String, User> oldOnlineList = new ConcurrentHashMap<>(contacts);
 
         for(User user : oldOnlineList.values()) {
             if(!loggedInUsers.contains(user)) {
                 if(isFriend(user.getUsername())) {
                     setToOffline(user);
                 } else {
-                    currentlyOnline.remove(user.getUsername());
+                    contacts.remove(user.getUsername());
                 }
             }
         }
 
         for(User user : loggedInUsers) {
-            if(!currentlyOnline.containsKey(user.getUsername())) {
-                currentlyOnline.put(user.getUsername(), user);
+            if(! contacts.containsKey(user.getUsername())) {
+                contacts.put(user.getUsername(), user);
             }
         }
 
@@ -178,7 +180,7 @@ public class Client {
             .message(text)
             .sent(timestamp)
             .sender(user)
-            .receiver(currentlyOnline.get(username))
+            .receiver(contacts.get(username))
             .build();
         outputClient.send(message);
     }
@@ -189,8 +191,8 @@ public class Client {
         });
     }
 
-    public void startChatWithUser(String username) {
-        windowHandler.openChatWindow(currentlyOnline.get(username));
+    public void startChatWithUser(String username, boolean online) {
+        windowHandler.openChatWindow(contacts.get(username), online);
     }
 
     private void stopThreads() {
@@ -198,7 +200,8 @@ public class Client {
     }
 
     public void displayMessage(User sender, String text, String time) {
-        windowHandler.displayMessage(sender, text, time);
+        boolean online = currentlyOnline.contains(user.getUsername());
+        windowHandler.displayMessage(sender, text, time, online);
     }
 
     public void displayImage(User sender, ImageIcon image, String time) {
@@ -221,7 +224,7 @@ public class Client {
 
     public void saveContact(String username, boolean isFriend) {
         if(isFriend) {
-            friendList.put(username, currentlyOnline.get(username));
+            friendList.put(username, contacts.get(username));
         } else {
             friendList.remove(username);
         }
@@ -229,6 +232,10 @@ public class Client {
 
     public User getUser() {
         return user;
+    }
+
+    public boolean isOnline(String username) {
+            return currentlyOnline.contains(username);
     }
 
     private class ThreadHandler extends Thread{

@@ -29,7 +29,7 @@ public class ChatWindow extends DefaultWindow {
     private final ImageIcon online = ImageHandler.createImageIcon("/online.png", 50, 50);
     private final ImageIcon offline = ImageHandler.createImageIcon("/offline.png", 50, 50);
 
-    public ChatWindow(Client client, String currentChatter, ImageIcon profilePicture, WindowHandler windowHandler) {
+    public ChatWindow(Client client, String currentChatter, ImageIcon profilePicture, WindowHandler windowHandler, boolean online) {
         super(client, true);
         this.currentChatter = currentChatter;
         setTitle("Arlako chatt with: " + currentChatter);
@@ -72,7 +72,11 @@ public class ChatWindow extends DefaultWindow {
         textInput.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         textInput.setPreferredSize(dimension);
 
-        onlineStatus.setIcon(online);
+        if(getClient().isOnline(currentChatter)) {
+            onlineStatus.setIcon(online);
+        } else {
+            onlineStatus.setIcon(offline);
+        }
 
         JLabel name = new JLabel(currentChatter);
 

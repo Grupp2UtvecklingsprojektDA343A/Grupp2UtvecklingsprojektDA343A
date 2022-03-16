@@ -296,7 +296,7 @@ public class Server implements PropertyChangeListener {
         User user = message.getSender();
         if(loggedInUsers.containsKey(user)){
             Traffic traffic = new Traffic.Builder()
-                .text(message.getSender().getUsername() + "just logged out.")
+                .text(message.getSender().getUsername() + " just logged out.")
                 .clientRecieved(message.getSent())
                 .serverRecieved(LocalDateTime.now())
                 .build();
