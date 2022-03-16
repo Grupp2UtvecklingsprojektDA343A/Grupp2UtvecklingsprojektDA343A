@@ -109,12 +109,10 @@ public class Server {
                 .contacts(friends)
                 .receiver(user)
                 .build();
-
-            //Lägg in arraylisten som ett message-objekt, ska gå att göra eftersom vi har builder.
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return message; //Här ska det returneras ett messageobjekt istället.
+        return message;
     }
 
     public void sendMessage(Message reply, Traffic traffic) {
