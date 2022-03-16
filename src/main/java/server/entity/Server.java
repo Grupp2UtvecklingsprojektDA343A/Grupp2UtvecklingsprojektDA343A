@@ -237,7 +237,6 @@ public class Server {
                             .build();
 
                         pcs.firePropertyChange("loginOK", null, traffic);//nytt
-                        System.out.println("avfyra!");
                         addLoggedInUser(user, clientHandler);
                         //client.addPropertyChangeListener((PropertyChangeListener) this);
                         clientHandler.start();

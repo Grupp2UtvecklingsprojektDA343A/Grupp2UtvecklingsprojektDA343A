@@ -118,6 +118,7 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
         } else {
             getPanel().remove(components[0]); // friend
             getPanel().remove(components[1]); // user button
+            listOfUser.remove(username);
         }
 
         repaint();
