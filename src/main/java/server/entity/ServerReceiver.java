@@ -7,8 +7,6 @@ import server.control.Controller;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.net.Socket;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class ServerReceiver extends Thread {
@@ -46,7 +44,7 @@ public class ServerReceiver extends Thread {
                         Traffic traffic = new Traffic.Builder().text(message.getSender().getUsername()
                              + " sent a message to "
                              + message.getReceiver().getUsername()
-                             + ".").serverRecieved(LocalDateTime.now()).build();
+                             + ".").eventTime(LocalDateTime.now()).build();
                         controller.sendMessage(message, traffic);
                     }
                     case Message.IMAGE -> {}
@@ -55,7 +53,10 @@ public class ServerReceiver extends Thread {
                     }
                     case Message.TEXT_AND_IMAGE -> {}
                     case Message.NOTIFY_RECEIVED -> {
-
+                        Traffic traffic = new Traffic.Builder().text(message.getReceiver().getUsername()
+                            + " received a message at specified time. ")
+                            .eventTime(message.getReceived()).build();
+                        controller.notifyUser(traffic);
                     }
                 }
             }

@@ -5,8 +5,7 @@ import java.time.LocalDateTime;
 
 public class Traffic implements Serializable {
     private String text;
-    private LocalDateTime serverReceivedTime;
-    private LocalDateTime clientRecievedTime;
+    private LocalDateTime eventTime;
 
     public String getText() {
         return text;
@@ -16,20 +15,12 @@ public class Traffic implements Serializable {
         this.text = text;
     }
 
-    public LocalDateTime getServerReceivedTime() {
-        return serverReceivedTime;
+    public LocalDateTime getEventTime() {
+        return eventTime;
     }
 
-    public void setServerReceivedTime(LocalDateTime serverReceivedTime) {
-        this.serverReceivedTime = serverReceivedTime;
-    }
-
-    public LocalDateTime getClientRecievedTime() {
-        return clientRecievedTime;
-    }
-
-    public void setClientRecievedTime(LocalDateTime clientRecievedTime) {
-        this.clientRecievedTime = clientRecievedTime;
+    public void setEventTime(LocalDateTime eventTime) {
+        this.eventTime = eventTime;
     }
 
     public static class Builder{
@@ -44,13 +35,8 @@ public class Traffic implements Serializable {
             return this;
         }
 
-        public Builder serverRecieved(LocalDateTime time){
-            traffic.setServerReceivedTime(time);
-            return this;
-        }
-
-        public Builder clientRecieved(LocalDateTime time){
-            traffic.setClientRecievedTime(time);
+        public Builder eventTime(LocalDateTime time){
+            traffic.setEventTime(time);
             return this;
         }
     }

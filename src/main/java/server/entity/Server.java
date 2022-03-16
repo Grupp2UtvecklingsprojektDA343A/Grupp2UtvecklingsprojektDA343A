@@ -22,7 +22,7 @@ import java.util.Map;
 import server.entity.Traffic;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Server implements PropertyChangeListener {
+public class Server {
     private final Controller controller;
     private ArrayList<String> traffic = new ArrayList<>();
     private ConcurrentHashMap<User, Buffer<Message>> messageOnHold = new ConcurrentHashMap<>();
@@ -95,11 +95,6 @@ public class Server implements PropertyChangeListener {
         messageOnHold.put(receiver, buffer);
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-
-    }
-
     public Message readFriendList(User user) {
         String filename = String.format("files/" + user.getUsername() + "_friends.dat");
         ArrayList<User> friends = new ArrayList<>();
@@ -152,6 +147,24 @@ public class Server implements PropertyChangeListener {
         pcs.firePropertyChange("receivedByUser", null, traffic);
     }
 
+    public void disconnect(Message message){
+        User user = message.getSender();
+        if(loggedInUsers.containsKey(user)){
+            Traffic traffic = new Traffic.Builder()
+                .text(message.getSender().getUsername() + " just logged out.")
+                .eventTime(LocalDateTime.now())
+                .build();
+            pcs.firePropertyChange("logout", null, traffic);
+            loggedInUsers.get(user).closeThread();
+            loggedInUsers.remove(user);
+            //loggedInUsers.get(evt.getNewValue()).interrupt();
+            sendUserLoggedOut(user);
+        }
+        else {
+            System.out.println("User not found");
+        }
+    }
+
     private class Connection extends Thread {
 
         public void run() {
@@ -170,8 +183,7 @@ public class Server implements PropertyChangeListener {
                     if (msg.getType() == Message.LOGIN) {
                         Traffic traffic = new Traffic.Builder()
                             .text("Login request from: " + msg.getSender().getUsername())
-                            .clientRecieved(msg.getSent())
-                            .serverRecieved(LocalDateTime.now())
+                            .eventTime(LocalDateTime.now())
                             .build();
 
                         pcs.firePropertyChange("login", null, traffic);//nytt
@@ -225,8 +237,7 @@ public class Server implements PropertyChangeListener {
 
                         Traffic traffic = new Traffic.Builder()
                             .text(user.getUsername() + " just logged in.")
-                            .clientRecieved(LocalDateTime.now())
-                            .serverRecieved(LocalDateTime.now())
+                            .eventTime(LocalDateTime.now())
                             .build();
 
                         pcs.firePropertyChange("loginOK", null, traffic);//nytt
@@ -255,8 +266,7 @@ public class Server implements PropertyChangeListener {
                         reply =  new Message.Builder().type(Message.LOGIN_FAILED).build();
                         Traffic traffic = new Traffic.Builder()
                             .text(user.getUsername() + " failed to login.")
-                            .clientRecieved(LocalDateTime.now())
-                            .serverRecieved(LocalDateTime.now())
+                            .eventTime(LocalDateTime.now())
                             .build();
                         pcs.firePropertyChange("loginFail", null, traffic);//nytt
                         oos.writeObject(reply);
@@ -280,25 +290,6 @@ public class Server implements PropertyChangeListener {
                 }
             }
         }
-    }
-    public void disconnect(Message message){
-        User user = message.getSender();
-        if(loggedInUsers.containsKey(user)){
-            Traffic traffic = new Traffic.Builder()
-                .text(message.getSender().getUsername() + " just logged out.")
-                .clientRecieved(message.getSent())
-                .serverRecieved(LocalDateTime.now())
-                .build();
-            pcs.firePropertyChange("logout", null, traffic);
-            loggedInUsers.get(user).closeThread();
-            loggedInUsers.remove(user);
-            //loggedInUsers.get(evt.getNewValue()).interrupt();
-            sendUserLoggedOut(user);
-        }
-        else {
-            System.out.println("User not found");
-        }
-
     }
 }
 

@@ -48,7 +48,7 @@ public class TrafficLogGUI extends JFrame {
     }
     public void updateTraffic(ArrayList<Traffic> trafficInfo){
         dlm.addElement(
-              trafficInfo.get(trafficInfo.size()-1).getServerReceivedTime()
+              trafficInfo.get(trafficInfo.size()-1).getEventTime()
             + ": "
             + trafficInfo.get(trafficInfo.size()-1).getText());
     }

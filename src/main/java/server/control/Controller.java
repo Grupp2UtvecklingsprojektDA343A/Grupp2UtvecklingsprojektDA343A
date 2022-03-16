@@ -91,4 +91,8 @@ public class Controller implements PropertyChangeListener {
         Collections.copy(users, message.getContacts());
         server.createFriendList(user, users);
     }
+
+    public void notifyUser(Traffic traffic) {
+        server.notifyReceived(traffic);
+    }
 }
