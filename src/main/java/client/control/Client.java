@@ -153,23 +153,29 @@ public class Client {
     }
 
     public void updateListOfContacts(ArrayList<User> loggedInUsers){
-        ConcurrentHashMap<String, User> oldOnlineList = new ConcurrentHashMap<>(contacts);
-
-        for(User user : oldOnlineList.values()) {
-            if(!loggedInUsers.contains(user)) {
-                if(isFriend(user.getUsername())) {
-                    setToOffline(user);
-                } else {
-                    contacts.remove(user.getUsername());
-                }
-            }
-        }
-
+        currentlyOnline.clear();
         for(User user : loggedInUsers) {
-            if(! contacts.containsKey(user.getUsername())) {
-                contacts.put(user.getUsername(), user);
-            }
+            currentlyOnline.add(user.getUsername());
         }
+        //
+        // ConcurrentHashMap<String, User> oldOnlineList = new ConcurrentHashMap<>(contacts);
+        //
+        // for(User user : oldOnlineList.values()) {
+        //     if(!loggedInUsers.contains(user)) {
+        //         if(isFriend(user.getUsername())) {
+        //             setToOffline(user);
+        //         } else {
+        //             contacts.remove(user.getUsername());
+        //         }
+        //     }
+        // }
+        //
+        // for(User user : loggedInUsers) {
+        //     if(!contacts.containsKey(user.getUsername())) {
+        //         contacts.put(user.getUsername(), user);
+        //     }
+        // }
+
 
         windowHandler.updateListOfContacts(loggedInUsers);
     }

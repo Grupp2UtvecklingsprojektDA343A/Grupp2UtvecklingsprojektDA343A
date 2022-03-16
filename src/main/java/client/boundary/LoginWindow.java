@@ -49,6 +49,7 @@ public class LoginWindow extends DefaultWindow implements KeyListener {
         JLabel lUsername = new JLabel("Username: ");
         JLabel lHost = new JLabel("Host: ");
         JLabel lPort = new JLabel("Port: ");
+        // JTextField tfUsername = new JTextField(username + new java.util.Random().nextInt(0, 9));
         JTextField tfUsername = new JTextField(username);
         JTextField tfHost = new JTextField(host);
         JTextField tfPort = new JTextField("20008");
