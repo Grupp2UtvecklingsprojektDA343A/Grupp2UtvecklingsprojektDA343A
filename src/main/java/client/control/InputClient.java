@@ -64,7 +64,7 @@ public class InputClient extends Thread {
                     }
 
                     default -> {
-                        System.err.println("FEL?");
+                        System.err.println("You reached InputClient run() but this wasn't the result you wanted.");
                     }
                 }
             } catch (SocketException e) {
