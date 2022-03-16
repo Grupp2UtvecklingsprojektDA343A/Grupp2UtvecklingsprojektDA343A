@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.SocketException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class InputClient extends Thread {
     private ObjectInputStream ois;
@@ -63,6 +66,19 @@ public class InputClient extends Thread {
                         client.setToOffline(message.getSender());
                     }
 
+                    case Message.CONTACTS -> {
+                        ArrayList<User> users = message.getContacts();
+                        for(User u : users){
+                            System.out.println(u.getUsername());
+                        }
+                        User receiver = message.getSender();
+                        ArrayList<User> friends = new ArrayList<>();
+                        friends.addAll(users);
+                        for(User u : friends){
+                            System.out.println(u.getUsername());
+                        }
+                        client.uploadContact(receiver, friends);
+                    }
                     default -> {
                         System.err.println("You reached InputClient run() but this wasn't the result you wanted.");
                     }

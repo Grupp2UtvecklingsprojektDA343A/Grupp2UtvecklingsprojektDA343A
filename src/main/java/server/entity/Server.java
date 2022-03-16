@@ -67,10 +67,8 @@ public class Server {
     }
 
     public void createFriendList(User user, ArrayList<User> users) {
-        ArrayList<User> friends = new ArrayList<>(users.size());
-        for (int i = 0; i < friends.size(); i++) {
-            friends.add(users.get(i));
-        }
+        ArrayList<User> friends = new ArrayList<>();
+        friends.addAll(users);
         String filename = String.format("files/" + user.getUsername() + "_friends.dat");
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             for (User friend : friends) {
@@ -100,18 +98,19 @@ public class Server {
         ArrayList<User> friends = new ArrayList<>();
         Message message = null;
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
-            for (User friend : friends) {
-                friend = (User) ois.readObject();
+            while (true) {
+                User friend = (User) ois.readObject();
                 friends.add(friend);
             }
-            message = new Message.Builder()
-                .type(Message.CONTACTS)
-                .contacts(friends)
-                .receiver(user)
-                .build();
+
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        message = new Message.Builder()
+            .type(Message.CONTACTS)
+            .contacts(friends)
+            .receiver(user)
+            .build();
         return message;
     }
 

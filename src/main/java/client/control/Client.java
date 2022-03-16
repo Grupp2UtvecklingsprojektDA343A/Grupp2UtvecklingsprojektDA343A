@@ -238,6 +238,12 @@ public class Client {
             return currentlyOnline.contains(username);
     }
 
+    public void uploadContact(User receiver,  ArrayList<User> friends) {
+        boolean online = currentlyOnline.contains(user.getUsername());
+        //Lägg till koppling till gui.
+
+    }
+
     private class ThreadHandler extends Thread{
         private Client client;
         public ThreadHandler(Client client){
