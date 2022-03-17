@@ -39,7 +39,7 @@ public class MultiChatWindow extends DefaultWindow {
         super(client, true);
         this.currentChatter = currentChatter;
         setTitle("Arlako chatt with: " + currentChatter);
-        setLocationRelativeTo(null);//
+        setLocationRelativeTo(null);
         setVisible(true);
 
         addComponentListener(new ComponentAdapter() {
@@ -47,7 +47,7 @@ public class MultiChatWindow extends DefaultWindow {
             public void componentHidden(ComponentEvent e) {
                 windowHandler.removeChatWindow(currentChatter);
             }
-        });//
+        });
 
         addMenuOptions(windowHandler);
         createWindow(profilePicture, online);
