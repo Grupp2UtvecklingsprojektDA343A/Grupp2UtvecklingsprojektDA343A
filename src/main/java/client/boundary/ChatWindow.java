@@ -35,7 +35,7 @@ public class ChatWindow extends DefaultWindow {
     private final ImageIcon online = ImageHandler.createImageIcon("/online.png", 50, 50);
     private final ImageIcon offline = ImageHandler.createImageIcon("/offline.png", 50, 50);
 
-    public ChatWindow(Client client, String currentChatter, ImageIcon profilePicture, WindowHandler windowHandler, boolean online) {
+    public ChatWindow(Client client, String currentChatter, ImageIcon pPicture, WindowHandler wH, boolean online) {
         super(client, true);
         this.currentChatter = currentChatter;
         setTitle("Arlako chatt with: " + currentChatter);
@@ -45,12 +45,12 @@ public class ChatWindow extends DefaultWindow {
        addComponentListener(new ComponentAdapter() {
             @Override
             public void componentHidden(ComponentEvent e) {
-                windowHandler.removeChatWindow(currentChatter);
+                wH.removeChatWindow(currentChatter);
             }
         });
 
-        addMenuOptions(windowHandler);
-        createWindow(profilePicture, online);
+        addMenuOptions(wH);
+        createWindow(pPicture, online);
     }
 
     private void addMenuOptions(WindowHandler windowHandler) {

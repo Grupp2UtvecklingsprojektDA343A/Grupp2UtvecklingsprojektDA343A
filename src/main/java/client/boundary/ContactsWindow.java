@@ -22,7 +22,7 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
     private final GridBagConstraints constraints = new GridBagConstraints();
     private final ConcurrentHashMap<String, JButton[]> listOfUser = new ConcurrentHashMap<>();
 
-    public ContactsWindow(Client client, WindowHandler windowHandler, boolean showMenuBar, String username, ImageIcon profilePicture) {
+    public ContactsWindow(Client client, WindowHandler wH, boolean showMenuBar, String username, ImageIcon pPicture) {
         super(client, showMenuBar);
 
         JMenuItem logOut = new JMenuItem("Log out");
@@ -34,14 +34,14 @@ public class ContactsWindow extends DefaultWindow implements KeyListener {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentHidden(ComponentEvent e) {
-                windowHandler.contactsWindowClosed();
+                wH.contactsWindowClosed();
             }
         });
 
         setSize(200, 500);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
-        JLabel lImage = new JLabel(profilePicture);
+        JLabel lImage = new JLabel(pPicture);
         JLabel lUsername = new JLabel(username);
 
         constraints.fill = GridBagConstraints.HORIZONTAL;

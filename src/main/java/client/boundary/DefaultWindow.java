@@ -17,7 +17,6 @@ import java.awt.GridBagLayout;
 public abstract class DefaultWindow extends JFrame {
     public final Color BAD_COLOR = new Color(255,199,206);
     private final JMenuBar menuBar = new JMenuBar();
-    private final JPanel mainPanel = new JPanel(new GridBagLayout());
     private final JMenu menuFile = new JMenu("File");
     private final Client client;
     private JPanel panel = new JPanel();

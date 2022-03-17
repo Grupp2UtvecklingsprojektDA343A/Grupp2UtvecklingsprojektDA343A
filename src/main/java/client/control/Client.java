@@ -39,7 +39,6 @@ public class Client {
     private final ConcurrentHashMap<String, User> friendList = new ConcurrentHashMap<>();
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
-    private Message message = null;
     private InputClient inputClient;
     private OutputClient outputClient;
     private final ConcurrentHashMap<String, User> currentlyOnline = new ConcurrentHashMap<>();
