@@ -6,11 +6,13 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -25,6 +27,7 @@ public class ChatWindow extends DefaultWindow {
     private final JTextArea textInput = new JTextArea();
     private final String currentChatter;
     private final JButton sendButton = new JButton("Send");
+    private final JButton sendImageButton = new JButton("Image");
     private final JLabel onlineStatus = new JLabel();
     private final ImageIcon online = ImageHandler.createImageIcon("/online.png", 50, 50);
     private final ImageIcon offline = ImageHandler.createImageIcon("/offline.png", 50, 50);
@@ -44,7 +47,7 @@ public class ChatWindow extends DefaultWindow {
         });
 
         addMenuOptions(windowHandler);
-        createWindow(profilePicture);
+        createWindow(profilePicture, online);
     }
 
     private void addMenuOptions(WindowHandler windowHandler) {
@@ -61,7 +64,9 @@ public class ChatWindow extends DefaultWindow {
         addToFileMenu(showContacts);
     }
 
-    private void createWindow(ImageIcon profilePicture) {
+    private void createWindow(ImageIcon profilePicture, boolean isOnline) {
+        JLabel name = new JLabel(currentChatter);
+
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(5, 5, 5, 5);
         Dimension dimension = new Dimension(400, 50);
@@ -72,17 +77,37 @@ public class ChatWindow extends DefaultWindow {
         textInput.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         textInput.setPreferredSize(dimension);
 
-        if(getClient().isOnline(currentChatter)) {
+        if(isOnline) {
             onlineStatus.setIcon(online);
         } else {
             onlineStatus.setIcon(offline);
-        }
+            if(!getClient().isFriend(currentChatter)) {
+                sendButton.setEnabled(false);
+                sendImageButton.setEnabled(false);
+                textInput.setEnabled(false);
 
-        JLabel name = new JLabel(currentChatter);
+                sendButton.setContentAreaFilled(false);
+                sendImageButton.setContentAreaFilled(false);
+                textInput.setBackground(Color.GRAY);
+            }
+        }
 
         sendButton.addActionListener(l -> {
             if(!textInput.getText().isEmpty()) {
                 sendMessage(textInput.getText());
+            }
+        });
+
+        sendImageButton.addActionListener(l -> {
+            JFileChooser fileChooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "JPG, PNG, BMP & GIF", "jpg", "png", "bmp", "gif"
+            );
+            fileChooser.setFileFilter(filter);
+            int returnVal = fileChooser.showOpenDialog(null);
+            if(returnVal == JFileChooser.APPROVE_OPTION && fileChooser.getSelectedFile().isFile()) {
+                String path = fileChooser.getSelectedFile().getAbsolutePath();
+                sendMessage(ImageHandler.createImageIcon(path));
             }
         });
 
@@ -110,12 +135,16 @@ public class ChatWindow extends DefaultWindow {
         constraints.anchor = GridBagConstraints.CENTER;
         add(onlineStatus, constraints);
 
-        constraints.gridx = 0;
         constraints.gridy = 3;
+        constraints.gridx = 0;
         add(textInput, constraints);
 
         constraints.gridy = 3;
         constraints.gridx = 1;
+        add(sendImageButton, constraints);
+
+        constraints.gridy = 3;
+        constraints.gridx = 2;
         add(sendButton, constraints);
 
         setVisible(true);
@@ -128,7 +157,7 @@ public class ChatWindow extends DefaultWindow {
 
     public void addMessage(String message, ImageIcon image) {
         addMessage(message);
-        addMessage(image);
+        addMessage(ImageHandler.resizeImageIcon(image, 50, 50));
     }
 
     public void addMessage(String message) {
@@ -145,6 +174,12 @@ public class ChatWindow extends DefaultWindow {
         getClient().sendMessage(currentChatter, text, timestamp);
     }
 
+    public void sendMessage(ImageIcon imageIcon) {
+        LocalDateTime timestamp = LocalDateTime.now();
+        addMessage(timestamp.format(DateTimeFormatter.ISO_LOCAL_TIME) + ": ", imageIcon);
+        getClient().sendMessage(currentChatter, imageIcon, timestamp);
+    }
+
     @Override
     void closeApplication() {
 
@@ -153,18 +188,22 @@ public class ChatWindow extends DefaultWindow {
     public void loggedIn() {
         onlineStatus.setIcon(online);
         sendButton.setEnabled(true);
+        sendImageButton.setEnabled(true);
         textInput.setEnabled(true);
 
         sendButton.setContentAreaFilled(true);
+        sendImageButton.setContentAreaFilled(true);
         textInput.setBackground(Color.WHITE);
     }
 
     public void loggedOut(boolean isFriend) {
         if(!isFriend) {
             sendButton.setEnabled(false);
+            sendImageButton.setEnabled(false);
             textInput.setEnabled(false);
 
             sendButton.setContentAreaFilled(false);
+            sendImageButton.setContentAreaFilled(false);
             textInput.setBackground(Color.GRAY);
         }
 

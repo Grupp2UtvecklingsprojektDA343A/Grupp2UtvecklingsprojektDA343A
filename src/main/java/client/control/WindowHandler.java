@@ -112,6 +112,15 @@ public class WindowHandler {
         chatWindow.addMessage(fulltext);
     }
 
+    public void displayImage(User sender, ImageIcon image, String time, boolean online) {
+        ChatWindow chatWindow = chatWindows.get(sender);
+        if(chatWindow == null) {
+            openChatWindow(sender, online);
+            chatWindow = chatWindows.get(sender);
+        }
+        chatWindow.addMessage(time+": ", image);
+    }
+
     // GLOBAL
     public void closeAllWindows() {
         if(logInWindow != null) {
@@ -138,17 +147,6 @@ public class WindowHandler {
     // STATIC
     public static void showErrorMessage(DefaultWindow parent, String errorMessage, String title) {
         JOptionPane.showMessageDialog(parent, errorMessage, title, JOptionPane.ERROR_MESSAGE);
-    }
-
-    public void displayImage(User sender, ImageIcon image, String time) {
-        /*ChatWindow chatWindow = chatWindows.get(sender);
-        if(chatWindow == null) {
-            openChatWindow(sender);
-            chatWindow = chatWindows.get(sender);
-        }
-        String fulltext = time+": "+image;
-        chatWindow.addMessage(fulltext);*/
-        //förberedelser för image i ett message
     }
 
     public void displayImageAndText(User sender, ImageIcon image, String text, String text1) {

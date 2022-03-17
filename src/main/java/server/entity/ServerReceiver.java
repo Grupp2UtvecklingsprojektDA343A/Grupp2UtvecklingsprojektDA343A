@@ -47,11 +47,16 @@ public class ServerReceiver extends Thread {
                              + ".").eventTime(LocalDateTime.now()).build();
                         controller.sendMessage(message, traffic);
                     }
-                    case Message.IMAGE -> {}
+                    case Message.IMAGE -> {
+                        Traffic traffic = new Traffic.Builder().text(message.getSender().getUsername()
+                             + " sent an image to "
+                             + message.getReceiver().getUsername()
+                             + ".").eventTime(LocalDateTime.now()).build();
+                        controller.sendMessage(message, traffic);
+                    }
                     case Message.LOGOUT -> {
                         controller.disconnect(message);
                     }
-                    case Message.TEXT_AND_IMAGE -> {}
                     case Message.NOTIFY_RECEIVED -> {
                         Traffic traffic = new Traffic.Builder().text(message.getReceiver().getUsername()
                             + " received a message. ")

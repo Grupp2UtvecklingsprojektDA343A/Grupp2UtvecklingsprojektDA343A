@@ -36,11 +36,15 @@ public class ImageHandler {
     public static ImageIcon createImageIcon(String path, int width, int height) {
         ImageIcon imageIcon;
         if((imageIcon = createImageIcon(path)) != null) {
-            Image img  = imageIcon.getImage();
-            img = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-            imageIcon = new ImageIcon(img);
+            imageIcon = resizeImageIcon(imageIcon, width, height);
         }
 
         return imageIcon;
+    }
+
+    public static ImageIcon resizeImageIcon(ImageIcon imageIcon, int width, int height) {
+        Image img  = imageIcon.getImage();
+        img = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        return new ImageIcon(img);
     }
 }

@@ -159,7 +159,18 @@ public class Client {
             .message(text)
             .sent(timestamp)
             .sender(user)
-            .receiver(currentlyOnline.get(username))
+            .receiver(getUser(username))
+            .build();
+        outputClient.send(message);
+    }
+
+    public void sendMessage(String username, ImageIcon imageIcon, LocalDateTime timestamp) {
+        Message message = new Message.Builder()
+            .type(Message.IMAGE)
+            .image(imageIcon)
+            .sent(timestamp)
+            .sender(user)
+            .receiver(getUser(username))
             .build();
         outputClient.send(message);
     }
@@ -183,12 +194,13 @@ public class Client {
     }
 
     public void displayMessage(User sender, String text, String time) {
-        boolean online = currentlyOnline.containsKey(user.getUsername());
+        boolean online = currentlyOnline.containsKey(sender.getUsername());
         windowHandler.displayMessage(sender, text, time, online);
     }
 
     public void displayImage(User sender, ImageIcon image, String time) {
-        windowHandler.displayImage(sender,image,time);
+        boolean online = currentlyOnline.containsKey(sender.getUsername());
+        windowHandler.displayImage(sender, image, time, online);
     }
 
     public void displayImageAndText(User sender, ImageIcon image, String text, String time) {
@@ -213,8 +225,12 @@ public class Client {
         }
     }
 
-    public User getUser() {
-        return user;
+    public User getUser(String username) {
+        if(currentlyOnline.containsKey(username)) {
+            return currentlyOnline.get(username);
+        } else {
+            return friendList.get(username);
+        }
     }
 
     public boolean isOnline(String username) {
