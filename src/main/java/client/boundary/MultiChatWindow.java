@@ -47,7 +47,7 @@ public class MultiChatWindow extends DefaultWindow {
             public void componentHidden(ComponentEvent e) {
                 windowHandler.removeChatWindow(currentChatter);
             }
-        });
+        });//
 
         addMenuOptions(windowHandler);
         createWindow(profilePicture, online);
