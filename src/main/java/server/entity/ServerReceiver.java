@@ -54,6 +54,13 @@ public class ServerReceiver extends Thread {
                              + ".").eventTime(LocalDateTime.now()).build();
                         controller.sendMessage(message, traffic);
                     }
+                    case Message.VIBRATE -> {
+                        Traffic traffic = new Traffic.Builder().text(message.getSender().getUsername()
+                             + " sent a vib to "
+                             + message.getReceiver().getUsername()
+                             + ".").eventTime(LocalDateTime.now()).build();
+                        controller.sendMessage(message, traffic);
+                    }
                     case Message.LOGOUT -> {
                         controller.disconnect(message);
                     }

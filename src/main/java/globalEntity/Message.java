@@ -23,6 +23,7 @@ public class Message implements Serializable {
     public static final int NOTIFY_RECEIVED = 9;
     public static final int USER_LOGGED_OUT = 10;
     public static final int USER_LOGGED_IN = 11;
+    public static final int VIBRATE = 12;
 
     //@Serial
     //private static final long serialVersionUID = -687991492884005033L;

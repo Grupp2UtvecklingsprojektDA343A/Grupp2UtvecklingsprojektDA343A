@@ -4,6 +4,7 @@ import client.control.Client;
 import client.control.WindowHandler;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -19,6 +20,8 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -28,7 +31,7 @@ public class ChatWindow extends DefaultWindow {
     private final String currentChatter;
     private final JButton sendButton = new JButton("Send");
     private final JButton sendImageButton = new JButton("Image");
-    private final JLabel onlineStatus = new JLabel();
+    private final StatusLabel onlineStatus = new StatusLabel();
     private final ImageIcon online = ImageHandler.createImageIcon("/online.png", 50, 50);
     private final ImageIcon offline = ImageHandler.createImageIcon("/offline.png", 50, 50);
 
@@ -78,9 +81,9 @@ public class ChatWindow extends DefaultWindow {
         textInput.setPreferredSize(dimension);
 
         if(isOnline) {
-            onlineStatus.setIcon(online);
+            onlineStatus.setIcon(online, true);
         } else {
-            onlineStatus.setIcon(offline);
+            onlineStatus.setIcon(offline, false);
             if(!getClient().isFriend(currentChatter)) {
                 sendButton.setEnabled(false);
                 sendImageButton.setEnabled(false);
@@ -109,6 +112,27 @@ public class ChatWindow extends DefaultWindow {
                 String path = fileChooser.getSelectedFile().getAbsolutePath();
                 sendMessage(ImageHandler.createImageIcon(path));
             }
+        });
+
+        onlineStatus.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(onlineStatus.status) {
+                    sendVibrate();
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+
+            @Override
+            public void mouseExited(MouseEvent e) {}
         });
 
         JScrollPane conversationArea = new JScrollPane(new JList<>(chatMessages));
@@ -168,6 +192,12 @@ public class ChatWindow extends DefaultWindow {
         chatMessages.addElement(image);
     }
 
+    public void sendVibrate() {
+        LocalDateTime timestamp = LocalDateTime.now();
+        addMessage(timestamp.format(DateTimeFormatter.ISO_LOCAL_TIME) + ": " + "vib sent!");
+        getClient().sendVibrate(currentChatter, timestamp);
+    }
+
     public void sendMessage(String text) {
         LocalDateTime timestamp = LocalDateTime.now();
         addMessage(timestamp.format(DateTimeFormatter.ISO_LOCAL_TIME) + ": " + text);
@@ -186,7 +216,7 @@ public class ChatWindow extends DefaultWindow {
     }
 
     public void loggedIn() {
-        onlineStatus.setIcon(online);
+        onlineStatus.setIcon(online, true);
         sendButton.setEnabled(true);
         sendImageButton.setEnabled(true);
         textInput.setEnabled(true);
@@ -207,6 +237,37 @@ public class ChatWindow extends DefaultWindow {
             textInput.setBackground(Color.GRAY);
         }
 
-        onlineStatus.setIcon(offline);
+        onlineStatus.setIcon(offline, false);
+    }
+
+
+    public void vibrate() {
+        int VIBRATION_LENGTH = 30;
+        int VIBRATION_VELOCITY = 10;
+        try {/* w  ww .  j  a va2 s.  c o m*/
+            final int originalX = this.getLocationOnScreen().x;
+            final int originalY = this.getLocationOnScreen().y;
+            for (int i = 0; i < VIBRATION_LENGTH; i++) {
+                Thread.sleep(10);
+                this.setLocation(originalX, originalY + VIBRATION_VELOCITY);
+                Thread.sleep(10);
+                this.setLocation(originalX, originalY - VIBRATION_VELOCITY);
+                Thread.sleep(10);
+                this.setLocation(originalX + VIBRATION_VELOCITY, originalY);
+                Thread.sleep(10);
+                this.setLocation(originalX, originalY);
+            }
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
+    }
+
+    private class StatusLabel extends JLabel {
+        public boolean status;
+
+        public void setIcon(Icon icon, boolean status) {
+            super.setIcon(icon);
+            this.status = status;
+        }
     }
 }

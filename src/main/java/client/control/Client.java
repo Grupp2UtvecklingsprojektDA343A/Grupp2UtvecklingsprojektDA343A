@@ -153,6 +153,16 @@ public class Client {
         }
     }
 
+    public void sendVibrate(String username, LocalDateTime timestamp) {
+        Message message = new Message.Builder()
+            .type(Message.VIBRATE)
+            .sent(timestamp)
+            .sender(user)
+            .receiver(getUser(username))
+            .build();
+        outputClient.send(message);
+    }
+
     public void sendMessage(String username, String text, LocalDateTime timestamp) {
         Message message = new Message.Builder()
             .type(Message.TEXT)
@@ -191,6 +201,11 @@ public class Client {
 
     private void stopThreads() {
         inputClient.running = false;
+    }
+
+    public void vibrate(User sender, String time) {
+        boolean online = currentlyOnline.containsKey(sender.getUsername());
+        windowHandler.vibrate(sender, time, online);
     }
 
     public void displayMessage(User sender, String text, String time) {

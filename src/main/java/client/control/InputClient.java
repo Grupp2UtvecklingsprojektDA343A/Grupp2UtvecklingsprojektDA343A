@@ -44,6 +44,12 @@ public class InputClient extends Thread {
                         client.displayImage(sender, image, time);
                     }
 
+                    case Message.VIBRATE -> {
+                        User sender = message.getSender();
+                        String time = message.getSent().format(DateTimeFormatter.ISO_LOCAL_TIME);
+                        client.vibrate(sender, time);
+                    }
+
                     case Message.TEXT_AND_IMAGE -> {
                         User sender = message.getSender();
                         String text = message.getMessage();

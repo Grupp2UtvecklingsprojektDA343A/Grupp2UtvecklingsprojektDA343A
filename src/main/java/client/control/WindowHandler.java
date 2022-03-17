@@ -102,6 +102,15 @@ public class WindowHandler {
         chatWindows.remove(new User(username, null));
     }
 
+    public void vibrate(User sender, String time, boolean online) {
+        ChatWindow chatWindow = chatWindows.get(sender);
+        if(chatWindow == null) {
+            openChatWindow(sender, online);
+            chatWindow = chatWindows.get(sender);
+        }
+        chatWindow.vibrate();
+    }
+
     public void displayMessage(User sender, String text, String time, boolean online) {
         ChatWindow chatWindow = chatWindows.get(sender);
         if(chatWindow == null) {
