@@ -1,8 +1,10 @@
 package client.control;
 
 import client.boundary.DefaultWindow;
+import client.boundary.ImageHandler;
 import client.boundary.LoginWindow;
-import client.boundary.MultiMessageWindow;
+
+import client.boundary.MultiChatWindow;
 import globalEntity.Message;
 import globalEntity.User;
 
@@ -92,7 +94,8 @@ public class Client {
                     windowHandler.closeLogInWindow();
                     updateListOfContacts(answer.getContacts());
                     new ThreadHandler(this).start();
-                    MultiMessageWindow mmw = new MultiMessageWindow(this);
+                    ImageIcon arlako = ImageHandler.createImageIcon("/arlako.png");
+                    MultiChatWindow mmw = new MultiChatWindow(this,"group chat",arlako,windowHandler,true);
                 }else{
                     loginWindow.done();
                     WindowHandler.showErrorMessage(windowHandler.getLogInWindow(),"Failed loggin","loggin failed");
@@ -109,6 +112,7 @@ public class Client {
 
     public void logOut(DefaultWindow parent, boolean sendLogoutMessage) {
         try {
+
             disconnect(sendLogoutMessage);
             stopThreads();
             windowHandler.closeAllWindows();
@@ -132,6 +136,22 @@ public class Client {
         }
 
         windowHandler.updateListOfContacts(new ArrayList<>(List.of(user)));
+    }
+    public void sendMultiple(ImageIcon icon,String text){
+        ArrayList<User> users = new ArrayList<>();
+        users.addAll(friendList.values());
+        if (text == null){
+            for (int i = 0; i < users.size(); i++) {
+                sendMessage(users.get(i).getUsername(),icon,LocalDateTime.now());
+            }
+        }else if (icon==null){
+            for (int i = 0; i < users.size(); i++) {
+                sendMessage(users.get(i).getUsername(),text,LocalDateTime.now());
+            }
+        }else{
+            System.out.println("varken bild eller text finns (ligger i client)");
+        }
+
     }
 
     public void setToOffline(User user){
