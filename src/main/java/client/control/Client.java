@@ -2,6 +2,7 @@ package client.control;
 
 import client.boundary.DefaultWindow;
 import client.boundary.LoginWindow;
+import client.boundary.MultiMessageWindow;
 import globalEntity.Message;
 import globalEntity.User;
 
@@ -92,6 +93,7 @@ public class Client {
                     windowHandler.closeLogInWindow();
                     updateListOfContacts(answer.getContacts());
                     new ThreadHandler(this).start();
+                    MultiMessageWindow mmw = new MultiMessageWindow(this);
                 }else{
                     loginWindow.done();
                     WindowHandler.showErrorMessage(windowHandler.getLogInWindow(),"Failed loggin","loggin failed");
