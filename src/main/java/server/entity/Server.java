@@ -208,7 +208,6 @@ public class Server {
         private final ObjectOutputStream oos;
         private final ObjectInputStream ois;
         private User user;
-        private Client client;
 
         public LoginHandler(Socket socket, ObjectOutputStream oos, ObjectInputStream ois, User user) {
             this.socket = socket;
