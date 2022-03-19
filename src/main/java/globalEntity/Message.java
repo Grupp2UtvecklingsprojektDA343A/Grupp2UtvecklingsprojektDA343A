@@ -133,14 +133,6 @@ public class Message implements Serializable {
     }
 
     /**
-     *
-     * @param type
-     */
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    /**
      * Setter for received date, using LocalDateTime method now().
      * @param received
      */
