@@ -5,18 +5,16 @@ import server.control.Controller;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.util.Collection; // ta biort
 
 public class ClientHandler extends Thread {
-    private ServerReceiver serverReceiver;
-    private ServerSender serverSender;
+    private final ServerReceiver serverReceiver;
+    private final ServerSender serverSender;
 
 
     public ClientHandler(Controller controller, ObjectOutputStream oos, ObjectInputStream ois) {
         serverReceiver = new ServerReceiver(controller, ois);
         serverReceiver.start();
-        serverSender = new ServerSender(controller, oos);
+        serverSender = new ServerSender(oos);
         serverSender.start();
     }
     public synchronized void send(Message message) {

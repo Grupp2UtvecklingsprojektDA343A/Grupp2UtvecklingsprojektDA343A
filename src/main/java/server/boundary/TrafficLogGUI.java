@@ -1,21 +1,18 @@
 package server.boundary;
 
 import client.boundary.ImageHandler;
-import server.entity.Server;
 import server.entity.Traffic;
 
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import java.awt.GridLayout;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.swing.*;
 
 public class TrafficLogGUI extends JFrame {
     private JList<String> trafficList;
     private DefaultListModel<String> dlm = new DefaultListModel<>();
-
 
     public TrafficLogGUI(){
         SwingUtilities.invokeLater(this::createAndShowGUI);

@@ -8,7 +8,6 @@ import server.entity.Traffic;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
@@ -22,9 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-
 public class Controller implements PropertyChangeListener {
-    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private Server server;
     private TrafficLogGUI trafficLogGUI;
     private ArrayList<Traffic> trafficList = new ArrayList<>();

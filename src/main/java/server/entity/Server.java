@@ -2,7 +2,6 @@ package server.entity;
 import globalEntity.Message;
 import globalEntity.User;
 import server.control.Controller;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
@@ -19,7 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Server {
     private final Controller controller;
-    private ArrayList<String> traffic = new ArrayList<>();
     private ConcurrentHashMap<User, Buffer<Message>> messageOnHold = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<User, ClientHandler> loggedInUsers = new ConcurrentHashMap<>();
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -53,6 +51,7 @@ public class Server {
             loggedInUsers.put(user, clientHandler);
         }).start();
     }
+
     public void createFriendList(User user, ArrayList<User> users) {
         ArrayList<User> friends = new ArrayList<>(users);
         String filename = String.format("files/%s_friends.dat", user.getUsername());
@@ -154,8 +153,7 @@ public class Server {
     private class Connection extends Thread {
 
         public void run() {
-            Socket socket = null;
-            User user = null;
+            Socket socket;
             System.out.println("Loading...");
             System.out.println("Server operational.");
             while (true) {
@@ -174,7 +172,7 @@ public class Server {
 
                         pcs.firePropertyChange("login", null, traffic);//nytt
 
-                        new LoginHandler(socket, oos, ois, msg.getSender()).start();
+                        new LoginHandler(oos, ois, msg.getSender()).start();
                     }
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
@@ -184,13 +182,11 @@ public class Server {
     }
 
     private class LoginHandler extends Thread {
-        private final Socket socket;
         private final ObjectOutputStream oos;
         private final ObjectInputStream ois;
         private User user;
 
-        public LoginHandler(Socket socket, ObjectOutputStream oos, ObjectInputStream ois, User user) {
-            this.socket = socket;
+        public LoginHandler(ObjectOutputStream oos, ObjectInputStream ois, User user) {
             this.oos = oos;
             this.ois = ois;
             this.user = user;
@@ -254,16 +250,6 @@ public class Server {
                 e.printStackTrace();
             }
             interrupt(); // Stoppa tråden
-        }
-
-        public void closeThread(PropertyChangeEvent evt) {
-            if (evt.getPropertyName().equals("true") && evt.getNewValue() instanceof User) {
-                if (loggedInUsers.containsKey(evt.getNewValue())) {
-                    loggedInUsers.get(evt.getNewValue()).closeThread();
-                } else {
-                    System.out.println("User not found");
-                }
-            }
         }
     }
 }

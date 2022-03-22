@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 public class ServerReceiver extends Thread {
     private final Controller controller;
     private final ObjectInputStream ois;
-    private Message message;
     public volatile boolean running = true;
 
     public ServerReceiver(Controller controller, ObjectInputStream ois) {
@@ -17,13 +16,6 @@ public class ServerReceiver extends Thread {
         this.ois = ois;
     }
 
-    public Message getMessage() {
-        return message;
-    }
-
-    public void setMessage(Message message) {
-        this.message = message;
-    }
 
     public synchronized void run() {
         try {
