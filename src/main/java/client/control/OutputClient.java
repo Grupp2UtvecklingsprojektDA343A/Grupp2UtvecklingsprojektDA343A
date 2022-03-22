@@ -12,8 +12,6 @@ public class OutputClient{
         this.oos=oos;
     }
     public void send(Message message){
-        // Skriv en motod som skickar Till servern
-        // Läg den i en tråd
         try {
             oos.writeObject(message);
             oos.flush();

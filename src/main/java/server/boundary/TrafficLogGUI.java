@@ -13,13 +13,11 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 public class TrafficLogGUI extends JFrame {
-    private Server server;
     private JList<String> trafficList;
     private DefaultListModel<String> dlm = new DefaultListModel<>();
-    private final DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm:ss.A");
 
-    public TrafficLogGUI(Server server){
-        this.server = server;
+
+    public TrafficLogGUI(){
         SwingUtilities.invokeLater(this::createAndShowGUI);
     }
 
@@ -39,9 +37,7 @@ public class TrafficLogGUI extends JFrame {
         trafficList = new JList<>(dlm);
 
         JScrollPane jsp = new JScrollPane();
-        // jsp.setSize(400,500);
         jsp.setViewportView(trafficList);
-        // jsp.setLocation(0,0);
         jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         add(jsp);
