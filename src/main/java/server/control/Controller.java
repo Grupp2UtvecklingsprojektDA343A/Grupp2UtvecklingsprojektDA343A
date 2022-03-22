@@ -21,7 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
+
 
 public class Controller implements PropertyChangeListener {
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -41,7 +41,7 @@ public class Controller implements PropertyChangeListener {
 
         server = new Server(this, 20008);
         server.addListener(this);
-        trafficLogGUI = new TrafficLogGUI(server);
+        trafficLogGUI = new TrafficLogGUI();
     }
 
     @Override
@@ -52,10 +52,6 @@ public class Controller implements PropertyChangeListener {
 
     public synchronized boolean userExists(User user) {
         return server.userExists(user);
-    }
-
-    public void addToTraffic(String traffic){
-        //serverUI.updateTraffic(traffic);
     }
 
     public void writeTrafficToFile(PropertyChangeEvent evt){
@@ -77,7 +73,7 @@ public class Controller implements PropertyChangeListener {
     }
 
     public void readTrafficFile(){
-        ArrayList<Traffic> traffic = new ArrayList<>();
+        ArrayList<Traffic> traffic;
         try {
             String path  = "files/traffic";
             ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(path)));
