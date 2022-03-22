@@ -10,6 +10,8 @@ import globalEntity.User;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
+import java.awt.Stroke;
+import java.awt.font.ShapeGraphicAttribute;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -47,7 +49,6 @@ public class Client {
     private final WindowHandler windowHandler = new WindowHandler(this);
     private boolean disconnected;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-
 
     private void connect(String ip, int port) throws IOException {
         this.socket = new Socket(ip,port);

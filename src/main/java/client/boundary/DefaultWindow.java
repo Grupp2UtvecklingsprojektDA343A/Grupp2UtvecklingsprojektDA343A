@@ -56,10 +56,6 @@ public abstract class DefaultWindow extends JFrame {
         menuFile.add(item);
     }
 
-    void addJMenu(JMenu menu) {
-        menuBar.add(menu);
-    }
-
     public JPanel getPanel() {
         return panel;
     }
