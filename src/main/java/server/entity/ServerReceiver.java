@@ -1,10 +1,7 @@
 package server.entity;
 
 import globalEntity.Message;
-import globalEntity.User;
 import server.control.Controller;
-// import globalEntity.User;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.time.LocalDateTime;
@@ -12,7 +9,6 @@ import java.time.LocalDateTime;
 public class ServerReceiver extends Thread {
     private final Controller controller;
     private final ObjectInputStream ois;
-    private Server server;
     private Message message;
     public volatile boolean running = true;
 
@@ -33,8 +29,6 @@ public class ServerReceiver extends Thread {
         try {
             while (running) {
                 Message message = (Message) ois.readObject(); // klienten skickar något (alltid ett message)
-                User sender = message.getSender();
-                User receiver = message.getReceiver();
 
                 switch(message.getType()) {
                     case Message.CONTACTS -> {
