@@ -31,7 +31,6 @@ public class LoginWindow extends DefaultWindow implements KeyListener {
     private String username;
     private String host;
     private int port;
-    private final Preferences preferences = Preferences.userRoot().node("/ArlaKoChat");
 
     public LoginWindow(Client client, boolean showMenuBar) {
         super(client, showMenuBar);
