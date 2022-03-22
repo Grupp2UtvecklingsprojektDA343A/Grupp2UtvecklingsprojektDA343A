@@ -70,10 +70,6 @@ public class Client {
         socket.close();
     }
 
-    public String getUsername() {
-        return user.getUsername();
-    }
-
     public boolean isFriend(String username) {
         return friendList.containsKey(username);
     }
@@ -127,9 +123,8 @@ public class Client {
         }
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener listener){
-        pcs.addPropertyChangeListener(listener);
-    }
+
+
 
     public void setToOnline(User user){
         if(!currentlyOnline.containsKey(user.getUsername())) {
@@ -290,9 +285,6 @@ public class Client {
         }
     }
 
-    public ArrayList<String> getCurrentlyOnline() {
-        return new ArrayList<>(currentlyOnline.keySet());
-    }
 
 
     private class ThreadHandler extends Thread{
