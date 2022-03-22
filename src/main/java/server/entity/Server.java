@@ -1,5 +1,4 @@
 package server.entity;
-import client.control.Client;
 import globalEntity.Message;
 import globalEntity.User;
 import server.control.Controller;
@@ -15,11 +14,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import server.entity.Traffic;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Server {
@@ -28,7 +23,6 @@ public class Server {
     private ConcurrentHashMap<User, Buffer<Message>> messageOnHold = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<User, ClientHandler> loggedInUsers = new ConcurrentHashMap<>();
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-    private LocalDateTime date;
     private ServerSocket serverSocket;
 
     public Server(Controller controller, int port) {
@@ -59,13 +53,6 @@ public class Server {
             loggedInUsers.put(user, clientHandler);
         }).start();
     }
-
-    public void addToTraffic(String whatHappened, String who, LocalDateTime when) {
-        String trafficInfo;
-        trafficInfo = String.format(whatHappened, who, when.toString());
-        traffic.add(trafficInfo);
-    }
-
     public void createFriendList(User user, ArrayList<User> users) {
         ArrayList<User> friends = new ArrayList<>(users);
         String filename = String.format("files/%s_friends.dat", user.getUsername());
@@ -157,7 +144,6 @@ public class Server {
             pcs.firePropertyChange("logout", null, traffic);
             loggedInUsers.get(user).closeThread();
             loggedInUsers.remove(user);
-            //loggedInUsers.get(evt.getNewValue()).interrupt();
             sendUserLoggedOut(user);
         }
         else {
@@ -189,13 +175,7 @@ public class Server {
                         pcs.firePropertyChange("login", null, traffic);//nytt
 
                         new LoginHandler(socket, oos, ois, msg.getSender()).start();
-
-                        controller.addToTraffic(msg.getSender().getUsername());
-                    } else {
-                        // ny chatt
-
                     }
-
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -232,16 +212,14 @@ public class Server {
                             .type(Message.LOGIN_SUCCESS)
                             .contacts(new ArrayList<>(loggedInUsers.keySet()))
                             .build();
-                        clientHandler = new ClientHandler(controller, socket, oos, ois);
+                        clientHandler = new ClientHandler(controller, oos, ois);
 
                         Traffic traffic = new Traffic.Builder()
                             .text(user.getUsername() + " just logged in.")
                             .eventTime(LocalDateTime.now())
                             .build();
-
                         pcs.firePropertyChange("loginOK", null, traffic);//nytt
                         addLoggedInUser(user, clientHandler);
-                        //client.addPropertyChangeListener((PropertyChangeListener) this);
                         clientHandler.start();
                         clientHandler.getServerSender().send(reply);
                         File file = new File("files/" + user.getUsername() + "_friends.dat");
@@ -282,7 +260,6 @@ public class Server {
             if (evt.getPropertyName().equals("true") && evt.getNewValue() instanceof User) {
                 if (loggedInUsers.containsKey(evt.getNewValue())) {
                     loggedInUsers.get(evt.getNewValue()).closeThread();
-                    //loggedInUsers.get(evt.getNewValue()).interrupt();
                 } else {
                     System.out.println("User not found");
                 }
