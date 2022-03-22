@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WindowHandler {
     private LoginWindow logInWindow;
     private ContactsWindow contactsWindow;
-    private final ConcurrentHashMap<User, ChatWindow> chatWindows = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<User, ChatWindow> CHATWINDOWS = new ConcurrentHashMap<>();
     private Client client;
 
     public WindowHandler(Client client) {
@@ -55,7 +55,7 @@ public class WindowHandler {
     }
 
     public void contactsWindowClosed() {
-        if(chatWindows.size() == 0) {
+        if(CHATWINDOWS.size() == 0) {
             client.logOut(null, true);
         } else {
             showWindow(contactsWindow);
@@ -64,8 +64,8 @@ public class WindowHandler {
 
     public void updateListOfContacts(ArrayList<User> loggedInUsers) {
         for(User user : loggedInUsers) {
-            if(chatWindows.containsKey(user)) {
-                chatWindows.get(user).loggedIn();
+            if(CHATWINDOWS.containsKey(user)) {
+                CHATWINDOWS.get(user).loggedIn();
             }
 
             contactsWindow.addUser(user.getUsername(), user.getIcon());
@@ -86,46 +86,46 @@ public class WindowHandler {
     }
 
     public boolean isChatWindowOpen(User user) {
-        return chatWindows.containsKey(user);
+        return CHATWINDOWS.containsKey(user);
     }
 
     public void focusChatWindow(User user) {
-        showWindow(chatWindows.get(user));
+        showWindow(CHATWINDOWS.get(user));
     }
 
     public void addChatWindow(User user, ChatWindow chatWindow) {
-        chatWindows.put(user, chatWindow);
+        CHATWINDOWS.put(user, chatWindow);
         focusChatWindow(user);
     }
 
     public void removeChatWindow(String username) {
-        chatWindows.remove(new User(username, null));
+        CHATWINDOWS.remove(new User(username, null));
     }
 
     public void vibrate(User sender, String time, boolean online) {
-        ChatWindow chatWindow = chatWindows.get(sender);
+        ChatWindow chatWindow = CHATWINDOWS.get(sender);
         if(chatWindow == null) {
             openChatWindow(sender, online);
-            chatWindow = chatWindows.get(sender);
+            chatWindow = CHATWINDOWS.get(sender);
         }
         chatWindow.vibrate();
     }
 
     public void displayMessage(User sender, String text, String time, boolean online) {
-        ChatWindow chatWindow = chatWindows.get(sender);
+        ChatWindow chatWindow = CHATWINDOWS.get(sender);
         if(chatWindow == null) {
             openChatWindow(sender, online);
-            chatWindow = chatWindows.get(sender);
+            chatWindow = CHATWINDOWS.get(sender);
         }
         String fulltext = time+": "+text;
         chatWindow.addMessage(fulltext);
     }
 
     public void displayImage(User sender, ImageIcon image, String time, boolean online) {
-        ChatWindow chatWindow = chatWindows.get(sender);
+        ChatWindow chatWindow = CHATWINDOWS.get(sender);
         if(chatWindow == null) {
             openChatWindow(sender, online);
-            chatWindow = chatWindows.get(sender);
+            chatWindow = CHATWINDOWS.get(sender);
         }
         chatWindow.addMessage(time+": ", image);
     }
@@ -142,10 +142,10 @@ public class WindowHandler {
             contactsWindow = null;
         }
 
-        for(User user : chatWindows.keySet()) {
-            chatWindows.get(user).dispose();
+        for(User user : CHATWINDOWS.keySet()) {
+            CHATWINDOWS.get(user).dispose();
         }
-        chatWindows.clear();
+        CHATWINDOWS.clear();
     }
 
     private void showWindow(JFrame window) {
@@ -164,8 +164,8 @@ public class WindowHandler {
 
 
     public void setToOffline(User user, boolean isFriend) {
-        if(chatWindows.containsKey(user)) {
-            chatWindows.get(user).loggedOut(isFriend);
+        if(CHATWINDOWS.containsKey(user)) {
+            CHATWINDOWS.get(user).loggedOut(isFriend);
         }
 
         contactsWindow.loggedOut(user.getUsername(), isFriend);

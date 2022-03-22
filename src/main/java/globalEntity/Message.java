@@ -34,7 +34,6 @@ public class Message implements Serializable {
     private LocalDateTime sent;
     private LocalDateTime received;
     private int type;
-
     private ArrayList<User> contacts;
 
     /**

@@ -10,9 +10,6 @@ import globalEntity.User;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
-import java.awt.Stroke;
-import java.awt.font.ShapeGraphicAttribute;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -40,12 +37,12 @@ Servern måste kunna lagra klienter i en objektsamling.
 public class Client {
     private Socket socket;
     private User user;
-    private final ConcurrentHashMap<String, User> friendList = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, User> FRIENDLIST = new ConcurrentHashMap<>();
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private InputClient inputClient;
     private OutputClient outputClient;
-    private final ConcurrentHashMap<String, User> currentlyOnline = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, User> CURRENTLYONLINE = new ConcurrentHashMap<>();
     private final WindowHandler windowHandler = new WindowHandler(this);
     private boolean disconnected;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -62,7 +59,7 @@ public class Client {
                 .type(Message.LOGOUT)
                 .sent(LocalDateTime.now())
                 .sender(user)
-                .contacts(new ArrayList<>(friendList.values()))
+                .contacts(new ArrayList<>(FRIENDLIST.values()))
                 .build();
             outputClient.send(msg);
         }
@@ -71,7 +68,7 @@ public class Client {
     }
 
     public boolean isFriend(String username) {
-        return friendList.containsKey(username);
+        return FRIENDLIST.containsKey(username);
     }
 
     public void logIn(String username, ImageIcon profilePicture, String host, int port, LoginWindow loginWindow) {
@@ -127,15 +124,15 @@ public class Client {
 
 
     public void setToOnline(User user){
-        if(!currentlyOnline.containsKey(user.getUsername())) {
-            currentlyOnline.put(user.getUsername(), user);
+        if(! CURRENTLYONLINE.containsKey(user.getUsername())) {
+            CURRENTLYONLINE.put(user.getUsername(), user);
         }
 
         windowHandler.updateListOfContacts(new ArrayList<>(List.of(user)));
     }
     public void sendMultiple(ImageIcon icon,String text){
         ArrayList<User> users = new ArrayList<>();
-        users.addAll(friendList.values());
+        users.addAll(FRIENDLIST.values());
         if (text == null){
             for (int i = 0; i < users.size(); i++) {
                 sendMessage(users.get(i).getUsername(),icon,LocalDateTime.now());
@@ -154,18 +151,18 @@ public class Client {
         boolean friend = isFriend(user.getUsername());
 
         if(!friend) {
-            friendList.remove(user.getUsername());
+            FRIENDLIST.remove(user.getUsername());
         }
 
-        currentlyOnline.remove(user.getUsername());
+        CURRENTLYONLINE.remove(user.getUsername());
         windowHandler.setToOffline(user, friend);
     }
 
     public void updateListOfContacts(ArrayList<User> loggedInUsers){
-        currentlyOnline.clear();
+        CURRENTLYONLINE.clear();
         System.out.println("clear");
         for(User user : loggedInUsers) {
-            currentlyOnline.put(user.getUsername(), user);
+            CURRENTLYONLINE.put(user.getUsername(), user);
             setToOnline(user);
         }
     }
@@ -209,10 +206,10 @@ public class Client {
     }
 
     public void startChatWithUser(String username, boolean online) {
-        if(currentlyOnline.containsKey(username)) {
-            windowHandler.openChatWindow(currentlyOnline.get(username), online);
+        if(CURRENTLYONLINE.containsKey(username)) {
+            windowHandler.openChatWindow(CURRENTLYONLINE.get(username), online);
         } else {
-            windowHandler.openChatWindow(friendList.get(username), online);
+            windowHandler.openChatWindow(FRIENDLIST.get(username), online);
         }
     }
 
@@ -221,17 +218,17 @@ public class Client {
     }
 
     public void vibrate(User sender, String time) {
-        boolean online = currentlyOnline.containsKey(sender.getUsername());
+        boolean online = CURRENTLYONLINE.containsKey(sender.getUsername());
         windowHandler.vibrate(sender, time, online);
     }
 
     public void displayMessage(User sender, String text, String time) {
-        boolean online = currentlyOnline.containsKey(sender.getUsername());
+        boolean online = CURRENTLYONLINE.containsKey(sender.getUsername());
         windowHandler.displayMessage(sender, text, time, online);
     }
 
     public void displayImage(User sender, ImageIcon image, String time) {
-        boolean online = currentlyOnline.containsKey(sender.getUsername());
+        boolean online = CURRENTLYONLINE.containsKey(sender.getUsername());
         windowHandler.displayImage(sender, image, time, online);
     }
 
@@ -251,27 +248,27 @@ public class Client {
 
     public void saveContact(String username, boolean isFriend) {
         if(isFriend) {
-            friendList.put(username, currentlyOnline.get(username));
+            FRIENDLIST.put(username, CURRENTLYONLINE.get(username));
         } else {
-            friendList.remove(username);
+            FRIENDLIST.remove(username);
         }
     }
 
     public User getUser(String username) {
-        if(currentlyOnline.containsKey(username)) {
-            return currentlyOnline.get(username);
+        if(CURRENTLYONLINE.containsKey(username)) {
+            return CURRENTLYONLINE.get(username);
         } else {
-            return friendList.get(username);
+            return FRIENDLIST.get(username);
         }
     }
 
     public boolean isOnline(String username) {
-        return currentlyOnline.containsKey(username);
+        return CURRENTLYONLINE.containsKey(username);
     }
 
     public void loadFavorites(ArrayList<User> friends) {
         for(User friend : friends) {
-            boolean offline = !currentlyOnline.containsKey(friend.getUsername());
+            boolean offline = ! CURRENTLYONLINE.containsKey(friend.getUsername());
             if(offline) {
                 // updateListOfContacts(new ArrayList<>(List.of(friend)));
                 setToOnline(friend);

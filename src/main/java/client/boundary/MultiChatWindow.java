@@ -35,7 +35,7 @@ public class MultiChatWindow extends DefaultWindow {
     private final ImageIcon online = ImageHandler.createImageIcon("/online.png", 50, 50);
     private final ImageIcon offline = ImageHandler.createImageIcon("/offline.png", 50, 50);
 
-    public MultiChatWindow(Client client, String currentChatter, ImageIcon profilePicture, WindowHandler windowHandler, boolean online) {
+    public MultiChatWindow(Client client, String currentChatter, ImageIcon pPicture, WindowHandler wh, boolean online) {
         super(client, true);
         this.currentChatter = currentChatter;
         setTitle("Arlako chatt with: " + currentChatter);
@@ -45,12 +45,12 @@ public class MultiChatWindow extends DefaultWindow {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentHidden(ComponentEvent e) {
-                windowHandler.removeChatWindow(currentChatter);
+                wh.removeChatWindow(currentChatter);
             }
         });
 
-        addMenuOptions(windowHandler);
-        createWindow(profilePicture, online);
+        addMenuOptions(wh);
+        createWindow(pPicture, online);
     }
 
     private void addMenuOptions(WindowHandler windowHandler) {
